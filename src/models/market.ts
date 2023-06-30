@@ -34,6 +34,8 @@ export interface Question {
   bond: number;
   bestAnswer: string;
   isFinalized: boolean;
+  arbitrator: string;
+  isPendingArbitration: boolean;
   isClaimed: boolean;
   finalizeTs: number;
 }
