@@ -10,6 +10,7 @@ import useToastNotification from 'hooks/useToastNotification';
 import { AlertMini } from '../Alert';
 import { Button, ButtonLoading } from '../Button';
 import Icon from '../Icon';
+import MiniTable from '../MiniTable';
 import Modal from '../Modal';
 import ModalContent from '../ModalContent';
 import ModalHeader from '../ModalHeader';
@@ -18,6 +19,7 @@ import ModalHeaderTitle from '../ModalHeaderTitle';
 import Toast from '../Toast';
 import ToastNotification from '../ToastNotification';
 import styles from './ReportFormArbitration.module.scss';
+import { formatArbitrationDetails } from './ReportFormArbitration.utils';
 
 function ReportFormArbitration() {
   // Helpers
@@ -30,6 +32,8 @@ function ReportFormArbitration() {
   );
 
   const { bond, finalizeTs, arbitrator, isPendingArbitration } = question;
+
+  const ethBalance = useAppSelector(state => state.polkamarkets.ethBalance);
 
   // Local state
   const [modalVisible, setModalVisible] = useState(false);
@@ -82,6 +86,16 @@ function ReportFormArbitration() {
     );
   }, [outcomes, winningOutcomeId]);
 
+  const arbitrationDetails = useMemo(() => {
+    return formatArbitrationDetails({
+      balance: ethBalance,
+      cost: 0.25,
+      ticker: 'ETH',
+      imageUrl: winningOutcome?.imageUrl,
+      title: winningOutcome?.title
+    });
+  }, [ethBalance, winningOutcome?.imageUrl, winningOutcome?.title]);
+
   if (isPendingArbitration) {
     return (
       <AlertMini variant="warning" description="Market is under arbitration" />
@@ -99,7 +113,7 @@ function ReportFormArbitration() {
     !isPendingArbitration &&
     arbitrator === networkConfig.ARBITRATION_CONTRACT_ADDRESS;
 
-  if (visible) {
+  if (!visible) {
     return (
       <>
         <Button variant="subtle" size="sm" fullwidth onClick={handleOpenModal}>
@@ -186,6 +200,7 @@ function ReportFormArbitration() {
                   </a>
                 </div>
               </div>
+              <MiniTable rows={arbitrationDetails} />
               <ButtonLoading
                 color="primary"
                 loading={isLoading}
