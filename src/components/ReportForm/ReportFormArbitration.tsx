@@ -1,5 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
+import { roundNumber } from 'helpers/math';
+import { PolkamarketsService } from 'services';
 import { Avatar } from 'ui';
 
 import { useAppSelector } from 'hooks';
@@ -15,7 +17,9 @@ import styles from './ReportFormArbitration.module.scss';
 
 function ReportFormArbitration() {
   const [modalVisible, setModalVisible] = useState(false);
-  const { imageUrl, title } = useAppSelector(state => state.market.market);
+  const { imageUrl, title, outcomes, question } = useAppSelector(
+    state => state.market.market
+  );
 
   const handleOpenModal = useCallback(() => {
     setModalVisible(true);
@@ -24,6 +28,16 @@ function ReportFormArbitration() {
   const handleCloseModal = useCallback(() => {
     setModalVisible(false);
   }, []);
+
+  const winningOutcomeId = useMemo(() => {
+    return PolkamarketsService.bytes32ToInt(question.bestAnswer);
+  }, [question.bestAnswer]);
+
+  const winningOutcome = useMemo(() => {
+    return outcomes.find(
+      outcome => outcome.id.toString() === winningOutcomeId.toString()
+    );
+  }, [outcomes, winningOutcomeId]);
 
   return (
     <>
@@ -47,18 +61,37 @@ function ReportFormArbitration() {
           <div className={styles.modalContent}>
             <div className={styles.modalItem}>
               <p className={styles.modalItemTitleLg}>
-                your are contesting the following market
+                Your are contesting the following market
               </p>
               <div className={styles.market}>
                 <Avatar $radius="lg" $size="md" alt="Market" src={imageUrl} />
                 <p className={styles.marketTitle}>{title}</p>
               </div>
             </div>
-            <div className={styles.modalItem}>
-              <p className={styles.modalItemTitle}>
-                your are contesting the following market
-              </p>
-            </div>
+            {winningOutcome ? (
+              <div className={styles.modalItem}>
+                <p className={styles.modalItemTitle}>Contested outcome</p>
+                <div className={styles.outcome}>
+                  <div className={styles.outcomeDetails}>
+                    {winningOutcome.imageUrl ? (
+                      <Avatar
+                        $radius="lg"
+                        $size="x2s"
+                        alt="Outcome"
+                        src={winningOutcome.imageUrl}
+                      />
+                    ) : null}
+                    <p className={styles.outcomeDetailsTitle}>
+                      {winningOutcome.title}
+                    </p>
+                  </div>
+                  <span className={styles.outcomeProbability}>{`${roundNumber(
+                    +winningOutcome.price * 100,
+                    3
+                  )}%`}</span>
+                </div>
+              </div>
+            ) : null}
             <div role="alert" className={styles.alert}>
               <div className={styles.alertBody}>
                 <div className={styles.alertHeader}>

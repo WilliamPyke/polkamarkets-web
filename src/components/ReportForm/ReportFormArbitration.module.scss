@@ -57,6 +57,61 @@
     line-height: 1.4;
     letter-spacing: -0.02em;
     color: var(--color-text-1);
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+  }
+}
+
+.outcome {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--size-16);
+
+  padding: var(--size-12);
+
+  background: rgba(239, 78, 78, 0.1);
+
+  border-radius: var(--size-4);
+  border: 1px solid rgba(239, 78, 78, 0.3);
+
+  &Details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-8);
+
+    &Title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      word-break: break-all;
+
+      font-size: 1.4rem;
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: -0.01em;
+
+      color: var(--color-text-1);
+    }
+  }
+
+  &Probability {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+
+    color: var(--color-text-primary);
   }
 }
 
