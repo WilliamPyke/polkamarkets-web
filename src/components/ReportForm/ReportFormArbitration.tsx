@@ -4,7 +4,7 @@ import { Avatar } from 'ui';
 
 import { useAppSelector } from 'hooks';
 
-import { Button } from '../Button';
+import { Button, ButtonLoading } from '../Button';
 import Icon from '../Icon';
 import Modal from '../Modal';
 import ModalContent from '../ModalContent';
@@ -88,6 +88,9 @@ function ReportFormArbitration() {
                 </a>
               </div>
             </div>
+            <ButtonLoading color="primary" loading={false}>
+              Apply for Arbitration
+            </ButtonLoading>
           </div>
         </ModalContent>
       </Modal>
