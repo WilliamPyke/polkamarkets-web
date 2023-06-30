@@ -23,7 +23,7 @@ function ReportFormArbitration() {
     state => state.market.market
   );
 
-  const { finalizeTs, arbitrator, isPendingArbitration } = question;
+  const { bond, finalizeTs, arbitrator, isPendingArbitration } = question;
 
   const handleOpenModal = useCallback(() => {
     setModalVisible(true);
@@ -51,8 +51,10 @@ function ReportFormArbitration() {
 
   const isValidTimestamp = finalizeTs > 0;
   const isOutdated = Date.now() > finalizeTs * 1000;
+  const isStarted = bond > 0;
 
   const visible =
+    isStarted &&
     isValidTimestamp &&
     isOutdated &&
     !isPendingArbitration &&
