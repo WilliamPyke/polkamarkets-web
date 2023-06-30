@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { useAppSelector } from 'hooks';
 
 import ReportFormActions from './ReportFormActions';
+import ReportFormArbitration from './ReportFormArbitration';
 import ReportFormDetails from './ReportFormDetails';
 import ReportFormInput from './ReportFormInput';
 import ReportFormOutcomeSelect from './ReportFormOutcomeSelect';
@@ -69,6 +70,7 @@ function ReportForm() {
       <Form className="pm-c-trade-form">
         <div className="pm-c-trade-form__view">
           <ReportFormOutcomeSelect />
+          <ReportFormArbitration />
         </div>
         <div className="pm-c-trade-form__actions">
           {!isMarketQuestionFinalized ? (
