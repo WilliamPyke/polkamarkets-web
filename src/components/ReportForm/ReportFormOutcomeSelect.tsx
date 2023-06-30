@@ -14,6 +14,7 @@ import VirtualizedList from 'components/VirtualizedList';
 import { useAppSelector } from 'hooks';
 
 import tradeFormClasses from '../TradeForm/TradeForm.module.scss';
+import ReportFormArbitration from './ReportFormArbitration';
 
 function OutcomeHeader() {
   return (
@@ -80,26 +81,34 @@ function ReportFormOutcomeSelect() {
 
   const OutcomeFooter = useCallback(
     () => (
-      <Outcome
-        id="-1"
-        title="Invalid"
-        helpText="A market is invalid when no outcome is correct"
-        color="warning"
-        state={checkOutcomeState({ id: '-1' })}
-        bond={getOutcomeBond(-1)}
-        resolvedOutcomeId={resolvedOutcomeId}
-        marketQuestionFinalized={market.question.isFinalized}
-        onSelect={handleOutcomeSelect}
-        isStarted={isStarted}
-      />
+      <>
+        <Outcome
+          id="-1"
+          title="Invalid"
+          helpText="A market is invalid when no outcome is correct"
+          color="warning"
+          state={checkOutcomeState({ id: '-1' })}
+          bond={getOutcomeBond(-1)}
+          resolvedOutcomeId={resolvedOutcomeId}
+          marketQuestionFinalized={market.question.isFinalized}
+          onSelect={handleOutcomeSelect}
+          isStarted={isStarted}
+        />
+        {theme.device.isDesktop ? (
+          <div className="margin-top-5">
+            <ReportFormArbitration />
+          </div>
+        ) : null}
+      </>
     ),
     [
       checkOutcomeState,
       getOutcomeBond,
-      handleOutcomeSelect,
+      resolvedOutcomeId,
       market.question.isFinalized,
+      handleOutcomeSelect,
       isStarted,
-      resolvedOutcomeId
+      theme.device.isDesktop
     ]
   );
 
@@ -163,6 +172,11 @@ function ReportFormOutcomeSelect() {
               <OutcomeFooter />
             </li>
           </ul>
+          {!theme.device.isDesktop ? (
+            <div className="margin-top-5">
+              <ReportFormArbitration />
+            </div>
+          ) : null}
         </>
       )}
     </div>
