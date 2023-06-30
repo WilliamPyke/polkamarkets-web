@@ -5,6 +5,7 @@ import { PolkamarketsService } from 'services';
 import { Avatar } from 'ui';
 
 import { useAppSelector, useNetwork } from 'hooks';
+import useToastNotification from 'hooks/useToastNotification';
 
 import { AlertMini } from '../Alert';
 import { Button, ButtonLoading } from '../Button';
@@ -14,25 +15,63 @@ import ModalContent from '../ModalContent';
 import ModalHeader from '../ModalHeader';
 import ModalHeaderHide from '../ModalHeaderHide';
 import ModalHeaderTitle from '../ModalHeaderTitle';
+import Toast from '../Toast';
+import ToastNotification from '../ToastNotification';
 import styles from './ReportFormArbitration.module.scss';
 
 function ReportFormArbitration() {
-  const { networkConfig } = useNetwork();
-  const [modalVisible, setModalVisible] = useState(false);
+  // Helpers
+  const { network, networkConfig } = useNetwork();
+  const { show, close } = useToastNotification();
+
+  // Redux selectors
   const { imageUrl, title, outcomes, question } = useAppSelector(
     state => state.market.market
   );
 
   const { bond, finalizeTs, arbitrator, isPendingArbitration } = question;
 
+  // Local state
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // Transaction state
+  const [isLoading, setIsLoading] = useState(false);
+  const [transactionSuccess, setTransactionSuccess] = useState<boolean>(false);
+  const [transactionSuccessHash, setTransactionSuccessHash] = useState<
+    string | undefined
+  >(undefined);
+
+  // Handlers
   const handleOpenModal = useCallback(() => {
     setModalVisible(true);
   }, []);
 
   const handleCloseModal = useCallback(() => {
-    setModalVisible(false);
-  }, []);
+    if (!isLoading) setModalVisible(false);
+  }, [isLoading]);
 
+  const handleApplyToArbitration = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      // Async call
+      const response = { status: true, transactionHash: '0x0000000000000' };
+
+      setIsLoading(false);
+
+      const { status, transactionHash } = response;
+
+      if (status && transactionHash) {
+        setTransactionSuccess(status);
+        setTransactionSuccessHash(transactionHash);
+        show('apply-to-arbitration');
+      }
+    } catch (error) {
+      setIsLoading(false);
+    }
+  }, [show]);
+
+  // Derivated state
   const winningOutcomeId = useMemo(() => {
     return PolkamarketsService.bytes32ToInt(question.bestAnswer);
   }, [question.bestAnswer]);
@@ -147,9 +186,41 @@ function ReportFormArbitration() {
                   </a>
                 </div>
               </div>
-              <ButtonLoading color="primary" loading={false}>
+              <ButtonLoading
+                color="primary"
+                loading={isLoading}
+                onClick={handleApplyToArbitration}
+              >
                 Apply for Arbitration
               </ButtonLoading>
+              {transactionSuccess && transactionSuccessHash ? (
+                <ToastNotification id="apply-to-arbitration" duration={10000}>
+                  <Toast
+                    variant="success"
+                    title="Success"
+                    description="Your transaction is completed!"
+                  >
+                    <Toast.Actions>
+                      <a
+                        target="_blank"
+                        href={`${network.explorerURL}/tx/${transactionSuccessHash}`}
+                        rel="noreferrer"
+                      >
+                        <Button size="sm" color="success">
+                          View on Explorer
+                        </Button>
+                      </a>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => close('apply-to-arbitration')}
+                      >
+                        Dismiss
+                      </Button>
+                    </Toast.Actions>
+                  </Toast>
+                </ToastNotification>
+              ) : null}
             </div>
           </ModalContent>
         </Modal>
