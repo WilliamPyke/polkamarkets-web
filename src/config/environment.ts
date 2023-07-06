@@ -83,7 +83,7 @@ export type NetworkConfig = {
   WEB3_PROVIDER: string;
   WEB3_EVENTS_PROVIDER?: string;
   ARBITRATION_CONTRACT_ADDRESS?: string;
-  ARBITRATION_NETWORK_ID?: string | number;
+  ARBITRATION_NETWORK_ID?: string;
 };
 
 export type NetworksConfigs = { [key: number]: NetworkConfig };

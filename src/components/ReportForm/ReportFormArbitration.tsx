@@ -1,8 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
 
+// TODO: Remove this import, use useNetworks instead
+import { networks } from 'config';
+import environment from 'config/environment';
 import { roundNumber } from 'helpers/math';
 import { PolkamarketsService } from 'services';
 import { Avatar } from 'ui';
+
+import NetworkSwitch from 'components/Networks/NetworkSwitch';
+
+// import { useNetworks } from 'contexts/networks';
 
 import { useAppSelector, useNetwork } from 'hooks';
 import useToastNotification from 'hooks/useToastNotification';
@@ -23,15 +30,20 @@ import { formatArbitrationDetails } from './ReportFormArbitration.utils';
 
 function ReportFormArbitration() {
   // Helpers
-  const { network, networkConfig } = useNetwork();
+  const { network } = useNetwork();
   const { show, close } = useToastNotification();
 
   // Redux selectors
-  const { imageUrl, title, outcomes, question } = useAppSelector(
-    state => state.market.market
-  );
+  const {
+    imageUrl,
+    title,
+    outcomes,
+    question,
+    network: marketNetwork
+  } = useAppSelector(state => state.market.market);
 
-  const { bond, finalizeTs, arbitrator, isPendingArbitration } = question;
+  const { bond, finalizeTs, arbitrator, isPendingArbitration, isFinalized } =
+    question;
 
   const ethBalance = useAppSelector(state => state.polkamarkets.ethBalance);
 
@@ -86,15 +98,25 @@ function ReportFormArbitration() {
     );
   }, [outcomes, winningOutcomeId]);
 
+  const arbitrationNetwork = environment.NETWORKS[marketNetwork.id];
+  const arbitrationNetworkDetails = Object.values(networks).find(
+    ({ id }) => id === arbitrationNetwork?.ARBITRATION_NETWORK_ID
+  );
+
   const arbitrationDetails = useMemo(() => {
     return formatArbitrationDetails({
       balance: ethBalance,
-      cost: 0.25,
-      ticker: 'ETH',
+      cost: 0.3,
+      ticker: arbitrationNetworkDetails?.currency.ticker || 'ETH',
       imageUrl: winningOutcome?.imageUrl,
       title: winningOutcome?.title
     });
-  }, [ethBalance, winningOutcome?.imageUrl, winningOutcome?.title]);
+  }, [
+    arbitrationNetworkDetails?.currency.ticker,
+    ethBalance,
+    winningOutcome?.imageUrl,
+    winningOutcome?.title
+  ]);
 
   if (isPendingArbitration) {
     return (
@@ -107,12 +129,20 @@ function ReportFormArbitration() {
 
   const visible =
     isStarted &&
+    !isFinalized &&
     isValidTimestamp &&
     !isPendingArbitration &&
+    arbitrationNetwork &&
+    arbitrationNetworkDetails &&
+    arbitrationNetwork?.ARBITRATION_NETWORK_ID &&
     arbitrator.toLowerCase() ===
-      networkConfig.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
+      arbitrationNetwork.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
 
-  if (visible) {
+  const isWrongNetwork =
+    network.id !== arbitrationNetwork?.ARBITRATION_NETWORK_ID;
+
+  // TEMP: vistible is reverted for testing purposes, will switch back once production ready
+  if (!visible) {
     return (
       <>
         <Button variant="subtle" size="sm" fullwidth onClick={handleOpenModal}>
@@ -180,7 +210,7 @@ function ReportFormArbitration() {
                     {`If you believe the declared outcome of this market is
                       incorrect, you have the option to apply for arbitration. By
                       invoking this process, you're requesting a jury to review
-                      the decision. Please note, you must be on the Ethereum
+                      the decision. Please note, you must be on the ${arbitrationNetworkDetails?.name}
                       network to proceed.`}
                   </p>
                   <a
@@ -200,13 +230,21 @@ function ReportFormArbitration() {
                 </div>
               </div>
               <MiniTable rows={arbitrationDetails} />
-              <ButtonLoading
-                color="primary"
-                loading={isLoading}
-                onClick={handleApplyToArbitration}
-              >
-                Apply for Arbitration
-              </ButtonLoading>
+              {isWrongNetwork ? (
+                <div className="pm-c-report-form-details__actions-group--column">
+                  <NetworkSwitch
+                    targetNetworkId={arbitrationNetwork.ARBITRATION_NETWORK_ID}
+                  />
+                </div>
+              ) : (
+                <ButtonLoading
+                  color="primary"
+                  loading={isLoading}
+                  onClick={handleApplyToArbitration}
+                >
+                  Apply for Arbitration
+                </ButtonLoading>
+              )}
               {transactionSuccess && transactionSuccessHash ? (
                 <ToastNotification id="apply-to-arbitration" duration={10000}>
                   <Toast
