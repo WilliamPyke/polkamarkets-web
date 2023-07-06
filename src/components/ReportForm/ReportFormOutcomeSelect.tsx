@@ -94,7 +94,7 @@ function ReportFormOutcomeSelect() {
           onSelect={handleOutcomeSelect}
           isStarted={isStarted}
         />
-        {theme.device.isDesktop ? (
+        {!market.question.isFinalized && theme.device.isDesktop ? (
           <div className="margin-top-5">
             <ReportFormArbitration />
           </div>
@@ -172,7 +172,7 @@ function ReportFormOutcomeSelect() {
               <OutcomeFooter />
             </li>
           </ul>
-          {!theme.device.isDesktop ? (
+          {!market.question.isFinalized && !theme.device.isDesktop ? (
             <div className="margin-top-5">
               <ReportFormArbitration />
             </div>

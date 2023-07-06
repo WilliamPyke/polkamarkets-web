@@ -103,17 +103,16 @@ function ReportFormArbitration() {
   }
 
   const isValidTimestamp = finalizeTs > 0;
-  const isOutdated = Date.now() > finalizeTs * 1000;
   const isStarted = bond > 0;
 
   const visible =
     isStarted &&
     isValidTimestamp &&
-    isOutdated &&
     !isPendingArbitration &&
-    arbitrator === networkConfig.ARBITRATION_CONTRACT_ADDRESS;
+    arbitrator.toLowerCase() ===
+      networkConfig.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
 
-  if (!visible) {
+  if (visible) {
     return (
       <>
         <Button variant="subtle" size="sm" fullwidth onClick={handleOpenModal}>
