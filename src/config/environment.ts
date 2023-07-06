@@ -70,7 +70,8 @@ type NetworkConfigVariable =
   | 'VOTING_CONTRACT_ADDRESS'
   | 'WEB3_PROVIDER'
   | 'WEB3_EVENTS_PROVIDER'
-  | 'ARBITRATION_CONTRACT_ADDRESS';
+  | 'ARBITRATION_CONTRACT_ADDRESS'
+  | 'ARBITRATION_NETWORK_ID';
 
 export type NetworkConfig = {
   ERC20_CONTRACT_ADDRESS: string;
@@ -82,6 +83,7 @@ export type NetworkConfig = {
   WEB3_PROVIDER: string;
   WEB3_EVENTS_PROVIDER?: string;
   ARBITRATION_CONTRACT_ADDRESS?: string;
+  ARBITRATION_NETWORK_ID?: string | number;
 };
 
 export type NetworksConfigs = { [key: number]: NetworkConfig };
