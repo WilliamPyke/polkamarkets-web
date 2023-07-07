@@ -98,9 +98,10 @@ function ReportFormArbitration() {
     );
   }, [outcomes, winningOutcomeId]);
 
-  const arbitrationNetwork = environment.NETWORKS[marketNetwork.id];
+  const marketNetworkEnv = environment.NETWORKS[marketNetwork.id];
+  const arbitrationNetworkId = marketNetworkEnv?.ARBITRATION_NETWORK_ID;
   const arbitrationNetworkDetails = Object.values(networks).find(
-    ({ id }) => id === arbitrationNetwork?.ARBITRATION_NETWORK_ID
+    ({ id }) => id === arbitrationNetworkId
   );
 
   const arbitrationDetails = useMemo(() => {
@@ -118,6 +119,10 @@ function ReportFormArbitration() {
     winningOutcome?.title
   ]);
 
+  if (!arbitrationNetworkId || !arbitrationNetworkDetails) {
+    return null;
+  }
+
   if (isPendingArbitration) {
     return (
       <AlertMini variant="warning" description="Market is under arbitration" />
@@ -126,20 +131,17 @@ function ReportFormArbitration() {
 
   const isValidTimestamp = finalizeTs > 0;
   const isStarted = bond > 0;
+  const arbitrationNetworkEnv = environment.NETWORKS[arbitrationNetworkId];
 
   const visible =
     isStarted &&
     !isFinalized &&
     isValidTimestamp &&
     !isPendingArbitration &&
-    arbitrationNetwork &&
-    arbitrationNetworkDetails &&
-    arbitrationNetwork?.ARBITRATION_NETWORK_ID &&
     arbitrator.toLowerCase() ===
-      arbitrationNetwork.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
+      arbitrationNetworkEnv?.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
 
-  const isWrongNetwork =
-    network.id !== arbitrationNetwork?.ARBITRATION_NETWORK_ID;
+  const isWrongNetwork = network.id !== arbitrationNetworkId;
 
   // TEMP: vistible is reverted for testing purposes, will switch back once production ready
   if (!visible) {
@@ -232,9 +234,7 @@ function ReportFormArbitration() {
               <MiniTable rows={arbitrationDetails} />
               {isWrongNetwork ? (
                 <div className="pm-c-report-form-details__actions-group--column">
-                  <NetworkSwitch
-                    targetNetworkId={arbitrationNetwork.ARBITRATION_NETWORK_ID}
-                  />
+                  <NetworkSwitch targetNetworkId={arbitrationNetworkId} />
                 </div>
               ) : (
                 <ButtonLoading
