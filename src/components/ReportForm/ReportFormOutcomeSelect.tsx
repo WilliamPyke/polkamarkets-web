@@ -23,7 +23,7 @@ function OutcomeHeader() {
       variant="information"
       description={
         <>
-          Earn POLK by reporting the correct outcome.
+          {'Earn POLK by reporting the correct outcome. '}
           <Link
             title="Learn more"
             href="https://help.polkamarkets.com/en/articles/5610525-how-market-resolution-works"
