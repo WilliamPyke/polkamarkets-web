@@ -35,8 +35,10 @@ function NetworksProvider({ children }) {
 
   const availableNetworks = useMemo(
     () =>
-      Object.values(networks).filter(network =>
-        Object.keys(environment.NETWORKS).includes(network.id)
+      Object.values(networks).filter(
+        network =>
+          network.enabled &&
+          Object.keys(environment.NETWORKS).includes(network.id)
       ),
     []
   );
