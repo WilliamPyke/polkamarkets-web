@@ -27,6 +27,7 @@ import Feature from '../Feature';
 import Link from '../Link';
 import Toast from '../Toast';
 import ToastNotification from '../ToastNotification';
+import ReportFormArbitration from './ReportFormArbitration';
 
 type ReportFormActionsProps = {
   marketQuestionFinalized: boolean;
@@ -255,28 +256,33 @@ function ReportFormActions({
                 Resolve
               </ButtonLoading>
             ) : (
-              <ApproveToken
-                fullwidth
-                address={networkConfig.ERC20_CONTRACT_ADDRESS}
-                spenderAddress={networkConfig.REALITIO_ERC20_CONTRACT_ADDRESS}
-                ticker="POLK"
-              >
-                <ButtonLoading
-                  type="submit"
-                  color={showCurrentOutcomeBondWarning ? 'warning' : 'primary'}
+              <div className="flex-column gap-5 width-full">
+                <ApproveToken
                   fullwidth
-                  onClick={handleBond}
-                  disabled={
-                    !walletConnected ||
-                    bond.value === 0 ||
-                    isBonding ||
-                    has(errors, 'bond')
-                  }
-                  loading={isBonding}
+                  address={networkConfig.ERC20_CONTRACT_ADDRESS}
+                  spenderAddress={networkConfig.REALITIO_ERC20_CONTRACT_ADDRESS}
+                  ticker="POLK"
                 >
-                  Bond
-                </ButtonLoading>
-              </ApproveToken>
+                  <ButtonLoading
+                    type="submit"
+                    color={
+                      showCurrentOutcomeBondWarning ? 'warning' : 'primary'
+                    }
+                    fullwidth
+                    onClick={handleBond}
+                    disabled={
+                      !walletConnected ||
+                      bond.value === 0 ||
+                      isBonding ||
+                      has(errors, 'bond')
+                    }
+                    loading={isBonding}
+                  >
+                    Bond
+                  </ButtonLoading>
+                </ApproveToken>
+                <ReportFormArbitration />
+              </div>
             )}
             {/* TODO: Create notifications by type (ex: Transaction completed) */}
             {bondTransactionSuccess && bondTransactionSuccessHash ? (

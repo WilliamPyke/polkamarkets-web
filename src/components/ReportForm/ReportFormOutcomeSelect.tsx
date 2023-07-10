@@ -14,7 +14,6 @@ import VirtualizedList from 'components/VirtualizedList';
 import { useAppSelector } from 'hooks';
 
 import tradeFormClasses from '../TradeForm/TradeForm.module.scss';
-import ReportFormArbitration from './ReportFormArbitration';
 
 function OutcomeHeader() {
   return (
@@ -94,11 +93,6 @@ function ReportFormOutcomeSelect() {
           onSelect={handleOutcomeSelect}
           isStarted={isStarted}
         />
-        {!market.question.isFinalized && theme.device.isDesktop ? (
-          <div className="margin-top-5">
-            <ReportFormArbitration />
-          </div>
-        ) : null}
       </>
     ),
     [
@@ -107,8 +101,7 @@ function ReportFormOutcomeSelect() {
       resolvedOutcomeId,
       market.question.isFinalized,
       handleOutcomeSelect,
-      isStarted,
-      theme.device.isDesktop
+      isStarted
     ]
   );
 
@@ -172,11 +165,6 @@ function ReportFormOutcomeSelect() {
               <OutcomeFooter />
             </li>
           </ul>
-          {!market.question.isFinalized && !theme.device.isDesktop ? (
-            <div className="margin-top-5">
-              <ReportFormArbitration />
-            </div>
-          ) : null}
         </>
       )}
     </div>
