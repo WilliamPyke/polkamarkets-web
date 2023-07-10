@@ -8,7 +8,9 @@ import {
 
 import { environment, networks } from 'config';
 import findKey from 'lodash/findKey';
+import has from 'lodash/has';
 import isEmpty from 'lodash/isEmpty';
+import pickBy from 'lodash/pickBy';
 import type { Network } from 'types/network';
 
 import { useAppSelector, useNetwork } from 'hooks';
@@ -35,10 +37,10 @@ function NetworksProvider({ children }) {
 
   const availableNetworks = useMemo(
     () =>
-      Object.values(networks).filter(
-        network =>
-          network.enabled &&
-          Object.keys(environment.NETWORKS).includes(network.id)
+      Object.values(networks).filter(network =>
+        Object.keys(
+          pickBy(environment.NETWORKS, (value, _key) => !has(value, 'DISABLED'))
+        ).includes(network.id)
       ),
     []
   );

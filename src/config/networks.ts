@@ -18,8 +18,7 @@ const networks: {
     currency: ETH,
     decimals: 18,
     explorerURL: 'https://etherscan.io',
-    rpcUrls: [],
-    enabled: true
+    rpcUrls: []
   },
   '0x3': {
     id: '3',
@@ -29,8 +28,7 @@ const networks: {
     currency: ETH,
     decimals: 18,
     explorerURL: 'https://ropsten.etherscan.io',
-    rpcUrls: [],
-    enabled: true
+    rpcUrls: []
   },
   '0x4': {
     id: '4',
@@ -40,8 +38,7 @@ const networks: {
     currency: ETH,
     decimals: 18,
     explorerURL: 'https://rinkeby.etherscan.io',
-    rpcUrls: [],
-    enabled: true
+    rpcUrls: []
   },
   '0x5': {
     id: '5',
@@ -51,8 +48,7 @@ const networks: {
     currency: ETH,
     decimals: 18,
     explorerURL: 'https://goerli.etherscan.io',
-    rpcUrls: [],
-    enabled: false
+    rpcUrls: []
   },
   '0x2a': {
     id: '42',
@@ -63,8 +59,7 @@ const networks: {
     decimals: 18,
     explorerURL: 'https://kovan.etherscan.io',
     rpcUrls: [],
-    buyEc20Url: `//app.uniswap.org/#/swap?outputCurrency=${ERC20_CONTRACT_ADDRESS}&inputCurrency=ETH`,
-    enabled: true
+    buyEc20Url: `//app.uniswap.org/#/swap?outputCurrency=${ERC20_CONTRACT_ADDRESS}&inputCurrency=ETH`
   },
   '0x501': {
     id: '1281',
@@ -74,8 +69,7 @@ const networks: {
     currency: DEV,
     decimals: 18,
     explorerURL: 'https://etherscan.io',
-    rpcUrls: ['http://localhost:9933'],
-    enabled: true
+    rpcUrls: ['http://localhost:9933']
   },
   '0x504': {
     id: '1284',
@@ -86,8 +80,7 @@ const networks: {
     decimals: 18,
     explorerURL: 'https://moonbeam.moonscan.io',
     rpcUrls: ['https://rpc.api.moonbeam.network'],
-    buyEc20Url: `//app.solarflare.io/exchange/swap?outputCurrency=${ERC20_CONTRACT_ADDRESS}`,
-    enabled: true
+    buyEc20Url: `//app.solarflare.io/exchange/swap?outputCurrency=${ERC20_CONTRACT_ADDRESS}`
   },
   '0x505': {
     id: '1285',
@@ -98,8 +91,7 @@ const networks: {
     decimals: 18,
     explorerURL: 'https://moonriver.moonscan.io',
     rpcUrls: ['https://rpc.moonriver.moonbeam.network'],
-    buyEc20Url: `//app.sushi.com/swap?inputCurrency=&outputCurrency=${ERC20_CONTRACT_ADDRESS}`,
-    enabled: true
+    buyEc20Url: `//app.sushi.com/swap?inputCurrency=&outputCurrency=${ERC20_CONTRACT_ADDRESS}`
   },
   '0x507': {
     id: '1287',
@@ -109,8 +101,7 @@ const networks: {
     currency: DEV,
     decimals: 18,
     explorerURL: 'https://moonbase-blockscout.testnet.moonbeam.network',
-    rpcUrls: ['https://rpc.testnet.moonbeam.network'],
-    enabled: true
+    rpcUrls: ['https://rpc.testnet.moonbeam.network']
   },
   '0x89': {
     id: '137',
@@ -120,8 +111,7 @@ const networks: {
     currency: MATIC,
     decimals: 18,
     explorerURL: 'https://polygonscan.com/',
-    rpcUrls: ['https://polygon-rpc.com'],
-    enabled: true
+    rpcUrls: ['https://polygon-rpc.com']
   },
   '0x44d': {
     id: '1101',
@@ -131,8 +121,7 @@ const networks: {
     currency: ETH,
     decimals: 18,
     explorerURL: 'https://zkevm.polygonscan.com',
-    rpcUrls: ['https://zkevm-rpc.com'],
-    enabled: true
+    rpcUrls: ['https://zkevm-rpc.com']
   },
   '0x539': {
     id: '1337',
@@ -143,8 +132,7 @@ const networks: {
     decimals: 18,
     explorerURL: 'https://etherscan.io',
     rpcUrls: ['http://localhost:8545'],
-    buyEc20Url: `//app.uniswap.org/#/swap?outputCurrency=${ERC20_CONTRACT_ADDRESS}&inputCurrency=ETH`,
-    enabled: true
+    buyEc20Url: `//app.uniswap.org/#/swap?outputCurrency=${ERC20_CONTRACT_ADDRESS}&inputCurrency=ETH`
   },
   '0x5a2': {
     id: '1442',
@@ -154,8 +142,7 @@ const networks: {
     currency: ETH,
     decimals: 18,
     explorerURL: 'https://testnet-zkevm.polygonscan.com',
-    rpcUrls: ['https://rpc.public.zkevm-test.net'],
-    enabled: true
+    rpcUrls: ['https://rpc.public.zkevm-test.net']
   },
   '0x270f': {
     id: '9999',
@@ -165,8 +152,7 @@ const networks: {
     currency: ETH,
     decimals: 18,
     explorerURL: 'https://etherscan.io',
-    rpcUrls: [],
-    enabled: true
+    rpcUrls: []
   },
   '0x13881': {
     id: '80001',
@@ -176,8 +162,7 @@ const networks: {
     currency: MATIC,
     decimals: 18,
     explorerURL: 'https://mumbai.polygonscan.com',
-    rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
-    enabled: true
+    rpcUrls: ['https://rpc-mumbai.maticvigil.com']
   }
 });
 
