@@ -16,6 +16,7 @@ import { PolkamarketsService } from 'services';
 import useAppDispatch from '../useAppDispatch';
 import useAppSelector from '../useAppSelector';
 import useLocalStorage from '../useLocalStorage';
+import useQuery from '../useQuery';
 import { NetworkContextState } from './useNetwork.type';
 
 export const NetworkContext = createContext<NetworkContextState>(
@@ -41,6 +42,7 @@ type NetworkProviderProps = {
 function NetworkProvider({ children }: NetworkProviderProps) {
   const location = useLocation();
   const history = useHistory();
+  const query = useQuery();
   const dispatch = useAppDispatch();
 
   const walletIsConnected = useAppSelector(
@@ -70,11 +72,17 @@ function NetworkProvider({ children }: NetworkProviderProps) {
   );
 
   const reloadWindow = useCallback(() => {
-    history.push(
-      `${location.pathname}${ui.layout.disclaimer.enabled ? '?m=f' : ''}`
-    );
+    if (!query.has('m') && ui.layout.disclaimer.enabled) {
+      query.set('m', 'f');
+    }
+
+    history.push({
+      pathname: location.pathname,
+      search: query.toString()
+    });
+
     window.location.reload();
-  }, [history, location.pathname]);
+  }, [history, location.pathname, query]);
 
   useEffect(() => {
     async function getMetaMaskNetwork() {
