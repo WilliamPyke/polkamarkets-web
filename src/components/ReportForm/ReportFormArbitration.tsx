@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 
 // TODO: Remove this import, use useNetworks instead
 import { networks } from 'config';
@@ -11,7 +12,7 @@ import NetworkSwitch from 'components/Networks/NetworkSwitch';
 
 // import { useNetworks } from 'contexts/networks';
 
-import { useAppSelector, useNetwork } from 'hooks';
+import { useAppSelector, useNetwork, useQuery } from 'hooks';
 import useToastNotification from 'hooks/useToastNotification';
 
 import { AlertMini } from '../Alert';
@@ -30,6 +31,9 @@ import { formatArbitrationDetails } from './ReportFormArbitration.utils';
 
 function ReportFormArbitration() {
   // Helpers
+  const location = useLocation();
+  const history = useHistory();
+  const query = useQuery();
   const { network } = useNetwork();
   const { show, close } = useToastNotification();
 
@@ -64,7 +68,13 @@ function ReportFormArbitration() {
 
   const handleCloseModal = useCallback(() => {
     if (!isLoading) setModalVisible(false);
-  }, [isLoading]);
+    query.delete('a');
+
+    history.push({
+      pathname: location.pathname,
+      search: query.toString()
+    });
+  }, [history, isLoading, location.pathname, query]);
 
   const handleApplyToArbitration = useCallback(async () => {
     setIsLoading(true);
@@ -104,6 +114,22 @@ function ReportFormArbitration() {
     ({ id }) => id === arbitrationNetworkId
   );
 
+  const isValidTimestamp = finalizeTs > 0;
+  const isStarted = bond > 0;
+  const arbitrationNetworkEnv = arbitrationNetworkId
+    ? environment.NETWORKS[arbitrationNetworkId]
+    : undefined;
+
+  const visible =
+    isStarted &&
+    !isFinalized &&
+    isValidTimestamp &&
+    !isPendingArbitration &&
+    arbitrator.toLowerCase() ===
+      arbitrationNetworkEnv?.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
+
+  const isWrongNetwork = network.id !== arbitrationNetworkId;
+
   const arbitrationDetails = useMemo(() => {
     return formatArbitrationDetails({
       balance: ethBalance,
@@ -119,6 +145,25 @@ function ReportFormArbitration() {
     winningOutcome?.title
   ]);
 
+  // TEMP: visible is reverted for testing purposes, will switch back once production ready
+  useEffect(() => {
+    if (!visible && query.get('a') === 't') {
+      handleOpenModal();
+    }
+  }, [handleOpenModal, query, visible]);
+
+  const handleBeforeChangeNetwork = useCallback(
+    (_networkId: string) => {
+      query.set('a', 't');
+
+      history.push({
+        pathname: location.pathname,
+        search: query.toString()
+      });
+    },
+    [history, location.pathname, query]
+  );
+
   if (!arbitrationNetworkId || !arbitrationNetworkDetails) {
     return null;
   }
@@ -129,21 +174,7 @@ function ReportFormArbitration() {
     );
   }
 
-  const isValidTimestamp = finalizeTs > 0;
-  const isStarted = bond > 0;
-  const arbitrationNetworkEnv = environment.NETWORKS[arbitrationNetworkId];
-
-  const visible =
-    isStarted &&
-    !isFinalized &&
-    isValidTimestamp &&
-    !isPendingArbitration &&
-    arbitrator.toLowerCase() ===
-      arbitrationNetworkEnv?.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
-
-  const isWrongNetwork = network.id !== arbitrationNetworkId;
-
-  // TEMP: vistible is reverted for testing purposes, will switch back once production ready
+  // TEMP: visible is reverted for testing purposes, will switch back once production ready
   if (!visible) {
     return (
       <>
@@ -234,7 +265,10 @@ function ReportFormArbitration() {
               <MiniTable rows={arbitrationDetails} />
               {isWrongNetwork ? (
                 <div className="pm-c-report-form-details__actions-group--column">
-                  <NetworkSwitch targetNetworkId={arbitrationNetworkId} />
+                  <NetworkSwitch
+                    targetNetworkId={arbitrationNetworkId}
+                    beforeChange={handleBeforeChangeNetwork}
+                  />
                 </div>
               ) : (
                 <ButtonLoading
