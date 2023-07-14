@@ -77,27 +77,6 @@ function ReportFormArbitration() {
     });
   }, [history, isLoading, location.pathname, query]);
 
-  const handleApplyToArbitration = useCallback(async () => {
-    setIsLoading(true);
-
-    try {
-      // Async call
-      const response = { status: true, transactionHash: '0x0000000000000' };
-
-      setIsLoading(false);
-
-      const { status, transactionHash } = response;
-
-      if (status && transactionHash) {
-        setTransactionSuccess(status);
-        setTransactionSuccessHash(transactionHash);
-        show('apply-to-arbitration');
-      }
-    } catch (error) {
-      setIsLoading(false);
-    }
-  }, [show]);
-
   // Derivated state
   const winningOutcomeId = useMemo(() => {
     return PolkamarketsService.bytes32ToInt(question.bestAnswer);
@@ -130,6 +109,33 @@ function ReportFormArbitration() {
       arbitrationNetworkEnv?.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
 
   const isWrongNetwork = network.id !== arbitrationNetworkId;
+
+  const handleApplyForArbitration = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      // Async call
+      const polkamarketsService = new PolkamarketsService(
+        arbitrationNetworkEnv
+      );
+      const response = await polkamarketsService.requestArbitration(
+        question.id,
+        question.bond
+      );
+
+      setIsLoading(false);
+
+      const { status, transactionHash } = response;
+
+      if (status && transactionHash) {
+        setTransactionSuccess(status);
+        setTransactionSuccessHash(transactionHash);
+        show('apply-to-arbitration');
+      }
+    } catch (error) {
+      setIsLoading(false);
+    }
+  }, [arbitrationNetworkEnv, question.id, show]);
 
   useEffect(() => {
     async function getArbitrationFee() {
@@ -291,7 +297,7 @@ function ReportFormArbitration() {
                 <ButtonLoading
                   color="primary"
                   loading={isLoading}
-                  onClick={handleApplyToArbitration}
+                  onClick={handleApplyForArbitration}
                 >
                   Apply for Arbitration
                 </ButtonLoading>

@@ -796,4 +796,18 @@ export default class PolkamarketsService {
 
     return response;
   }
+
+  public async requestArbitration(
+    questionId: string,
+    maxPrevious: number
+  ): Promise<any> {
+    await this.login();
+
+    const response = await this.contracts.arbitration.requestArbitration({
+      questionId,
+      maxPrevious
+    });
+
+    return response;
+  }
 }
