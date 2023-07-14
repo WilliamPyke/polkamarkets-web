@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import environment from 'config/environment';
 import { useField, useFormikContext } from 'formik';
 import { roundNumber } from 'helpers/math';
 import has from 'lodash/has';
@@ -69,17 +70,23 @@ function ReportFormActions({
 
   const marketSlug = useAppSelector(state => state.market.market.slug);
 
-  const { id, questionId, networkId } = useAppSelector(
-    state => state.market.market
-  );
+  const {
+    id,
+    questionId,
+    networkId,
+    network: marketNetwork
+  } = useAppSelector(state => state.market.market);
   const { bestAnswer } = useAppSelector(state => state.market.market.question);
   const questionBond = useAppSelector(
     state => state.market.market.question.bond
   );
 
   // Derivated state
+  const marketNetworkEnv = environment.NETWORKS[marketNetwork.id];
+  const arbitrationNetworkId = marketNetworkEnv?.ARBITRATION_NETWORK_ID;
   const isMarketPage = location.pathname === `/markets/${marketSlug}`;
   const isWrongNetwork = network.id !== `${networkId}`;
+  const isArbitrationNetwork = network.id === arbitrationNetworkId;
   const resolvedOutcomeId = PolkamarketsService.bytes32ToInt(bestAnswer);
 
   const isWinningOutcome = outcomeId =>
@@ -169,6 +176,7 @@ function ReportFormActions({
       {isWrongNetwork ? (
         <div className="pm-c-report-form-details__actions-group--column">
           <NetworkSwitch />
+          {isArbitrationNetwork ? <ReportFormArbitration /> : null}
         </div>
       ) : (
         <div className="pm-c-report-form-details__actions-group--column">
