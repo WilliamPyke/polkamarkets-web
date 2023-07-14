@@ -594,6 +594,8 @@ export default class PolkamarketsService {
     questionId: string,
     user: string | null = null
   ) {
+    if (!this.contracts.realitio.getContract()._address) return {};
+
     const bonds = await this.contracts.realitio.getQuestionBondsByAnswer({
       questionId,
       user
@@ -655,7 +657,8 @@ export default class PolkamarketsService {
   public async getBondActions(): Promise<Object> {
     // ensuring user has wallet connected
     await this.login();
-    if (!this.address) return [];
+    if (!this.address || !this.contracts.realitio.getContract()._address)
+      return [];
 
     const response = await this.contracts.realitio.getMyActions();
 
@@ -665,6 +668,8 @@ export default class PolkamarketsService {
   public async getBondMarketIds(): Promise<string[]> {
     // ensuring user has wallet connected
     if (!this.address) return [];
+
+    if (!this.contracts.realitio.getContract()._address) return [];
 
     const questions = await this.contracts.realitio.getMyQuestions();
 
