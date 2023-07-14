@@ -27,6 +27,8 @@ export default class PolkamarketsService {
 
   public votingContractAddress: string | undefined;
 
+  public arbitrationContractAddress: string | undefined;
+
   // util functions
   static bytes32ToInt(bytes32Str: string): number {
     return Number(realitioLib.bytes32ToString(bytes32Str, { type: 'int' }));
@@ -43,6 +45,7 @@ export default class PolkamarketsService {
       REALITIO_ERC20_CONTRACT_ADDRESS,
       ACHIEVEMENTS_CONTRACT_ADDRESS,
       VOTING_CONTRACT_ADDRESS,
+      ARBITRATION_CONTRACT_ADDRESS,
       WEB3_PROVIDER,
       WEB3_EVENTS_PROVIDER
     }: NetworkConfig = environment.NETWORKS[environment.NETWORK_ID || 42]
@@ -52,6 +55,7 @@ export default class PolkamarketsService {
     this.realitioErc20ContractAddress = REALITIO_ERC20_CONTRACT_ADDRESS;
     this.achievementsContractAddress = ACHIEVEMENTS_CONTRACT_ADDRESS;
     this.votingContractAddress = VOTING_CONTRACT_ADDRESS;
+    this.arbitrationContractAddress = ARBITRATION_CONTRACT_ADDRESS;
 
     this.polkamarkets = new polkamarketsjs.Application({
       web3Provider: WEB3_PROVIDER,
@@ -69,6 +73,7 @@ export default class PolkamarketsService {
     this.getERC20Contract();
     this.getAchievementsContract();
     this.getVotingContract();
+    this.getArbitrationContract();
   }
 
   public getPredictionMarketContract() {
@@ -98,6 +103,12 @@ export default class PolkamarketsService {
   public getVotingContract() {
     this.contracts.voting = this.polkamarkets.getVotingContract({
       contractAddress: this.votingContractAddress
+    });
+  }
+
+  public getArbitrationContract() {
+    this.contracts.arbitration = this.polkamarkets.getArbitrationContract({
+      contractAddress: this.arbitrationContractAddress
     });
   }
 
@@ -767,6 +778,16 @@ export default class PolkamarketsService {
     if (!this.address) return false;
 
     const response = await this.contracts.voting.removeDownvoteItem({ itemId });
+
+    return response;
+  }
+
+  // Arbitration contract functions
+
+  public async getDisputeFee(questionId: string): Promise<number> {
+    const response = await this.contracts.arbitration.getDisputeFee({
+      questionId
+    });
 
     return response;
   }

@@ -60,6 +60,7 @@ function ReportFormArbitration() {
   const [transactionSuccessHash, setTransactionSuccessHash] = useState<
     string | undefined
   >(undefined);
+  const [arbitrationFee, setArbitrationFee] = useState<number>(0);
 
   // Handlers
   const handleOpenModal = useCallback(() => {
@@ -130,15 +131,31 @@ function ReportFormArbitration() {
 
   const isWrongNetwork = network.id !== arbitrationNetworkId;
 
+  useEffect(() => {
+    async function getArbitrationFee() {
+      if (arbitrationNetworkEnv) {
+        const polkamarketsService = new PolkamarketsService(
+          arbitrationNetworkEnv
+        );
+        const fee = await polkamarketsService.getDisputeFee(question.id);
+
+        setArbitrationFee(fee);
+      }
+    }
+
+    getArbitrationFee();
+  }, [arbitrationNetworkEnv, question.id]);
+
   const arbitrationDetails = useMemo(() => {
     return formatArbitrationDetails({
       balance: ethBalance,
-      cost: 0.3,
+      cost: arbitrationFee,
       ticker: arbitrationNetworkDetails?.currency.ticker || 'ETH',
       imageUrl: winningOutcome?.imageUrl,
       title: winningOutcome?.title
     });
   }, [
+    arbitrationFee,
     arbitrationNetworkDetails?.currency.ticker,
     ethBalance,
     winningOutcome?.imageUrl,
