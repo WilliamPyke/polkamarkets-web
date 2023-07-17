@@ -29,6 +29,8 @@ export default class PolkamarketsService {
 
   public arbitrationContractAddress: string | undefined;
 
+  public arbitrationProxyContractAddress: string | undefined;
+
   // util functions
   static bytes32ToInt(bytes32Str: string): number {
     return Number(realitioLib.bytes32ToString(bytes32Str, { type: 'int' }));
@@ -46,6 +48,7 @@ export default class PolkamarketsService {
       ACHIEVEMENTS_CONTRACT_ADDRESS,
       VOTING_CONTRACT_ADDRESS,
       ARBITRATION_CONTRACT_ADDRESS,
+      ARBITRATION_PROXY_CONTRACT_ADDRESS,
       WEB3_PROVIDER,
       WEB3_EVENTS_PROVIDER
     }: NetworkConfig = environment.NETWORKS[environment.NETWORK_ID || 42]
@@ -56,6 +59,7 @@ export default class PolkamarketsService {
     this.achievementsContractAddress = ACHIEVEMENTS_CONTRACT_ADDRESS;
     this.votingContractAddress = VOTING_CONTRACT_ADDRESS;
     this.arbitrationContractAddress = ARBITRATION_CONTRACT_ADDRESS;
+    this.arbitrationProxyContractAddress = ARBITRATION_PROXY_CONTRACT_ADDRESS;
 
     this.polkamarkets = new polkamarketsjs.Application({
       web3Provider: WEB3_PROVIDER,
@@ -199,7 +203,7 @@ export default class PolkamarketsService {
       outcomes,
       category,
       value,
-      oracleAddress: this.address,
+      oracleAddress: this.arbitrationProxyContractAddress || this.address,
       odds,
       fee: (fee * 1e16).toString(),
       treasuryFee: (treasuryFee * 1e16).toString(),
