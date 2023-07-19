@@ -18,6 +18,7 @@ import useToastNotification from 'hooks/useToastNotification';
 import { AlertMini } from '../Alert';
 import { Button, ButtonLoading } from '../Button';
 import Icon from '../Icon';
+import Link from '../Link';
 import MiniTable from '../MiniTable';
 import Modal from '../Modal';
 import ModalContent from '../ModalContent';
@@ -61,6 +62,14 @@ function ReportFormArbitration() {
     string | undefined
   >(undefined);
   const [arbitrationFee, setArbitrationFee] = useState<number>(0);
+  const [underArbitration, setUnderArbitration] = useState<boolean>(false);
+  const [disputeId, setDisputeId] = useState<number | undefined>(undefined);
+  const [arbitrationRejected, setArbitrationRejected] =
+    useState<boolean>(false);
+
+  if (isPendingArbitration && !underArbitration) {
+    setUnderArbitration(true);
+  }
 
   // Handlers
   const handleOpenModal = useCallback(() => {
@@ -89,6 +98,12 @@ function ReportFormArbitration() {
   }, [outcomes, winningOutcomeId]);
 
   const marketNetworkEnv = environment.NETWORKS[marketNetwork.id];
+  const marketNetworkArbitrationAddress =
+    marketNetworkEnv?.ARBITRATION_PROXY_CONTRACT_ADDRESS;
+
+  // arbitration is not defined for market's network
+  // if (!marketNetworkArbitrationAddress) return null;
+
   const arbitrationNetworkId = marketNetworkEnv?.ARBITRATION_NETWORK_ID;
   const arbitrationNetworkDetails = Object.values(networks).find(
     ({ id }) => id === arbitrationNetworkId
@@ -105,8 +120,7 @@ function ReportFormArbitration() {
     !isFinalized &&
     isValidTimestamp &&
     !isPendingArbitration &&
-    arbitrator.toLowerCase() ===
-      arbitrationNetworkEnv?.ARBITRATION_CONTRACT_ADDRESS?.toLowerCase();
+    arbitrator.toLowerCase() === marketNetworkArbitrationAddress?.toLowerCase();
 
   const isWrongNetwork = network.id !== arbitrationNetworkId;
 
@@ -135,22 +149,34 @@ function ReportFormArbitration() {
     } catch (error) {
       setIsLoading(false);
     }
-  }, [arbitrationNetworkEnv, question.id, show]);
+  }, [arbitrationNetworkEnv, question.bond, question.id, show]);
 
   useEffect(() => {
-    async function getArbitrationFee() {
+    async function getArbitrationData() {
       if (arbitrationNetworkEnv) {
         const polkamarketsService = new PolkamarketsService(
           arbitrationNetworkEnv
         );
         const fee = await polkamarketsService.getDisputeFee(question.id);
 
+        const arbitrationRequests =
+          await polkamarketsService.getArbitrationRequests(question.id);
+
+        const disputeResponse =
+          await polkamarketsService.getArbitrationDisputeId(question.id);
+
+        if (disputeResponse) setDisputeId(disputeResponse);
+        // TODO: check for requests rejected before setting underArbitration
+        if (arbitrationRequests.length > 0) {
+          setUnderArbitration(true);
+        }
+
         setArbitrationFee(fee);
       }
     }
 
-    getArbitrationFee();
-  }, [arbitrationNetworkEnv, question.id]);
+    getArbitrationData();
+  }, [arbitrationNetworkEnv, question.id, transactionSuccess]);
 
   const arbitrationDetails = useMemo(() => {
     return formatArbitrationDetails({
@@ -187,14 +213,35 @@ function ReportFormArbitration() {
     [history, location.pathname, query]
   );
 
-  if (!arbitrationNetworkId || !arbitrationNetworkDetails) {
+  if (
+    !marketNetworkArbitrationAddress ||
+    !arbitrationNetworkId ||
+    !arbitrationNetworkEnv
+  ) {
     return null;
   }
 
-  if (isPendingArbitration) {
-    return (
-      <AlertMini variant="warning" description="Market is under arbitration" />
+  if (!underArbitration) {
+    const description = disputeId ? (
+      <>
+        Market is under arbitration. You can follow its development on the{' '}
+        <Link
+          target="_blank"
+          href={`https://court.kleros.io/cases/${disputeId}`}
+          rel="noreferrer"
+          variant="warning"
+          scale="tiny"
+          fontWeight="semibold"
+          title="Kleros Court"
+        />
+        . Ensure you are connected to the {arbitrationNetworkDetails?.name}{' '}
+        network.
+      </>
+    ) : (
+      'Market is under arbitration. More information will be available soon.'
     );
+
+    return <AlertMini variant="warning" description={description} />;
   }
 
   // TEMP: visible is reverted for testing purposes, will switch back once production ready

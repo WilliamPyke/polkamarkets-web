@@ -78,6 +78,7 @@ export default class PolkamarketsService {
     this.getAchievementsContract();
     this.getVotingContract();
     this.getArbitrationContract();
+    this.getArbitrationProxyContract();
   }
 
   public getPredictionMarketContract() {
@@ -114,6 +115,13 @@ export default class PolkamarketsService {
     this.contracts.arbitration = this.polkamarkets.getArbitrationContract({
       contractAddress: this.arbitrationContractAddress
     });
+  }
+
+  public getArbitrationProxyContract() {
+    this.contracts.arbitrationProxy =
+      this.polkamarkets.getArbitrationProxyContract({
+        contractAddress: this.arbitrationProxyContractAddress
+      });
   }
 
   // returns wether wallet is connected to service or not
@@ -810,6 +818,24 @@ export default class PolkamarketsService {
     const response = await this.contracts.arbitration.requestArbitration({
       questionId,
       maxPrevious
+    });
+
+    return response;
+  }
+
+  public async getArbitrationRequests(questionId: string): Promise<any> {
+    const response = await this.contracts.arbitration.getArbitrationRequests({
+      questionId
+    });
+
+    return response;
+  }
+
+  public async getArbitrationDisputeId(
+    questionId: string
+  ): Promise<number | null> {
+    const response = await this.contracts.arbitration.getArbitrationDisputeId({
+      questionId
     });
 
     return response;
