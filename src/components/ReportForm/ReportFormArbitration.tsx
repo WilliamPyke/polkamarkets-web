@@ -50,7 +50,9 @@ function ReportFormArbitration() {
   const { bond, finalizeTs, arbitrator, isPendingArbitration, isFinalized } =
     question;
 
-  const ethBalance = useAppSelector(state => state.polkamarkets.ethBalance);
+  const { ethAddress, ethBalance } = useAppSelector(
+    state => state.polkamarkets
+  );
 
   // Local state
   const [modalVisible, setModalVisible] = useState(false);
@@ -154,21 +156,40 @@ function ReportFormArbitration() {
   useEffect(() => {
     async function getArbitrationData() {
       if (arbitrationNetworkEnv) {
-        const polkamarketsService = new PolkamarketsService(
+        const anPolkamarketsService = new PolkamarketsService(
           arbitrationNetworkEnv
         );
-        const fee = await polkamarketsService.getDisputeFee(question.id);
+        const fee = await anPolkamarketsService.getDisputeFee(question.id);
 
         const arbitrationRequests =
-          await polkamarketsService.getArbitrationRequests(question.id);
+          await anPolkamarketsService.getArbitrationRequests(question.id);
 
         const disputeResponse =
-          await polkamarketsService.getArbitrationDisputeId(question.id);
+          await anPolkamarketsService.getArbitrationDisputeId(question.id);
 
         if (disputeResponse) setDisputeId(disputeResponse);
-        // TODO: check for requests rejected before setting underArbitration
-        if (arbitrationRequests.length > 0) {
+
+        const mnPolkamarketsService = new PolkamarketsService(marketNetworkEnv);
+
+        const requestsRejected =
+          await mnPolkamarketsService.getArbitrationRequestsRejected(
+            question.id
+          );
+
+        if (arbitrationRequests.length > requestsRejected.length) {
           setUnderArbitration(true);
+        }
+
+        // checking if there's any rejected requests made by the user
+        if (requestsRejected.length > 0 && ethAddress) {
+          const userRejected = requestsRejected.find(
+            ({ requester }) =>
+              requester.toLowerCase() === ethAddress.toLowerCase()
+          );
+
+          if (userRejected) {
+            setArbitrationRejected(true);
+          }
         }
 
         setArbitrationFee(fee);
@@ -176,7 +197,13 @@ function ReportFormArbitration() {
     }
 
     getArbitrationData();
-  }, [arbitrationNetworkEnv, question.id, transactionSuccess]);
+  }, [
+    arbitrationNetworkEnv,
+    ethAddress,
+    marketNetworkEnv,
+    question.id,
+    transactionSuccess
+  ]);
 
   const arbitrationDetails = useMemo(() => {
     return formatArbitrationDetails({
@@ -378,6 +405,12 @@ function ReportFormArbitration() {
             </div>
           </ModalContent>
         </Modal>
+        {arbitrationRejected && (
+          <AlertMini
+            variant="error"
+            description="Your arbitration request was rejected. Your funds will be returned to your wallet shortly."
+          />
+        )}
       </>
     );
   }

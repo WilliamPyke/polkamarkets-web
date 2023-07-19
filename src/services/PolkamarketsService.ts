@@ -840,4 +840,15 @@ export default class PolkamarketsService {
 
     return response;
   }
+
+  public async getArbitrationRequestsRejected(
+    questionId: string
+  ): Promise<any> {
+    const response =
+      await this.contracts.arbitrationProxy.getArbitrationRequestsRejected({
+        questionId
+      });
+
+    return response;
+  }
 }
