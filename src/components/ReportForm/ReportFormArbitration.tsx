@@ -194,9 +194,8 @@ function ReportFormArbitration() {
     winningOutcome?.title
   ]);
 
-  // TEMP: visible is reverted for testing purposes, will switch back once production ready
   useEffect(() => {
-    if (!visible && query.get('a') === 't') {
+    if (visible && query.get('a') === 't') {
       handleOpenModal();
     }
   }, [handleOpenModal, query, visible]);
@@ -221,7 +220,7 @@ function ReportFormArbitration() {
     return null;
   }
 
-  if (!underArbitration) {
+  if (underArbitration) {
     const description = disputeId ? (
       <>
         Market is under arbitration. You can follow its development on the{' '}
@@ -244,8 +243,7 @@ function ReportFormArbitration() {
     return <AlertMini variant="warning" description={description} />;
   }
 
-  // TEMP: visible is reverted for testing purposes, will switch back once production ready
-  if (!visible) {
+  if (visible) {
     return (
       <>
         <Button variant="subtle" size="sm" fullwidth onClick={handleOpenModal}>

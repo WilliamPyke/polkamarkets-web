@@ -811,13 +811,13 @@ export default class PolkamarketsService {
 
   public async requestArbitration(
     questionId: string,
-    maxPrevious: number
+    bond: number
   ): Promise<any> {
     await this.login();
 
     const response = await this.contracts.arbitration.requestArbitration({
       questionId,
-      maxPrevious
+      bond
     });
 
     return response;
