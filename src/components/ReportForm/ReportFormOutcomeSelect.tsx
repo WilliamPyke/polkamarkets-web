@@ -52,19 +52,20 @@ function ReportFormOutcomeSelect() {
   const resolvedOutcomeId = PolkamarketsService.bytes32ToInt(
     market.question.bestAnswer
   );
+  const isFinalized =
+    market.question.isFinalized ||
+    market.question.isPendingArbitration ||
+    market.question.isPendingArbitrationRequest;
   const checkOutcomeState = useCallback(
     outcome => {
-      if (
-        market.question.isFinalized &&
-        `${resolvedOutcomeId}` === `${outcome.id}`
-      )
+      if (isFinalized && `${resolvedOutcomeId}` === `${outcome.id}`)
         return 'won';
-      if (market.question.isFinalized) return 'default';
+      if (isFinalized) return 'default';
       if (field.value && `${field.value}` === `${outcome.id}`)
         return 'selected';
       return 'default';
     },
-    [field.value, market.question.isFinalized, resolvedOutcomeId]
+    [field.value, isFinalized, resolvedOutcomeId]
   );
   const getOutcomeBond = useCallback(
     outcomeId => {
@@ -89,7 +90,7 @@ function ReportFormOutcomeSelect() {
           state={checkOutcomeState({ id: '-1' })}
           bond={getOutcomeBond(-1)}
           resolvedOutcomeId={resolvedOutcomeId}
-          marketQuestionFinalized={market.question.isFinalized}
+          marketQuestionFinalized={isFinalized}
           onSelect={handleOutcomeSelect}
           isStarted={isStarted}
         />
@@ -99,7 +100,7 @@ function ReportFormOutcomeSelect() {
       checkOutcomeState,
       getOutcomeBond,
       resolvedOutcomeId,
-      market.question.isFinalized,
+      isFinalized,
       handleOutcomeSelect,
       isStarted
     ]
@@ -128,7 +129,7 @@ function ReportFormOutcomeSelect() {
                 color={colorByOutcomeId(outcome.id)}
                 state={checkOutcomeState(outcome)}
                 resolvedOutcomeId={resolvedOutcomeId}
-                marketQuestionFinalized={market.question.isFinalized}
+                marketQuestionFinalized={isFinalized}
                 onSelect={handleOutcomeSelect}
                 isStarted={isStarted}
               />
@@ -155,7 +156,7 @@ function ReportFormOutcomeSelect() {
                   color={colorByOutcomeId(outcome.id)}
                   state={checkOutcomeState(outcome)}
                   resolvedOutcomeId={resolvedOutcomeId}
-                  marketQuestionFinalized={market.question.isFinalized}
+                  marketQuestionFinalized={isFinalized}
                   onSelect={handleOutcomeSelect}
                   isStarted={isStarted}
                 />
