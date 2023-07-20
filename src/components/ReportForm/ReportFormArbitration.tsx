@@ -47,8 +47,15 @@ function ReportFormArbitration() {
     network: marketNetwork
   } = useAppSelector(state => state.market.market);
 
-  const { bond, finalizeTs, arbitrator, isPendingArbitration, isFinalized } =
-    question;
+  const {
+    bond,
+    finalizeTs,
+    arbitrator,
+    isPendingArbitration,
+    isPendingArbitrationRequest,
+    isFinalized,
+    disputeId
+  } = question;
 
   const { ethAddress, ethBalance } = useAppSelector(
     state => state.polkamarkets
@@ -65,11 +72,13 @@ function ReportFormArbitration() {
   >(undefined);
   const [arbitrationFee, setArbitrationFee] = useState<number>(0);
   const [underArbitration, setUnderArbitration] = useState<boolean>(false);
-  const [disputeId, setDisputeId] = useState<number | undefined>(undefined);
   const [arbitrationRejected, setArbitrationRejected] =
     useState<boolean>(false);
 
-  if (isPendingArbitration && !underArbitration) {
+  if (
+    (isPendingArbitration || isPendingArbitrationRequest) &&
+    !underArbitration
+  ) {
     setUnderArbitration(true);
   }
 
@@ -147,6 +156,7 @@ function ReportFormArbitration() {
         setTransactionSuccess(status);
         setTransactionSuccessHash(transactionHash);
         show('apply-to-arbitration');
+        setUnderArbitration(true);
       }
     } catch (error) {
       setIsLoading(false);
@@ -160,14 +170,6 @@ function ReportFormArbitration() {
           arbitrationNetworkEnv
         );
         const fee = await anPolkamarketsService.getDisputeFee(question.id);
-
-        const arbitrationRequests =
-          await anPolkamarketsService.getArbitrationRequests(question.id);
-
-        const disputeResponse =
-          await anPolkamarketsService.getArbitrationDisputeId(question.id);
-
-        if (disputeResponse) setDisputeId(disputeResponse);
 
         const mnPolkamarketsService = new PolkamarketsService(marketNetworkEnv);
 
