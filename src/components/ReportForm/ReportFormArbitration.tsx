@@ -178,10 +178,6 @@ function ReportFormArbitration() {
             question.id
           );
 
-        if (arbitrationRequests.length > requestsRejected.length) {
-          setUnderArbitration(true);
-        }
-
         // checking if there's any rejected requests made by the user
         if (requestsRejected.length > 0 && ethAddress) {
           const userRejected = requestsRejected.find(
