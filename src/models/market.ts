@@ -38,6 +38,8 @@ export interface Question {
   isPendingArbitration: boolean;
   isClaimed: boolean;
   finalizeTs: number;
+  isPendingArbitrationRequest: boolean;
+  disputeId: number | null;
 }
 
 export type Votes = {
