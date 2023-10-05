@@ -60,7 +60,7 @@ const pages = {
     enabled: ui.clubs.enabled
   },
   tournament: {
-    pathname: '/tournaments/:slug',
+    pathname: `/tournaments/:slug${features.fantasy.enabled && '/leaderboard'}`,
     Component: Leaderboard,
     exact: false,
     navigation: false,
