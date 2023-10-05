@@ -5,3 +5,20 @@
 
   width: 100%;
 }
+
+.tabs {
+  &Header {
+    padding-left: var(--size-24);
+    padding-right: var(--size-24);
+  }
+
+  &Root {
+    gap: var(--size-24) !important;
+  }
+
+  &Item {
+    button {
+      color: #e6e6ff !important;
+    }
+  }
+}

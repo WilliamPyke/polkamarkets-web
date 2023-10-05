@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import isEmpty from 'lodash/isEmpty';
 import omit from 'lodash/omit';
@@ -7,7 +7,7 @@ import uniqBy from 'lodash/uniqBy';
 import { useGetTournamentsQuery } from 'services/Polkamarkets';
 import type { TournamentGroup as TournamentGroupType } from 'types/tournament';
 
-import { AlertMini } from 'components';
+import { AlertMini, Tabs } from 'components';
 
 import TournamentGroup from './TournamentGroup';
 import styles from './TournamentsList.module.scss';
@@ -16,6 +16,8 @@ function TournamentsList() {
   const { data: tournaments, isFetching, isLoading } = useGetTournamentsQuery();
   const isLoadingTournaments = isFetching || isLoading;
   const isEmptyTournaments = !tournaments || isEmpty(tournaments);
+
+  const [currentTab, setCurrentTab] = useState('all');
 
   const groups = useMemo(() => {
     if (isLoadingTournaments || isEmptyTournaments) return [];
@@ -61,13 +63,34 @@ function TournamentsList() {
     );
 
   return (
-    <ul className={styles.root}>
+    <Tabs
+      direction="row"
+      fullwidth
+      value={currentTab}
+      onChange={tab => setCurrentTab(tab)}
+      className={{
+        root: styles.tabsRoot,
+        header: styles.tabsHeader,
+        item: styles.tabsItem
+      }}
+    >
+      <Tabs.TabPane id="all" tab="All">
+        <ul className={styles.root}>
+          {groups.map(group => (
+            <li key={group.id}>
+              <TournamentGroup group={group} />
+            </li>
+          ))}
+        </ul>
+      </Tabs.TabPane>
       {groups.map(group => (
-        <li key={group.id}>
-          <TournamentGroup group={group} />
-        </li>
+        <Tabs.TabPane key={group.id} id={group.id.toString()} tab={group.title}>
+          <ul className={styles.root}>
+            <TournamentGroup group={group} />
+          </ul>
+        </Tabs.TabPane>
       ))}
-    </ul>
+    </Tabs>
   );
 }
 
