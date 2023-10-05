@@ -137,6 +137,12 @@ app.get('/', (request, response) => {
       return response.status(404).end();
     }
 
+    if (isFantasyEnabled && isTournamentsEnabled) {
+      return response.send(
+        metadataByPageTemplate('tournaments', request, htmlData)
+      );
+    }
+
     return response.send(defaultMetadataTemplate(request, htmlData));
   });
 });
