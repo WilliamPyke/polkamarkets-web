@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
+import { features } from 'config';
 import isEmpty from 'lodash/isEmpty';
 import { useGetTournamentsQuery } from 'services/Polkamarkets';
 
@@ -33,7 +34,9 @@ function TournamentsList() {
       {tournaments?.map((tournament, index) => (
         <li key={tournament.slug}>
           <Link
-            to={`/tournaments/${tournament.slug}`}
+            to={`/tournaments/${tournament.slug}${
+              features.fantasy.enabled && '/leaderboard'
+            }`}
             className={cn(styles.item, {
               'bg-3': index % 2 === 0
             })}
