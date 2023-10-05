@@ -1,25 +1,56 @@
-import { Link } from 'react-router-dom';
+import { useMemo } from 'react';
 
-import cn from 'classnames';
-import { features } from 'config';
 import isEmpty from 'lodash/isEmpty';
+import omit from 'lodash/omit';
+import orderBy from 'lodash/orderBy';
+import uniqBy from 'lodash/uniqBy';
 import { useGetTournamentsQuery } from 'services/Polkamarkets';
+import type { TournamentGroup as TournamentGroupType } from 'types/tournament';
 
 import { AlertMini } from 'components';
 
+import TournamentGroup from './TournamentGroup';
 import styles from './TournamentsList.module.scss';
 
 function TournamentsList() {
   const { data: tournaments, isFetching, isLoading } = useGetTournamentsQuery();
+  const isLoadingTournaments = isFetching || isLoading;
+  const isEmptyTournaments = !tournaments || isEmpty(tournaments);
 
-  if (isFetching || isLoading)
+  const groups = useMemo(() => {
+    if (isLoadingTournaments || isEmptyTournaments) return [];
+
+    return orderBy(
+      uniqBy(
+        tournaments
+          .map(tournament => tournament.group)
+          .filter(group => group !== null) as TournamentGroupType[],
+        'id'
+      ).map(group => {
+        const tournamentsInGroup = orderBy(
+          tournaments
+            .filter(tournament => tournament.group?.id === group.id)
+            .map(tournament => omit(tournament, 'group')),
+          'id'
+        );
+
+        return {
+          ...group,
+          tournaments: tournamentsInGroup
+        };
+      }),
+      'position'
+    );
+  }, [isEmptyTournaments, isLoadingTournaments, tournaments]);
+
+  if (isLoadingTournaments)
     return (
       <div className="flex-row justify-center align-center width-full padding-y-5 padding-x-4">
         <span className="spinner--primary" />
       </div>
     );
 
-  if (isEmpty(tournaments))
+  if (isEmpty(groups))
     return (
       <AlertMini
         style={{ border: 'none' }}
@@ -30,39 +61,10 @@ function TournamentsList() {
     );
 
   return (
-    <ul className="flex-column">
-      {tournaments?.map((tournament, index) => (
-        <li key={tournament.slug}>
-          <Link
-            to={`/tournaments/${tournament.slug}${
-              features.fantasy.enabled && '/leaderboard'
-            }`}
-            className={cn(styles.item, {
-              'bg-3': index % 2 === 0
-            })}
-          >
-            <div className={styles.itemAvatar}>
-              {tournament.imageUrl ? (
-                <img
-                  src={tournament.imageUrl}
-                  alt="Tournament Avatar"
-                  className={styles.itemAmage}
-                />
-              ) : (
-                <p className={cn('body text-3 bold', styles.itemInitials)}>
-                  {tournament.title.match(/\w/)}
-                </p>
-              )}
-            </div>
-            <div>
-              <span className="body semibold text-2 text-1-on-hover">
-                {tournament.title}
-              </span>
-              <p className={cn(styles.itemDescription, 'tiny semibold text-3')}>
-                {tournament.description}
-              </p>
-            </div>
-          </Link>
+    <ul className={styles.root}>
+      {groups.map(group => (
+        <li key={group.id}>
+          <TournamentGroup group={group} />
         </li>
       ))}
     </ul>
