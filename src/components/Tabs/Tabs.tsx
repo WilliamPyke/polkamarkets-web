@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, useContext, useMemo, ReactNode, Children } from 'react';
 
 import classNames from 'classnames';
@@ -56,6 +55,12 @@ type TabsProps = {
   value: string;
   onChange: (_value: string) => void;
   filters?: ReactNode[];
+  className?: Partial<
+    Record<
+      'root' | 'header' | 'list' | 'item' | 'itemActive' | 'content',
+      string
+    >
+  >;
   children?: ReactNode;
 };
 
@@ -66,6 +71,7 @@ function Tabs({
   direction = 'row',
   filters,
   fullwidth,
+  className,
   children,
   value,
   onChange
@@ -76,15 +82,30 @@ function Tabs({
   if (!tabsIds.includes(value) || !children) return null;
 
   return (
-    <div className={classNames({ 'pm-c-tabs': true, 'width-full': fullwidth })}>
-      <div className="pm-c-tabs__header">
-        <ul className={`pm-c-tabs__list--${direction}`}>
+    <div
+      className={classNames(
+        { 'pm-c-tabs': true, 'width-full': fullwidth },
+        className?.root
+      )}
+    >
+      <div className={classNames('pm-c-tabs__header', className?.header)}>
+        <ul
+          className={classNames(
+            `pm-c-tabs__list--${direction}`,
+            className?.list
+          )}
+        >
           {tabs?.map(tab => (
             <li
               key={tab.id}
-              className={classNames('pm-c-tabs__item', {
-                active: value === tab.id
-              })}
+              className={classNames(
+                'pm-c-tabs__item',
+                {
+                  active: value === tab.id
+                },
+                value !== tab.id && className?.item,
+                value === tab.id && className?.itemActive
+              )}
             >
               <button
                 type="button"
@@ -110,7 +131,9 @@ function Tabs({
       </div>
 
       <ActiveTabContext.Provider value={value}>
-        <div className="pm-c-tabs__content">{children}</div>
+        <div className={classNames('pm-c-tabs__content', className?.content)}>
+          {children}
+        </div>
       </ActiveTabContext.Provider>
     </div>
   );
