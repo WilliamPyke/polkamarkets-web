@@ -113,15 +113,22 @@ function Virtuoso({ data }: VirtuosoProps) {
 
 type MarketListProps = {
   filtersVisible: boolean;
+  fetchByIds?: {
+    ids: string[];
+    networkId: number;
+  };
 };
 
-export default function MarketList({ filtersVisible }: MarketListProps) {
-  const markets = useMarkets();
+export default function MarketList({
+  filtersVisible,
+  fetchByIds
+}: MarketListProps) {
+  const markets = useMarkets(fetchByIds);
 
   useEffect(() => {
     markets.fetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchByIds?.ids]);
 
   return (
     <div
