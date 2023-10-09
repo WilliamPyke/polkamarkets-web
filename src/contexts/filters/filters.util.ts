@@ -1,4 +1,4 @@
-import { environment, features, ui } from 'config';
+import { environment, features, ui, pages } from 'config';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { camelize } from 'humps';
@@ -203,6 +203,10 @@ function addTournaments(tournaments: GetTournamentsData | undefined): Filters {
           : ''
       }`
     })) || [];
+
+  if (features.fantasy.enabled && pages.tournaments.enabled) {
+    return set(filters, 'dropdowns.tournaments.enabled', false);
+  }
 
   // disabling tournaments view if there are no tournaments from query
   if (tournaments?.length === 0) {
