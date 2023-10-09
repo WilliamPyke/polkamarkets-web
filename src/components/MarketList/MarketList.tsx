@@ -123,12 +123,15 @@ export default function MarketList({
   filtersVisible,
   fetchByIds
 }: MarketListProps) {
-  const markets = useMarkets(fetchByIds);
+  const { data, fetch, state } = useMarkets(fetchByIds);
+
+  const fetchMarkets = useCallback(async () => {
+    await fetch();
+  }, [fetch]);
 
   useEffect(() => {
-    markets.fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchByIds?.ids]);
+    fetchMarkets();
+  }, [fetchMarkets]);
 
   return (
     <div
@@ -159,7 +162,7 @@ export default function MarketList({
                 </Text>
               </div>
               <div className="pm-c-market-list__error__actions">
-                <Button color="primary" size="sm" onClick={markets.fetch}>
+                <Button color="primary" size="sm" onClick={fetchMarkets}>
                   Try again
                 </Button>
               </div>
@@ -180,8 +183,8 @@ export default function MarketList({
               </div>
             </div>
           ),
-          success: <Virtuoso data={markets.data} />
-        }[markets.state]
+          success: <Virtuoso data={data} />
+        }[state]
       }
     </div>
   );
