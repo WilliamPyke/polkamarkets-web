@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { camelize } from 'humps';
 import {
@@ -18,18 +18,17 @@ export default function useMarkets(fetchByIds?: {
   networkId: number;
 }) {
   const dispatch = useAppDispatch();
-  const favoriteMarkets = useFavoriteMarkets();
+  const { favoriteMarkets } = useFavoriteMarkets();
   const { state: filtersState } = useFilters();
   const rawMarkets = useAppSelector(state => state.markets);
-  const isLoading = useAppSelector(state => state.markets.isLoading);
-  const error = useAppSelector(state => state.markets.error);
+  const { isLoading, error } = rawMarkets;
 
   const markets = marketsSelector({
     state: rawMarkets,
     filters: {
       favorites: {
         checked: filtersState.toggles.favorites,
-        marketsByNetwork: favoriteMarkets.favoriteMarkets
+        marketsByNetwork: favoriteMarkets
       },
       states: filtersState.dropdowns.states as string[],
       networks: filtersState.dropdowns.networks as string[],
@@ -46,29 +45,33 @@ export default function useMarkets(fetchByIds?: {
     }
   });
 
+  const fetch = useCallback(async () => {
+    if (fetchByIds) {
+      dispatch(getMarketsByIds(fetchByIds.ids, fetchByIds.networkId));
+    } else {
+      dispatch(getMarkets('open'));
+      dispatch(getMarkets('closed'));
+      dispatch(getMarkets('resolved'));
+      dispatch(getFavoriteMarkets(favoriteMarkets));
+    }
+  }, [dispatch, favoriteMarkets, fetchByIds]);
+
+  const state = useMemo(() => {
+    if (Object.values(isLoading).some(Boolean)) return 'loading';
+    if (
+      Object.values(error).some(
+        value => value !== null && value.message !== 'canceled'
+      )
+    )
+      return 'error';
+    if (!markets.length) return 'warning';
+    return 'success';
+  }, [error, isLoading, markets.length]);
+
   return {
     data: markets,
-    fetch: useCallback(async () => {
-      if (fetchByIds) {
-        dispatch(getMarketsByIds(fetchByIds.ids, fetchByIds.networkId));
-      } else {
-        dispatch(getMarkets('open'));
-        dispatch(getMarkets('closed'));
-        dispatch(getMarkets('resolved'));
-        dispatch(getFavoriteMarkets(favoriteMarkets.favoriteMarkets));
-      }
-    }, [dispatch, favoriteMarkets.favoriteMarkets, fetchByIds]),
-    state: (() => {
-      if (Object.values(isLoading).some(Boolean)) return 'loading';
-      if (
-        Object.values(error).some(
-          value => value !== null && value.message !== 'canceled'
-        )
-      )
-        return 'error';
-      if (!markets.length) return 'warning';
-      return 'success';
-    })()
+    fetch,
+    state
   } as const;
 }
 
