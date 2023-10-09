@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import cn from 'classnames';
 import { ui } from 'config';
 import { useGetTournamentBySlugQuery } from 'services/Polkamarkets';
 import { Container, useRect, useTheme } from 'ui';
@@ -15,9 +16,10 @@ import TournamentHero from './TournamentHero';
 import TournamentNav from './TournamentNav';
 
 export default function Tournament() {
-  const { slug } = useParams<{ slug: string }>();
-  const { network } = useNetwork();
   const theme = useTheme();
+  const { network } = useNetwork();
+  const { slug } = useParams<{ slug: string }>();
+
   const [ref, rect] = useRect();
   const [show, setShow] = useState(false);
 
@@ -42,7 +44,19 @@ export default function Tournament() {
       </Container>
       <div className={styles.root}>
         <HomeFilter onFilterHide={handleHide} rect={rect} show={show} />
-        {!isLoadingTournament && (
+        {isLoadingTournament ? (
+          <div
+            className={cn('pm-c-market-list', {
+              'pm-c-market-list--filters-visible': show
+            })}
+          >
+            <div className="pm-c-market-list__empty-state">
+              <div className="pm-c-market-list__empty-state__body">
+                <span className="spinner--primary" />
+              </div>
+            </div>
+          </div>
+        ) : (
           <MarketList
             filtersVisible={show}
             fetchByIds={{
