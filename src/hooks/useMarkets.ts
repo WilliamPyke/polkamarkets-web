@@ -4,6 +4,7 @@ import { camelize } from 'humps';
 import {
   getFavoriteMarkets,
   getMarkets,
+  getMarketsByIds,
   marketsSelector
 } from 'redux/ducks/markets';
 
@@ -12,7 +13,10 @@ import useAppSelector from './useAppSelector';
 import useFavoriteMarkets from './useFavoriteMarkets';
 import useFilters from './useFilters';
 
-export default function useMarkets() {
+export default function useMarkets(fetchByIds?: {
+  ids: string[];
+  networkId: number;
+}) {
   const dispatch = useAppDispatch();
   const favoriteMarkets = useFavoriteMarkets();
   const { state: filtersState } = useFilters();
@@ -45,11 +49,15 @@ export default function useMarkets() {
   return {
     data: markets,
     fetch: useCallback(async () => {
-      dispatch(getMarkets('open'));
-      dispatch(getMarkets('closed'));
-      dispatch(getMarkets('resolved'));
-      dispatch(getFavoriteMarkets(favoriteMarkets.favoriteMarkets));
-    }, [dispatch, favoriteMarkets.favoriteMarkets]),
+      if (fetchByIds) {
+        dispatch(getMarketsByIds(fetchByIds.ids, fetchByIds.networkId));
+      } else {
+        dispatch(getMarkets('open'));
+        dispatch(getMarkets('closed'));
+        dispatch(getMarkets('resolved'));
+        dispatch(getFavoriteMarkets(favoriteMarkets.favoriteMarkets));
+      }
+    }, [dispatch, favoriteMarkets.favoriteMarkets, fetchByIds]),
     state: (() => {
       if (Object.values(isLoading).some(Boolean)) return 'loading';
       if (
