@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -26,13 +26,20 @@ export default function Tournament() {
   const { data, isLoading, isFetching } = useGetTournamentBySlugQuery({ slug });
   const isLoadingTournament = isLoading || isFetching;
 
-  const marketsIds =
-    data && data.markets ? data.markets.map(market => market.id) : [];
+  const marketsIds = useMemo(
+    () => (data && data.markets ? data.markets.map(market => market.id) : []),
+    [data]
+  );
   const networkId = data ? data.networkId : network.id;
 
   const handleShow = useCallback(() => setShow(true), []);
   const handleHide = useCallback(() => setShow(false), []);
   const handleToggle = useCallback(() => setShow(prevShow => !prevShow), []);
+
+  const fetchByIds = useMemo(
+    () => ({ ids: marketsIds, networkId: parseInt(`${networkId}`, 10) }),
+    [marketsIds, networkId]
+  );
 
   return (
     <div className="max-width-screen-xl">
@@ -57,13 +64,7 @@ export default function Tournament() {
             </div>
           </div>
         ) : (
-          <MarketList
-            filtersVisible={show}
-            fetchByIds={{
-              ids: marketsIds,
-              networkId: parseInt(`${networkId}`, 10)
-            }}
-          />
+          <MarketList filtersVisible={show} fetchByIds={fetchByIds} />
         )}
       </div>
     </div>
