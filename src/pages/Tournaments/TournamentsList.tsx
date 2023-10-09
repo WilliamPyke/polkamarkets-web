@@ -1,26 +1,58 @@
-import { Link } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 
-import cn from 'classnames';
-import { isNull } from 'lodash';
 import isEmpty from 'lodash/isEmpty';
+import omit from 'lodash/omit';
+import orderBy from 'lodash/orderBy';
+import uniqBy from 'lodash/uniqBy';
 import { useGetTournamentsQuery } from 'services/Polkamarkets';
-import { Avatar } from 'ui';
+import type { TournamentGroup as TournamentGroupType } from 'types/tournament';
 
-import { AlertMini } from 'components';
+import { AlertMini, Tabs } from 'components';
 
+import TournamentGroup from './TournamentGroup';
 import styles from './TournamentsList.module.scss';
 
 function TournamentsList() {
   const { data: tournaments, isFetching, isLoading } = useGetTournamentsQuery();
+  const isLoadingTournaments = isFetching || isLoading;
+  const isEmptyTournaments = !tournaments || isEmpty(tournaments);
 
-  if (isFetching || isLoading)
+  const [currentTab, setCurrentTab] = useState('all');
+
+  const groups = useMemo(() => {
+    if (isLoadingTournaments || isEmptyTournaments) return [];
+
+    return orderBy(
+      uniqBy(
+        tournaments
+          .map(tournament => tournament.group)
+          .filter(group => group !== null) as TournamentGroupType[],
+        'id'
+      ).map(group => {
+        const tournamentsInGroup = orderBy(
+          tournaments
+            .filter(tournament => tournament.group?.id === group.id)
+            .map(tournament => omit(tournament, 'group')),
+          'id'
+        );
+
+        return {
+          ...group,
+          tournaments: tournamentsInGroup
+        };
+      }),
+      'position'
+    );
+  }, [isEmptyTournaments, isLoadingTournaments, tournaments]);
+
+  if (isLoadingTournaments)
     return (
       <div className="flex-row justify-center align-center width-full padding-y-5 padding-x-4">
         <span className="spinner--primary" />
       </div>
     );
 
-  if (isEmpty(tournaments))
+  if (isEmpty(groups))
     return (
       <AlertMini
         style={{ border: 'none' }}
@@ -31,35 +63,34 @@ function TournamentsList() {
     );
 
   return (
-    <ul className="flex-column">
-      {tournaments?.map((tournament, index) => (
-        <li key={tournament.slug}>
-          <Link
-            to={`/tournaments/${tournament.slug}`}
-            className={cn(styles.item, {
-              'bg-3': index % 2 === 0
-            })}
-          >
-            {!isNull(tournament.imageUrl) && (
-              <Avatar
-                src={tournament.imageUrl}
-                alt={tournament.title}
-                $size="xs"
-                $radius="xs"
-              />
-            )}
-            <div>
-              <span className="body semibold text-2 text-1-on-hover">
-                {tournament.title}
-              </span>
-              <p className={cn(styles.itemDescription, 'tiny semibold text-3')}>
-                {tournament.description}
-              </p>
-            </div>
-          </Link>
-        </li>
+    <Tabs
+      direction="row"
+      fullwidth
+      value={currentTab}
+      onChange={tab => setCurrentTab(tab)}
+      className={{
+        root: styles.tabsRoot,
+        header: styles.tabsHeader,
+        item: styles.tabsItem
+      }}
+    >
+      <Tabs.TabPane id="all" tab="All">
+        <ul className={styles.root}>
+          {groups.map(group => (
+            <li key={group.id}>
+              <TournamentGroup group={group} />
+            </li>
+          ))}
+        </ul>
+      </Tabs.TabPane>
+      {groups.map(group => (
+        <Tabs.TabPane key={group.id} id={group.id.toString()} tab={group.title}>
+          <ul className={styles.root}>
+            <TournamentGroup group={group} />
+          </ul>
+        </Tabs.TabPane>
       ))}
-    </ul>
+    </Tabs>
   );
 }
 

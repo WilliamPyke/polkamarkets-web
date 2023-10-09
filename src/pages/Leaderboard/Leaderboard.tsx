@@ -196,7 +196,7 @@ function Leaderboard() {
     tournament:
       ui.tournaments.enabled &&
       !!matchPath(location.pathname, {
-        path: pages.tournament.pathname
+        path: pages.tournamentLeaderboard.pathname
       })
   };
 

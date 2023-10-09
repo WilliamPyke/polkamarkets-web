@@ -1,18 +1,24 @@
-.item {
+.root {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--size-16);
+  flex-direction: column;
+  gap: var(--size-32);
 
-  padding: var(--size-16);
+  width: 100%;
+}
 
-  &Description {
-    display: -webkit-box;
-    overflow: hidden;
+.tabs {
+  &Header {
+    padding-left: var(--size-24);
+    padding-right: var(--size-24);
+  }
 
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    word-break: break-all;
+  &Root {
+    gap: var(--size-24) !important;
+  }
+
+  &Item {
+    button {
+      color: #e6e6ff !important;
+    }
   }
 }

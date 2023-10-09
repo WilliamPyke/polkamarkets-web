@@ -61,6 +61,7 @@ export interface MarketsIntialState {
     closed: boolean;
     resolved: boolean;
     favorites: boolean;
+    byIds: boolean;
   };
   error: {
     open: any;
@@ -83,7 +84,8 @@ const initialState: MarketsIntialState = {
     open: false,
     closed: false,
     resolved: false,
-    favorites: false
+    favorites: false,
+    byIds: false
   },
   error: {
     open: null,
@@ -169,7 +171,8 @@ const marketsSlice = createSlice({
         open: false,
         closed: false,
         resolved: false,
-        favorites: false
+        favorites: false,
+        byIds: false
       },
       error: {
         ...state.error,
@@ -542,5 +545,21 @@ export function getFavoriteMarkets(favoriteMarkets: FavoriteMarketsByNetwork) {
         )
       )
     );
+  };
+}
+
+export function getMarketsByIds(ids: string[], networkId: number) {
+  return async dispatch => {
+    dispatch(request('byIds'));
+    try {
+      const response = await marketService.getMarketsByIds({
+        ids,
+        networkId: networkId.toString()
+      });
+      const { data } = response;
+      dispatch(success('byIds', data));
+    } catch (err) {
+      dispatch(error({ type: 'byIds', error: err }));
+    }
   };
 }

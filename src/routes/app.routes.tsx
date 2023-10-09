@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { pages, ui } from 'config';
+import { pages, ui, features } from 'config';
 import { Spinner } from 'ui';
 
 import { Layout } from 'components';
@@ -26,6 +26,11 @@ export default function AppRoutes() {
           path={pages.restrictedCountry.pathname}
           component={pages.restrictedCountry.Component}
         />
+        {features.fantasy.enabled && pages.tournaments.enabled && (
+          <Route exact path="/">
+            <Redirect to="/tournaments" />
+          </Route>
+        )}
         <Route
           path="/"
           render={() => (
