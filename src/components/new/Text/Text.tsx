@@ -47,7 +47,8 @@ type TextColor =
   | 'inverse'
   | 'warning'
   | 'violets-are-blue'
-  | 'maximum-blue-green';
+  | 'maximum-blue-green'
+  | 'tickle-me-pink';
 
 type TextTransform = 'uppercase';
 
