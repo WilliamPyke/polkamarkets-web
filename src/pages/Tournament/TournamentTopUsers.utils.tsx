@@ -14,7 +14,7 @@ const USER_PLACES = {
     textColor: 'maximum-blue-green'
   },
   4: {
-    textColor: 'maximum-blue-green'
+    textColor: 'tickle-me-pink'
   }
 };
 
