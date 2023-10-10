@@ -3,15 +3,21 @@ import { ReactNode } from 'react';
 import { ui } from 'config';
 import { Container, Hero } from 'ui';
 
-import { Button, Text } from 'components';
+import { Pill, Text } from 'components';
 
 import styles from './TournamentHero.module.scss';
 
 type TournamentHeroProps = {
+  groupName?: string;
+  tournamentName?: string;
   topUsers?: ReactNode;
 };
 
-export default function TournamentHero({ topUsers }: TournamentHeroProps) {
+export default function TournamentHero({
+  groupName,
+  tournamentName,
+  topUsers
+}: TournamentHeroProps) {
   return (
     <Container className={styles.header}>
       <Hero
@@ -19,29 +25,23 @@ export default function TournamentHero({ topUsers }: TournamentHeroProps) {
         $rounded
         $image={ui.hero.image}
         className={`pm-p-home__hero ${styles.headerHero}`}
-        {...(ui.hero.image_url && {
-          $as: 'a',
-          href: ui.hero.image_url,
-          target: '_blank',
-          rel: 'noopener',
-          'aria-label': ui.hero.action.title || 'Learn More'
-        })}
       >
         <div className={styles.headerHeroContent}>
           <div>
             <div className="pm-p-home__hero__breadcrumb">
-              {ui.hero.header ? (
-                <Text
-                  as="span"
-                  scale="tiny-uppercase"
-                  fontWeight="semibold"
-                  color="white-50"
+              {groupName ? (
+                <Pill
+                  color="primary"
+                  className={{
+                    root: styles.headerHeroContentPill,
+                    text: styles.headerHeroContentPillText
+                  }}
                 >
-                  {ui.hero.header}
-                </Text>
+                  {groupName}
+                </Pill>
               ) : null}
             </div>
-            {ui.hero.title ? (
+            {tournamentName ? (
               <Text
                 as="h2"
                 fontWeight="bold"
@@ -49,16 +49,8 @@ export default function TournamentHero({ topUsers }: TournamentHeroProps) {
                 color="light"
                 className="pm-p-home__hero__heading"
               >
-                {ui.hero.title}
+                {tournamentName}
               </Text>
-            ) : null}
-            {ui.hero.action.title && ui.hero.action.url ? (
-              <Button
-                className="pm-c-button-normal--primary pm-c-button--sm"
-                onClick={() => window.open(ui.hero.action.url, '_blank')}
-              >
-                {ui.hero.action.title}
-              </Button>
             ) : null}
           </div>
           {topUsers || null}

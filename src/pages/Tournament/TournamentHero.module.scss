@@ -14,6 +14,16 @@
       align-items: center;
       gap: var(--size-24);
       width: 100%;
+
+      &Pill {
+        padding: 4px 10px !important;
+        background-color: #4d3df7 !important;
+
+        &Text {
+          text-transform: uppercase;
+          opacity: 0.8;
+        }
+      }
     }
   }
 }

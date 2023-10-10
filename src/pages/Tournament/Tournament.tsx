@@ -67,6 +67,8 @@ export default function Tournament() {
     <div className="max-width-screen-xl">
       {ui.hero.enabled && (
         <TournamentHero
+          groupName={data?.group?.title}
+          tournamentName={data?.title}
           topUsers={
             <TournamentTopUsers
               rows={leaderboardByTimeframe}
