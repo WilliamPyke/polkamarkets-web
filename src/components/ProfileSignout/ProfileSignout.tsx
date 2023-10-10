@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { features } from 'config';
@@ -45,7 +45,16 @@ export default function ProfileSignout() {
     polkamarketsService.logoutSocialLogin();
     dispatch(logout());
   }, [dispatch, polkamarketsService]);
-  const username = socialLoginInfo?.name?.split('#')[0];
+
+  const [username, setUserName] = useState(
+    socialLoginInfo?.name?.includes('#')
+      ? socialLoginInfo?.name?.split('#')[0]
+      : socialLoginInfo?.name?.split('@')[0]
+  );
+
+  const [profileImage, setProfileImage] = useState(
+    socialLoginInfo?.profileImage
+  );
 
   useEffect(() => {
     async function handleSocialLogin() {
@@ -54,13 +63,21 @@ export default function ProfileSignout() {
       );
 
       // send data to backend
-      await updateSocialLoginInfo(
+      const res = await updateSocialLoginInfo(
         socialLoginInfo.idToken,
         socialLoginInfo.typeOfLogin,
         address,
         socialLoginInfo.profileImage,
         socialLoginInfo.oAuthAccessToken
       );
+
+      if (res.data?.user?.username) {
+        setUserName(res.data?.user?.username);
+      }
+
+      if (res.data?.user?.avatar) {
+        setProfileImage(res.data?.user?.avatar);
+      }
     }
 
     handleSocialLogin();
@@ -93,7 +110,7 @@ export default function ProfileSignout() {
           <Avatar
             $size="sm"
             $radius="lg"
-            src={socialLoginInfo?.profileImage}
+            src={profileImage}
             alt={username || 'avatar'}
           />
         </Link>
