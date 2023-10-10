@@ -48,7 +48,7 @@ export default function ProfileSignout() {
   const username = socialLoginInfo?.name?.split('#')[0];
 
   useEffect(() => {
-    async function handleDiscordLogin() {
+    async function handleSocialLogin() {
       const { updateSocialLoginInfo } = await import(
         'services/Polkamarkets/user'
       );
@@ -63,7 +63,7 @@ export default function ProfileSignout() {
       );
     }
 
-    if (socialLoginInfo?.typeOfLogin === 'discord') handleDiscordLogin();
+    handleSocialLogin();
   }, [socialLoginInfo, address]);
 
   return (
