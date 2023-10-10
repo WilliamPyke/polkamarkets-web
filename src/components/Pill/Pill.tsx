@@ -1,5 +1,7 @@
 import React from 'react';
 
+import cn from 'classnames';
+
 import Text from '../Text';
 
 export type PillVariant = 'normal' | 'subtle';
@@ -19,18 +21,20 @@ type PillProps = {
   color?: PillColor | string;
   badge?: boolean;
   children: React.ReactNode;
+  className?: Partial<Record<'root' | 'text', string>>;
 };
 
 function Pill({
   variant = 'normal',
   color = 'default',
   badge = false,
-  children
+  children,
+  className
 }: PillProps) {
   return (
-    <span className={`pm-c-pill-${variant}--${color}`}>
+    <span className={cn(`pm-c-pill-${variant}--${color}`, className?.root)}>
       {badge ? <div className="pm-c-pill__badge" /> : null}
-      <Text className="pm-c-pill__text" as="span">
+      <Text className={cn('pm-c-pill__text', className?.text)} as="span">
         {children}
       </Text>
     </span>
