@@ -6,6 +6,7 @@
   --color-text-warning: #f0b429;
   --color-text-violets-are-blue: #8976ff;
   --color-text-maximum-blue-green: #28c1b8;
+  --color-text-tickle-me-pink: #ff83b0;
 
   &.theme--dark {
     --color-text-1: #f9fafb;
@@ -22,7 +23,8 @@ $text-colors-map: (
   inverse: var(--color-text-inverse),
   warning: var(--color-text-warning),
   violets-are-blue: var(--color-text-violets-are-blue),
-  maximum-blue-green: var(--color-text-maximum-blue-green)
+  maximum-blue-green: var(--color-text-maximum-blue-green),
+  tickle-me-pink: var(--color-text-tickle-me-pink)
 );
 
 @each $text-color, $text-color-value in $text-colors-map {
