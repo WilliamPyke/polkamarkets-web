@@ -10,16 +10,22 @@ import MarketFooterActions from 'components/Market/MarketFooterActions';
 import Market from '../Market';
 
 interface PredictionCardProps
-  extends Pick<React.ComponentPropsWithoutRef<'div'>, 'className'> {
+  extends Pick<React.ComponentPropsWithoutRef<'div'>, 'itemID' | 'className'> {
   market: MarketInterface;
   $gutter?: boolean;
 }
 
-function PredictionCard({ market, $gutter, className }: PredictionCardProps) {
+function PredictionCard({
+  market,
+  $gutter,
+  itemID,
+  className
+}: PredictionCardProps) {
   const theme = useTheme();
 
   return (
     <div
+      itemID={itemID}
       className={cn(
         'prediction-card',
         { 'prediction-card--gutter': $gutter },
