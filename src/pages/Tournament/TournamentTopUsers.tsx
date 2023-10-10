@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import LeaderboardStats from '../Leaderboard/LeaderboardStats';
 import type { PrepareLeaderboardTableRowsArgs } from '../Leaderboard/prepare';
+import styles from './TournamentTopUsers.module.scss';
 import { TournamentTopUsersColumn } from './TournamentTopUsers.types';
 import {
   topUserColumnRender,
@@ -68,6 +69,7 @@ function TournamentTopUsers({
           View Leaderboard
         </Link>
       }
+      className={{ root: styles.root }}
     />
   );
 }
