@@ -18,7 +18,7 @@
 
   &Item {
     button {
-      color: #e6e6ff !important;
+      color: var(--color-tabs-item) !important;
     }
   }
 }
