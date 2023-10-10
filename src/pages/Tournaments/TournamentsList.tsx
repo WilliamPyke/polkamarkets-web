@@ -93,7 +93,14 @@ function TournamentsList() {
 
   return (
     <>
-      {markets ? <TournamentsUpcomingMarkets markets={markets} /> : null}
+      {markets ? (
+        <div className={styles.upcoming}>
+          <div className={styles.upcomingHeader}>
+            <h2 className={styles.upcomingTitle}>Upcoming</h2>
+          </div>
+          <TournamentsUpcomingMarkets markets={markets} />
+        </div>
+      ) : null}
       <Tabs
         direction="row"
         fullwidth
