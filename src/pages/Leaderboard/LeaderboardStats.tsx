@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { ReactNode, memo } from 'react';
 
 import every from 'lodash/every';
 import isEmpty from 'lodash/isEmpty';
@@ -16,6 +16,7 @@ type LeaderboardStatsProps = {
   row: TableMiniRow;
   isLoading: boolean;
   emptyDataDescription?: string;
+  action?: ReactNode;
 };
 
 function LeaderboardStats({
@@ -23,7 +24,8 @@ function LeaderboardStats({
   columns,
   row,
   isLoading,
-  emptyDataDescription = 'No data to show.'
+  emptyDataDescription = 'No data to show.',
+  action
 }: LeaderboardStatsProps) {
   const isEmptyData =
     isEmpty(row) ||
@@ -51,6 +53,7 @@ function LeaderboardStats({
       {!isLoading && !isEmptyData ? (
         <TableMini columns={columns} row={row} />
       ) : null}
+      {action || null}
     </div>
   );
 }
