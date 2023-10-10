@@ -1,3 +1,9 @@
+.root {
+  @media (min-width: 1440px) {
+    padding: 0 var(--size-24);
+  }
+}
+
 .nav {
   top: 0px;
   z-index: 1;
@@ -6,8 +12,6 @@
   align-items: center;
   gap: var(--size-12);
   height: 64px;
-  padding-left: 0;
-  padding-right: 0;
 
   &Action {
     height: 44px !important;
