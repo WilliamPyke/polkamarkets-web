@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import { camelize } from 'humps';
+import isEmpty from 'lodash/isEmpty';
 import {
   getFavoriteMarkets,
   getMarkets,
@@ -23,7 +24,7 @@ export default function useMarkets(fetchByIds?: {
   const rawMarkets = useAppSelector(state => state.markets);
   const { isLoading, error } = rawMarkets;
 
-  const markets = marketsSelector({
+  const selectedMarkets = marketsSelector({
     state: rawMarkets,
     filters: {
       favorites: {
@@ -45,9 +46,20 @@ export default function useMarkets(fetchByIds?: {
     }
   });
 
+  const markets = useMemo(() => {
+    if (!fetchByIds || isEmpty(fetchByIds.ids)) return selectedMarkets;
+    return selectedMarkets.filter(
+      market =>
+        fetchByIds.ids.includes(market.id) &&
+        market.networkId.toString() === fetchByIds.networkId.toString()
+    );
+  }, [fetchByIds, selectedMarkets]);
+
   const fetch = useCallback(async () => {
     if (fetchByIds) {
-      dispatch(getMarketsByIds(fetchByIds.ids, fetchByIds.networkId));
+      if (!isEmpty(fetchByIds.ids)) {
+        dispatch(getMarketsByIds(fetchByIds.ids, fetchByIds.networkId));
+      }
     } else {
       dispatch(getMarkets('open'));
       dispatch(getMarkets('closed'));
