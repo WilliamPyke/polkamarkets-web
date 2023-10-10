@@ -13,10 +13,10 @@ import { MarketList } from 'components';
 
 import { useNetwork } from 'hooks';
 
-import styles from '../Home/Home.module.scss';
 import HomeFilter from '../Home/HomeFilter';
 import TournamentHero from './TournamentHero';
 import TournamentNav from './TournamentNav';
+import styles from './TournamentNav.module.scss';
 import TournamentTopUsers from './TournamentTopUsers';
 
 export default function Tournament() {
