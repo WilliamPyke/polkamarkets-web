@@ -5,6 +5,7 @@
 
   &Hero {
     padding: 12px 12px 12px 40px;
+    aspect-ratio: unset;
 
     &Content {
       display: flex;
