@@ -119,6 +119,7 @@ function TournamentsUpcomingMarkets({
     >
       {marketsByVolume.map(market => (
         <PredictionCard
+          itemID={market.slug}
           key={market.slug}
           market={market}
           className={styles.predictionCard}
