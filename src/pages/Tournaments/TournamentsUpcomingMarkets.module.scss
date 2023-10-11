@@ -14,6 +14,15 @@
           margin: 0 -16px !important;
         }
       }
+
+      .react-horizontal-scrolling-menu--arrow-left,
+      .react-horizontal-scrolling-menu--arrow-right {
+        display: none !important;
+
+        @media (min-width: 768px) {
+          display: flex !important;
+        }
+      }
     }
   }
 
