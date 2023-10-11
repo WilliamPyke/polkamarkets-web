@@ -97,7 +97,7 @@ const pages = {
     navigation: true,
     name: 'Leaderboard',
     meta: null,
-    enabled: true
+    enabled: !ui.tournaments.enabled
   },
   achievements: {
     pathname: '/achievements',
