@@ -1,7 +1,7 @@
-import { ui } from 'config';
+import { features, ui } from 'config';
 import { Container, Hero } from 'ui';
 
-import { Button, Text } from 'components';
+import { Button, ProfileSignin, Text } from 'components';
 
 import HomeClasses from './Home.module.scss';
 
@@ -45,14 +45,19 @@ export default function HomeHero() {
               {ui.hero.title}
             </Text>
           ) : null}
-          {ui.hero.action.title && ui.hero.action.url ? (
+          {ui.hero.action.title && ui.hero.action.url && (
             <Button
               className="pm-c-button-normal--primary pm-c-button--sm"
               onClick={() => window.open(ui.hero.action.url, '_blank')}
             >
               {ui.hero.action.title}
             </Button>
-          ) : null}
+          )}
+          {!ui.hero.action.url && features.fantasy.enabled && (
+            <ProfileSignin variant="normal" color="primary">
+              Login
+            </ProfileSignin>
+          )}
         </div>
       </Hero>
     </Container>
