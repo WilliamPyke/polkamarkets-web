@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import isEmpty from 'lodash/isEmpty';
 import omit from 'lodash/omit';
@@ -99,6 +100,12 @@ function TournamentsList() {
         <div className={styles.upcoming}>
           <div className={styles.upcomingHeader}>
             <h2 className={styles.upcomingTitle}>Upcoming</h2>
+            <Link
+              to="/markets"
+              className="pm-c-button-subtle--primary pm-c-button--xs"
+            >
+              See All
+            </Link>
           </div>
           <TournamentsUpcomingMarkets markets={markets} />
         </div>
