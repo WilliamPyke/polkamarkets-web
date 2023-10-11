@@ -29,7 +29,9 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
     token,
     network
   } = market;
-  const expiresAt = dayjs(market.expiresAt).utc(true).format('MMM D, YYYY');
+  const expiresAt = dayjs(market.expiresAt)
+    .utc(true)
+    .format('MMM D, YYYY H:mm');
   const theme = useTheme();
   const fantasyTokenTicker = useFantasyTokenTicker();
 
