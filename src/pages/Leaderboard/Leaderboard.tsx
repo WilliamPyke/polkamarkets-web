@@ -1,5 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useLocation, useParams, matchPath } from 'react-router-dom';
+import {
+  useLocation,
+  useParams,
+  matchPath,
+  Link as ReactRouterLink
+} from 'react-router-dom';
 
 import cn from 'classnames';
 import { ui, pages, features } from 'config';
@@ -388,6 +393,14 @@ function Leaderboard() {
           <div className="flex-column gap-3">
             <div className="flex-row gap-5 align-center">
               <h1 className="heading semibold text-1">{leaderboardTitle}</h1>
+              {features.fantasy.enabled && leaderboardType.tournament ? (
+                <ReactRouterLink
+                  to={`/tournaments/${tournamentBySlug?.slug}`}
+                  className="pm-c-button-subtle--primary pm-c-button--xs"
+                >
+                  Back to Tournament
+                </ReactRouterLink>
+              ) : null}
               {leaderboardType.club &&
               createGroupState.visible &&
               createGroupState.mode === 'edit' ? (
