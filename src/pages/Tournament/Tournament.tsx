@@ -3,17 +3,21 @@ import { useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { ui } from 'config';
-import { useGetTournamentBySlugQuery } from 'services/Polkamarkets';
+import {
+  useGetLeaderboardByTimeframeQuery,
+  useGetTournamentBySlugQuery
+} from 'services/Polkamarkets';
 import { Container, useRect, useTheme } from 'ui';
 
 import { MarketList } from 'components';
 
 import { useNetwork } from 'hooks';
 
-import styles from '../Home/Home.module.scss';
 import HomeFilter from '../Home/HomeFilter';
 import TournamentHero from './TournamentHero';
 import TournamentNav from './TournamentNav';
+import styles from './TournamentNav.module.scss';
+import TournamentTopUsers from './TournamentTopUsers';
 
 export default function Tournament() {
   const theme = useTheme();
@@ -24,7 +28,25 @@ export default function Tournament() {
   const [show, setShow] = useState(false);
 
   const { data, isLoading, isFetching } = useGetTournamentBySlugQuery({ slug });
-  const isLoadingTournament = isLoading || isFetching;
+  const isLoadingTournamentBySlugQuery = isLoading || isFetching;
+
+  const {
+    data: leaderboardByTimeframe,
+    isLoading: isLoadingLeaderboardByTimeframe,
+    isFetching: isFetchingLeaderboardByTimeframe
+  } = useGetLeaderboardByTimeframeQuery(
+    {
+      timeframe: 'at',
+      networkId: network.id,
+      tournamentId: data?.id.toString()
+    },
+    {
+      skip: isLoadingTournamentBySlugQuery
+    }
+  );
+
+  const isLoadingLeaderboardByTimeframeQuery =
+    isLoadingLeaderboardByTimeframe || isFetchingLeaderboardByTimeframe;
 
   const marketsIds = useMemo(
     () => (data && data.markets ? data.markets.map(market => market.id) : []),
@@ -43,7 +65,19 @@ export default function Tournament() {
 
   return (
     <div className="max-width-screen-xl">
-      {ui.hero.enabled && <TournamentHero />}
+      {ui.hero.enabled && (
+        <TournamentHero
+          groupName={data?.group?.title}
+          tournamentName={data?.title}
+          topUsers={
+            <TournamentTopUsers
+              rows={leaderboardByTimeframe}
+              sortBy="wonPredictions"
+              isLoading={isLoadingLeaderboardByTimeframeQuery}
+            />
+          }
+        />
+      )}
       <Container ref={ref} className={styles.nav}>
         <TournamentNav
           onFilterClick={theme.device.isDesktop ? handleToggle : handleShow}
@@ -51,7 +85,7 @@ export default function Tournament() {
       </Container>
       <div className={styles.root}>
         <HomeFilter onFilterHide={handleHide} rect={rect} show={show} />
-        {isLoadingTournament ? (
+        {isLoadingTournamentBySlugQuery ? (
           <div
             className={cn('pm-c-market-list', {
               'pm-c-market-list--filters-visible': show

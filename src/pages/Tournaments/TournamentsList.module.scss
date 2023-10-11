@@ -6,6 +6,24 @@
   width: 100%;
 }
 
+.upcoming {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-24);
+
+  margin-bottom: var(--size-32);
+
+  &Header {
+    padding: 0 var(--size-16);
+  }
+
+  &Title {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: var(--color-text-1);
+  }
+}
+
 .tabs {
   &Header {
     padding-left: var(--size-24);
@@ -18,7 +36,7 @@
 
   &Item {
     button {
-      color: #e6e6ff !important;
+      color: var(--color-tabs-item) !important;
     }
   }
 }
