@@ -3,9 +3,14 @@ import { Container, Hero } from 'ui';
 
 import { Button, ProfileSignin, Text } from 'components';
 
+import useAppSelector from 'hooks/useAppSelector';
+
 import HomeClasses from './Home.module.scss';
 
 export default function HomeHero() {
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const hasCta = ui.hero.action.title && ui.hero.action.url;
+
   return (
     <Container className={HomeClasses.header}>
       <Hero
@@ -45,15 +50,17 @@ export default function HomeHero() {
               {ui.hero.title}
             </Text>
           ) : null}
-          {ui.hero.action.title && ui.hero.action.url && (
+          {(features.fantasy.enabled ? hasCta && isLoggedIn : hasCta) && (
             <Button
-              className="pm-c-button-normal--primary pm-c-button--sm"
+              variant="normal"
+              color="primary"
+              size="sm"
               onClick={() => window.open(ui.hero.action.url, '_blank')}
             >
               {ui.hero.action.title}
             </Button>
           )}
-          {!ui.hero.action.url && features.fantasy.enabled && (
+          {features.fantasy.enabled && !isLoggedIn && (
             <ProfileSignin variant="normal" color="primary">
               Login
             </ProfileSignin>
