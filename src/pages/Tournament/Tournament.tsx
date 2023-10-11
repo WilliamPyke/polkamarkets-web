@@ -69,6 +69,7 @@ export default function Tournament() {
         <TournamentHero
           groupName={data?.group?.title}
           tournamentName={data?.title}
+          tournamentDescription={data?.description}
           topUsers={
             <TournamentTopUsers
               rows={leaderboardByTimeframe}
