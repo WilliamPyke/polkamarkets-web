@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable import-helpers/order-imports */
 require('dotenv').config();
 const express = require('express');
@@ -464,10 +465,11 @@ app.get('*', (_request, response) => {
   response.redirect('/');
 });
 
-app.get('*', (request, response, next) => {
-  if (!request.secure) {
-    const httpsUrl = `https://${request.headers.host}${request.path}`;
-    return response.redirect(httpsUrl);
+app.use((request, response, next) => {
+  if (process.env.NODE_ENV !== 'development' && !request.secure) {
+    return response.redirect(
+      `https://${request.headers.host}${request.originalUrl}`
+    );
   }
 
   next();
