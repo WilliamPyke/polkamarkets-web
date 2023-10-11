@@ -123,7 +123,7 @@ export default function HeaderActions() {
             <HeaderActionComponent isLoggedIn={isLoggedIn} />
           )}
         </HeaderActionsGroupComponent>
-        <ThemeSelector />
+        {!features.fantasy.enabled && <ThemeSelector />}
         {ui.layout.header.helpUrl && (
           <a
             role="button"
