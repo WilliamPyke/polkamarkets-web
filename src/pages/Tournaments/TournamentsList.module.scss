@@ -30,6 +30,8 @@
 
 .tabs {
   &Header {
+    justify-content: flex-start !important;
+
     padding-left: var(--size-24);
     padding-right: var(--size-24);
   }
