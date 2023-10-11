@@ -8,6 +8,7 @@ import { Spinner } from 'ui';
 import { RemoveOutlinedIcon } from 'assets/icons';
 
 import { Button } from 'components/Button';
+import type { ButtonProps } from 'components/Button';
 import ConnectMetamask from 'components/ConnectMetamask';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
@@ -25,7 +26,7 @@ import profileSigninClasses from './ProfileSignin.module.scss';
 const hasSingleProvider = ui.socialLogin.providers.length === 1;
 const singleProviderName = ui.socialLogin.providers[0];
 
-export default function ProfileSignin() {
+export default function ProfileSignin(props: ButtonProps) {
   const dispatch = useAppDispatch();
   const polkamarketsService = usePolkamarketsService();
   const [show, setShow] = useState(false);
@@ -205,19 +206,11 @@ export default function ProfileSignin() {
         renderProviders(singleProviderName)
       ) : (
         <Button
-          variant="ghost"
-          color="default"
           size="sm"
           onClick={handleShow}
           className={profileSigninClasses.signin}
-        >
-          <Icon
-            name="LogIn"
-            size="lg"
-            className={profileSigninClasses.signinIcon}
-          />
-          Login
-        </Button>
+          {...props}
+        />
       )}
     </>
   );
