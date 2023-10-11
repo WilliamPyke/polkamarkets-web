@@ -14,6 +14,10 @@
   margin-bottom: var(--size-32);
 
   &Header {
+    display: flex;
+    flex-direction: row;
+    gap: var(--size-12);
+    align-items: center;
     padding: 0 var(--size-16);
   }
 

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+import isNull from 'lodash/isNull';
 import type { Tournament as TournamentType } from 'types/tournament';
 import { Avatar } from 'ui';
 
@@ -13,13 +14,15 @@ function Tournament({ tournament }: TournamentProps) {
   return (
     <Link to={`/tournaments/${tournament.slug}`} className={styles.root}>
       <div className={styles.content}>
-        <Avatar
-          $size="md"
-          $radius="sm"
-          src={tournament.imageUrl !== null ? tournament.imageUrl : undefined}
-          alt={tournament.title}
-          className={styles.contentAvatar}
-        />
+        {!isNull(tournament.imageUrl) && (
+          <Avatar
+            $size="md"
+            $radius="sm"
+            src={tournament.imageUrl}
+            alt={tournament.title}
+            className={styles.contentAvatar}
+          />
+        )}
         <div>
           <h4 className={styles.contentTitle}>{tournament.title}</h4>
         </div>

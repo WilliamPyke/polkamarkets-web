@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import isEmpty from 'lodash/isEmpty';
 import omit from 'lodash/omit';
@@ -83,12 +84,14 @@ function TournamentsList() {
 
   if (isEmpty(groups))
     return (
-      <AlertMini
-        style={{ border: 'none' }}
-        styles="outline"
-        variant="information"
-        description="No tournaments available at the moment."
-      />
+      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-small">
+        <AlertMini
+          style={{ border: 'none' }}
+          styles="outline"
+          variant="information"
+          description="No tournaments available at the moment."
+        />
+      </div>
     );
 
   return (
@@ -97,6 +100,12 @@ function TournamentsList() {
         <div className={styles.upcoming}>
           <div className={styles.upcomingHeader}>
             <h2 className={styles.upcomingTitle}>Upcoming</h2>
+            <Link
+              to="/markets"
+              className="pm-c-button-subtle--primary pm-c-button--xs"
+            >
+              See All
+            </Link>
           </div>
           <TournamentsUpcomingMarkets markets={markets} />
         </div>

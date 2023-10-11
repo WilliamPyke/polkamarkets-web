@@ -118,7 +118,8 @@ const pages = {
     enabled: true
   },
   home: {
-    pathname: '/',
+    pathname:
+      features.fantasy.enabled && ui.tournaments.enabled ? '/markets' : '/',
     Component: lazy(() => import('pages/Home')),
     exact: false,
     navigation: true,
