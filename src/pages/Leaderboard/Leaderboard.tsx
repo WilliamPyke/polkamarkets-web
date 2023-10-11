@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useLocation, useParams, matchPath } from 'react-router-dom';
 
 import cn from 'classnames';
-import { ui, pages } from 'config';
+import { ui, pages, features } from 'config';
 import { isNull } from 'lodash';
 import {
   useGetLeaderboardByTimeframeQuery,
@@ -299,7 +299,7 @@ function Leaderboard() {
   const { title: leaderboardTitle, imageUrl: leaderboardImageUrl } =
     meta[currentLeaderboardType || 'default'];
 
-  const data = useMemo(
+  let data = useMemo(
     () =>
       buildLeaderboardData(
         isLoadingLeaderboardGroup,
@@ -308,6 +308,11 @@ function Leaderboard() {
       ),
     [isLoadingLeaderboardGroup, leaderboardGroup, leaderboardByTimeframe]
   );
+
+  // filtering data by only users with username
+  if (features.fantasy.enabled) {
+    data = data.filter(row => row.username);
+  }
 
   // Currency
   const ticker = currency.symbol || currency.ticker;
