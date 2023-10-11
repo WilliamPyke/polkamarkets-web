@@ -1,4 +1,6 @@
 .root {
+  display: flex;
+
   @media (min-width: 1440px) {
     padding: 0 var(--size-24);
   }
