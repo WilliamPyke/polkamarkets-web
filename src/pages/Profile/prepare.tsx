@@ -101,15 +101,25 @@ function preparePredictionStatisticsRow({
 }
 
 const getFeedActionTitle = (action: FeedAction, language: LanguageCode) => {
-  return {
-    buy: (shares: number, outcomeTitle?: string) =>
-      language === 'tr'
-        ? `${shares} adet "${outcomeTitle}" sonucu hisse senedi alındı`
-        : `Bought ${shares} shares of outcome "${outcomeTitle}"`,
-    sell: (shares: number, outcomeTitle?: string) =>
-      language === 'tr'
-        ? `${shares} adet "${outcomeTitle}" sonucu hisse senedi satıldı`
-        : `Sold ${shares} shares of outcome "${outcomeTitle}"`,
+  const titles = {
+    buy: (shares: number, outcomeTitle?: string) => {
+      if (language === 'tr') {
+        return `${shares} adet "${outcomeTitle}" sonucu hisse senedi alındı`;
+      }
+      if (language === 'pt') {
+        return `Comprou ${shares} ações de "${outcomeTitle}"`;
+      }
+      return `Bought ${shares} shares of outcome "${outcomeTitle}"`;
+    },
+    sell: (shares: number, outcomeTitle?: string) => {
+      if (language === 'tr') {
+        return `${shares} adet "${outcomeTitle}" sonucu hisse senedi satıldı`;
+      }
+      if (language === 'pt') {
+        return `Vendeu ${shares} ações de "${outcomeTitle}"`;
+      }
+      return `Sold ${shares} shares of outcome "${outcomeTitle}"`;
+    },
     add_liquidity: (shares: number, _outcomeTitle?: string) =>
       `Added ${shares} liquidity shares`,
     remove_liquidity: (shares: number, _outcomeTitle?: string) =>
@@ -120,7 +130,8 @@ const getFeedActionTitle = (action: FeedAction, language: LanguageCode) => {
       'Created a market',
     upvote: (_shares: number, _outcomeTitle?: string) => 'Upvoted a market',
     downvote: (_shares: number, _outcomeTitle?: string) => 'Downvoted a market'
-  }[action];
+  };
+  return titles[action];
 };
 
 const feedAccentColors: { [key: string]: FeedActionAccentColor } = {
