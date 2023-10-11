@@ -54,7 +54,7 @@ const validationSchema = [
   Yup.object().shape({
     question: Yup.string().required('Market Question is required.'),
     description: Yup.string()
-      .min(100, 'Market Description must be at least 100 characters long.')
+      .min(50, 'Market Description must be at least 50 characters long.')
       .required('Market Description is required.'),
     category: Yup.string().required('Category is required.'),
     subcategory: Yup.string().required('Subcategory is required.'),
