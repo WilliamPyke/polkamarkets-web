@@ -229,6 +229,7 @@
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
+      align-items: center !important;
 
       @media (min-width: 1024px) {
         gap: var(--size-16);
@@ -237,23 +238,27 @@
       height: 100%;
     }
 
-    .pm-c-market__body-details {
-      .breadcrumb,
-      p {
-        text-overflow: ellipsis;
-        overflow: hidden;
+    .pm-c-market__body {
+      align-items: center !important;
 
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        word-break: break-all;
-      }
+      &-details {
+        .breadcrumb,
+        p {
+          text-overflow: ellipsis;
+          overflow: hidden;
 
-      .breadcrumb {
-        -webkit-line-clamp: 1;
-      }
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          word-break: break-all;
+        }
 
-      p {
-        -webkit-line-clamp: 2;
+        .breadcrumb {
+          -webkit-line-clamp: 1;
+        }
+
+        p {
+          -webkit-line-clamp: 2;
+        }
       }
     }
 
