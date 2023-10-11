@@ -83,12 +83,14 @@ function TournamentsList() {
 
   if (isEmpty(groups))
     return (
-      <AlertMini
-        style={{ border: 'none' }}
-        styles="outline"
-        variant="information"
-        description="No tournaments available at the moment."
-      />
+      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-small">
+        <AlertMini
+          style={{ border: 'none' }}
+          styles="outline"
+          variant="information"
+          description="No tournaments available at the moment."
+        />
+      </div>
     );
 
   return (
