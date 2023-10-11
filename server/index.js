@@ -464,4 +464,13 @@ app.get('*', (_request, response) => {
   response.redirect('/');
 });
 
+app.get('*', (request, response, next) => {
+  if (!request.secure) {
+    const httpsUrl = `https://${request.headers.host}${request.path}`;
+    return response.redirect(httpsUrl);
+  }
+
+  next();
+});
+
 app.listen(port, () => console.log(`Listening on port ${port}`));
