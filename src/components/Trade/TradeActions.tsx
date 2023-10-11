@@ -185,7 +185,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       );
 
       // will refresh form if there's a slippage > 2%
-      if (Math.abs(sharesToSell - minShares) / sharesToSell > 0.02) {
+      if (Math.abs(sharesToSell - minShares) / sharesToSell > 0.01) {
         setIsLoading(false);
         setNeedsPricesRefresh(true);
 
