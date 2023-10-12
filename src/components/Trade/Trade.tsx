@@ -6,7 +6,7 @@ import getMarketColors from 'helpers/getMarketColors';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
 import { useTheme } from 'ui';
 
-import { useAppDispatch, useAppSelector } from 'hooks';
+import { useAppDispatch, useAppSelector, useLanguage } from 'hooks';
 
 import { AlertMini } from '../Alert';
 import Breadcrumb from '../Breadcrumb';
@@ -28,6 +28,7 @@ type TradeProps = {
 function Trade({ view = 'default', onTradeFinished }: TradeProps) {
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const language = useLanguage();
   const market = useAppSelector(state => state.market.market);
   const isLoadingMarket = useAppSelector(state => state.market.isLoading);
 
@@ -146,7 +147,11 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
             <div className="flex-column gap-5 width-full">
               <AlertMini
                 variant="warning"
-                description={`You can only buy shares of one outcome at a time. In order to buy shares of "${prediction.title}" you need to sell your position of "${outcomesWithShares[0].title}".`}
+                description={
+                  language === 'pt'
+                    ? `Só podes escolher um resultado de cada vez. Para mudar a tua previsão para "${prediction.title}", tens que vender a tua previsão "${outcomesWithShares[0].title}".`
+                    : `You can only buy shares of one outcome at a time. In order to buy shares of "${prediction.title}" you need to sell your position of "${outcomesWithShares[0].title}".`
+                }
               />
               <Button
                 color="danger"
