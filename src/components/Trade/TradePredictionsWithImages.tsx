@@ -96,11 +96,15 @@ function TradePredictionsWithImages({
 
   return (
     <ScrollMenu
-      wrapperClassName={styles.predictionsWithImageWrapper}
-      scrollContainerClassName={styles.predictionsWithImageScroll}
+      wrapperClassName={multiple ? styles.predictionsWithImageWrapper : ''}
+      scrollContainerClassName={
+        multiple
+          ? styles.predictionsWithImageScroll
+          : styles.predictionsWithImageNonScroll
+      }
       itemClassName={styles.predictionsWithImageItem}
-      LeftArrow={LeftArrow}
-      RightArrow={RightArrow}
+      LeftArrow={multiple ? LeftArrow : undefined}
+      RightArrow={multiple ? RightArrow : undefined}
       onWheel={onWheel}
     >
       {predictions.map((prediction, index) => (

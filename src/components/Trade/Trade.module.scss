@@ -258,6 +258,10 @@
     scrollbar-width: none;
   }
 
+  &NonScroll {
+    justify-content: center;
+  }
+
   &Item {
     margin: 0 var(--size-8);
 
