@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
+import dayjs from 'dayjs';
 import isNull from 'lodash/isNull';
 import type { Tournament as TournamentType } from 'types/tournament';
 import { Avatar } from 'ui';
@@ -43,6 +44,33 @@ function Tournament({ tournament }: TournamentProps) {
         />
         <div>
           <h4 className={styles.contentTitle}>{tournament.title}</h4>
+          <div className={styles.stats}>
+            <span className={styles.statsTitle}>
+              Ends At:
+              <strong className={styles.statsValue}>
+                {dayjs(tournament.expiresAt).utc(true).format('MMMM D, YYYY')}
+              </strong>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className={styles.footer}>
+        <div className={styles.stats}>
+          <span className={styles.statsTitle}>
+            Users:
+            <strong className={styles.statsValue}>{tournament.users}</strong>
+          </span>
+          {tournament.markets ? (
+            <>
+              <span className="pm-c-divider--circle" />
+              <span className={styles.statsTitle}>
+                Markets:
+                <strong className={styles.statsValue}>
+                  {tournament.markets.length}
+                </strong>
+              </span>
+            </>
+          ) : null}
         </div>
       </div>
     </Link>
