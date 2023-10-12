@@ -1,11 +1,16 @@
-import { ui } from 'config';
+import { features, ui } from 'config';
 import { Container, Hero } from 'ui';
 
-import { Button, Text } from 'components';
+import { Button, ProfileSignin, Text } from 'components';
+
+import { useAppSelector } from 'hooks';
 
 import styles from './TournamentsHero.module.scss';
 
 export default function HomeHero() {
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const hasCta = ui.hero.action.title && ui.hero.action.url;
+
   return (
     <Container className={styles.header}>
       <Hero
@@ -45,7 +50,7 @@ export default function HomeHero() {
               {ui.hero.title}
             </Text>
           ) : null}
-          {ui.hero.action.title && ui.hero.action.url ? (
+          {hasCta ? (
             <Button
               className="pm-c-button-normal--primary pm-c-button--sm"
               onClick={() => window.open(ui.hero.action.url, '_blank')}
@@ -53,6 +58,11 @@ export default function HomeHero() {
               {ui.hero.action.title}
             </Button>
           ) : null}
+          {!hasCta && features.fantasy.enabled && !isLoggedIn && (
+            <ProfileSignin variant="normal" color="primary">
+              Login
+            </ProfileSignin>
+          )}
         </div>
       </Hero>
     </Container>
