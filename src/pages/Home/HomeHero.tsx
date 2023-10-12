@@ -50,7 +50,7 @@ export default function HomeHero() {
               {ui.hero.title}
             </Text>
           ) : null}
-          {(features.fantasy.enabled ? hasCta && isLoggedIn : hasCta) && (
+          {hasCta && (
             <Button
               variant="normal"
               color="primary"
@@ -60,7 +60,7 @@ export default function HomeHero() {
               {ui.hero.action.title}
             </Button>
           )}
-          {features.fantasy.enabled && !isLoggedIn && (
+          {!hasCta && features.fantasy.enabled && !isLoggedIn && (
             <ProfileSignin variant="normal" color="primary">
               Login
             </ProfileSignin>
