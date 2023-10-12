@@ -10,12 +10,14 @@ import styles from './TournamentHero.module.scss';
 type TournamentHeroProps = {
   groupName?: string;
   tournamentName?: string;
+  tournamentDescription?: string;
   topUsers?: ReactNode;
 };
 
 export default function TournamentHero({
   groupName,
   tournamentName,
+  tournamentDescription,
   topUsers
 }: TournamentHeroProps) {
   return (
@@ -50,6 +52,11 @@ export default function TournamentHero({
                 className="pm-p-home__hero__heading"
               >
                 {tournamentName}
+              </Text>
+            ) : null}
+            {tournamentDescription ? (
+              <Text as="span" fontWeight="medium" color="light">
+                {tournamentDescription}
               </Text>
             ) : null}
           </div>
