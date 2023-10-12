@@ -144,7 +144,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
           {features.fantasy.enabled &&
           hasSharesOfOtherOutcomes &&
           prediction ? (
-            <div className="flex-column gap-5 width-full">
+            <div className="flex-column gap-5 width-full notranslate">
               <AlertMini
                 variant="warning"
                 description={

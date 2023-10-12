@@ -19,13 +19,19 @@ import Icon from 'components/Icon';
 
 import { useWhitelist } from 'contexts/whitelist';
 
-import { useAppDispatch, useAppSelector, usePolkamarketsService } from 'hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useLanguage,
+  usePolkamarketsService
+} from 'hooks';
 
 import styles from './Whitelist.module.scss';
 
 export default function Whitelist() {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const language = useLanguage();
   const polkamarketsService = usePolkamarketsService();
   const { isLoading, email, isWhitelisted } = useWhitelist();
 
@@ -68,8 +74,10 @@ export default function Whitelist() {
               <Spinner />
             ) : (
               <>
-                <ModalSectionText>
-                  {`The email address ${email} is not whitelisted in our application.`}
+                <ModalSectionText className="notranslate">
+                  {language === 'pt'
+                    ? `O email ${email} não está reconhecido na aplicação.`
+                    : `The email address ${email} is not whitelisted in our application.`}
                 </ModalSectionText>
                 <ModalSectionText>
                   For further information please contact us on{' '}
