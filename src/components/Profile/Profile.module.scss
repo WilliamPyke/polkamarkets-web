@@ -1,3 +1,9 @@
+.signin {
+  &Icon {
+    fill: var(--color-text-secondary) !important;
+  }
+}
+
 .signout {
   display: flex;
   align-items: center;
