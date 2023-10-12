@@ -144,7 +144,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
           {features.fantasy.enabled &&
           hasSharesOfOtherOutcomes &&
           prediction ? (
-            <div className="flex-column gap-5 width-full notranslate">
+            <div className="flex-column gap-5 width-full">
               <AlertMini
                 variant="warning"
                 description={
@@ -152,6 +152,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
                     ? `Só podes escolher um resultado de cada vez. Para mudar a tua previsão para "${prediction.title}", tens que vender a tua previsão "${outcomesWithShares[0].title}".`
                     : `You can only buy shares of one outcome at a time. In order to buy shares of "${prediction.title}" you need to sell your position of "${outcomesWithShares[0].title}".`
                 }
+                descriptionClasses="notranslate"
               />
               <Button
                 color="danger"
