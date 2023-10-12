@@ -15,6 +15,7 @@ export type ImageProps = React.PropsWithChildren<
   > & {
     $size?: 'x2s' | 'xs' | 'sm' | 'md' | 'lg';
     $radius?: 'xs' | 'sm' | 'md' | 'lg';
+    fallbackClassName?: string;
   }
 >;
 
@@ -36,7 +37,7 @@ function Div(props: React.PropsWithChildren<{ className?: string }>) {
 }
 
 const Image = forwardRef<HTMLImageElement, ImageProps>(function Image(
-  { alt, className, children, $radius, $size, ...props },
+  { alt, className, children, $radius, $size, fallbackClassName, ...props },
   ref
 ) {
   const [state, { ref: imageRef, ...imageProps }] = useImage();
@@ -77,7 +78,7 @@ const Image = forwardRef<HTMLImageElement, ImageProps>(function Image(
       </AnimatePresence>
       <AnimatePresence>
         {state === 'error' && (
-          <Div className={imageClasses.fallback}>
+          <Div className={cn(imageClasses.fallback, fallbackClassName)}>
             <div className={imageClasses.fallbackElement}>{children}</div>
           </Div>
         )}
