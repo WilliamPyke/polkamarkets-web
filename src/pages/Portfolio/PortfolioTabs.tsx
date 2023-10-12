@@ -43,7 +43,7 @@ function TabsFilter() {
   );
 }
 
-const defaultColsArr = ['market', 'outcome', 'profit'];
+const defaultColsArr = ['market', 'outcome', 'result'];
 const getDefaultCols = ({ headers, rows }) => ({
   headers: headers.filter(({ key }) => defaultColsArr.includes(key)),
   rows: rows.map((row: {}, index: number) =>
