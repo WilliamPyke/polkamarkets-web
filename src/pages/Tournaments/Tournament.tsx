@@ -47,7 +47,7 @@ function Tournament({ tournament }: TournamentProps) {
           <div className={styles.stats}>
             <span className={styles.statsTitle}>
               Ends At:
-              <strong className={styles.statsValue}>
+              <strong className={`${styles.statsValue} notranslate`}>
                 {dayjs(tournament.expiresAt).utc(true).format('MMMM D, YYYY')}
               </strong>
             </span>
@@ -58,14 +58,16 @@ function Tournament({ tournament }: TournamentProps) {
         <div className={styles.stats}>
           <span className={styles.statsTitle}>
             Users:
-            <strong className={styles.statsValue}>{tournament.users}</strong>
+            <strong className={`${styles.statsValue} notranslate`}>
+              {tournament.users}
+            </strong>
           </span>
           {tournament.markets ? (
             <>
               <span className="pm-c-divider--circle" />
               <span className={styles.statsTitle}>
                 Markets:
-                <strong className={styles.statsValue}>
+                <strong className={`${styles.statsValue} notranslate`}>
                   {tournament.markets.length}
                 </strong>
               </span>
