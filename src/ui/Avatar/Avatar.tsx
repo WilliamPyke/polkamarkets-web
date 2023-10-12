@@ -5,16 +5,18 @@ import Image from 'ui/Image';
 
 import avatarClasses from './Avatar.module.scss';
 
-export type AvatarProps = ImageProps;
+export type AvatarProps = ImageProps & {
+  altFormatter?: (alt?: string) => string | null;
+};
 
 const Avatar = forwardRef<HTMLImageElement, AvatarProps>(function Avatar(
-  { alt, ...props },
+  { alt, altFormatter, ...props },
   ref
 ) {
   return (
     <Image ref={ref} {...props}>
       <strong className={avatarClasses.alt}>
-        {alt?.toUpperCase().match(/\w/)}
+        {altFormatter ? altFormatter(alt) : alt?.toUpperCase().match(/\w/)}
       </strong>
     </Image>
   );

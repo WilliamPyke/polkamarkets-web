@@ -17,4 +17,6 @@ export type Tournament = {
   imageUrl: string | null;
   markets?: Pick<Market, 'id' | 'title' | 'imageUrl' | 'slug'>[];
   group: TournamentGroup | null;
+  users: number;
+  expiresAt: string;
 };
