@@ -81,7 +81,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
               </Text>
             </Tooltip>
           </Text>
-          <span className="pm-c-divider--circle" />
+          {theme.device.isDesktop && <span className="pm-c-divider--circle" />}
         </>
       )}
       {!!liquidity && (
