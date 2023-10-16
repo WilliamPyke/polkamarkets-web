@@ -78,4 +78,5 @@ export interface Market {
   currency: Currency;
   votes: Votes;
   token: Token;
+  users: number;
 }
