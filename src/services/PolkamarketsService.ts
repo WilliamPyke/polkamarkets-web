@@ -347,6 +347,38 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async checkPortfolioAndClaimWinnings() {
+    // ensuring user has wallet connected
+    await this.login();
+
+    const portfolio = await this.getPortfolio();
+    let hasClaimed = false;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const marketId of Object.keys(portfolio)) {
+      const position = portfolio[marketId];
+      if (
+        position.claimStatus.winningsToClaim &&
+        !position.claimStatus.winningsClaimed
+      ) {
+        hasClaimed = true;
+        // eslint-disable-next-line no-await-in-loop
+        await this.claimWinnings(marketId);
+      }
+
+      if (
+        position.claimStatus.liquidityToClaim &&
+        !position.claimStatus.liquidityClaimed
+      ) {
+        hasClaimed = true;
+        // eslint-disable-next-line no-await-in-loop
+        await this.claimLiquidity(marketId);
+      }
+    }
+
+    return hasClaimed;
+  }
+
   public async claimWinnings(marketId: string | number) {
     // ensuring user has wallet connected
     await this.login();
