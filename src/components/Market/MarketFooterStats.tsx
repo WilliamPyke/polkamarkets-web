@@ -55,7 +55,10 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           >
             <Tooltip
               className={marketClasses.footerStatsTooltip}
-              text={`Volume: ${roundNumber(volumeEur, 3)} EUR`}
+              text={`Volume: ${roundNumber(
+                volumeEur,
+                features.fantasy.enabled ? 0 : 3
+              )} EUR`}
               disabled={features.fantasy.enabled}
             >
               <Icon
@@ -69,7 +72,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
                 fontWeight="semibold"
                 className={marketClasses.footerStatsText}
               >
-                {`${roundNumber(volume, 3)} `}
+                {`${roundNumber(volume, features.fantasy.enabled ? 0 : 3)} `}
               </Text>
               <Text
                 as="strong"
