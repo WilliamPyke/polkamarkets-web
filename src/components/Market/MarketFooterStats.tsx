@@ -20,6 +20,7 @@ type MarketFooterStatsProps = {
 
 export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
   const {
+    users,
     volume,
     volumeEur,
     liquidity,
@@ -44,6 +45,37 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           </Tooltip>
           <span className="pm-c-divider--circle" />
         </Feature>
+      )}
+      {!!users && (
+        <>
+          <Text
+            as="span"
+            scale="tiny-uppercase"
+            fontWeight="semibold"
+            className={`${marketClasses.footerStatsText} notranslate`}
+          >
+            <Tooltip
+              className={marketClasses.footerStatsTooltip}
+              text={`Users: ${users}`}
+              disabled={features.fantasy.enabled}
+            >
+              <Icon
+                name="User"
+                title="Users"
+                className={marketClasses.footerStatsIcon}
+              />
+              <Text
+                as="strong"
+                scale="tiny-uppercase"
+                fontWeight="semibold"
+                className={marketClasses.footerStatsText}
+              >
+                {users}
+              </Text>
+            </Tooltip>
+          </Text>
+          {theme.device.isDesktop && <span className="pm-c-divider--circle" />}
+        </>
       )}
       {!!volume && (
         <>
