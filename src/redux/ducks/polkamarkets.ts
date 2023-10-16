@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { features } from 'config';
 import { PolkamarketsService } from 'services';
 import { Currency } from 'types/currency';
 import { Token } from 'types/token';
@@ -340,6 +341,30 @@ function fetchAditionalData(polkamarketsService: PolkamarketsService) {
         .getPortfolio()
         .then(portfolio => {
           dispatch(changePortfolio(portfolio));
+
+          if (features.fantasy.enabled) {
+            // claiming winnings if any pending
+            polkamarketsService
+              .checkPortfolioAndClaimWinnings()
+              .then(hasClaimed => {
+                if (hasClaimed) {
+                  polkamarketsService
+                    .getPortfolio()
+                    .then(_portfolio => {
+                      dispatch(changePortfolio(_portfolio));
+                    })
+                    .catch(() => {});
+
+                  polkamarketsService
+                    .getPolkBalance()
+                    .then(polkBalance => {
+                      dispatch(changePolkBalance(polkBalance));
+                    })
+                    .catch(() => {});
+                }
+              })
+              .catch(() => {});
+          }
         })
         .catch(() => {})
         .finally(() => {
