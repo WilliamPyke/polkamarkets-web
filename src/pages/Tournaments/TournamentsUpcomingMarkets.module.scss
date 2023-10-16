@@ -284,5 +284,12 @@
         }
       }
     }
+
+    .pm-c-market-footer__group--row {
+      .pm-c-market-footer__divider--circle,
+      .pm-c-market-footer__tags {
+        display: none;
+      }
+    }
   }
 }
