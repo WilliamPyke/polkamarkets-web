@@ -123,7 +123,8 @@ const initialState: MarketInitialState = {
       isClaimed: false,
       finalizeTs: 0
     },
-    news: []
+    news: [],
+    users: 0
   },
   chartViews: chartViewsEnum,
   chartViewType: 'marketOverview',
