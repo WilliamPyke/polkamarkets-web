@@ -64,10 +64,7 @@ export default function Tournament() {
     [marketsIds, networkId]
   );
 
-  const isTournamentEnded = useMemo(
-    () => dayjs().utc().isAfter(dayjs(data?.expiresAt).utc()),
-    [data?.expiresAt]
-  );
+  const isTournamentEnded = dayjs().utc().isAfter(dayjs(data?.expiresAt).utc());
 
   return (
     <div className="max-width-screen-xl">
