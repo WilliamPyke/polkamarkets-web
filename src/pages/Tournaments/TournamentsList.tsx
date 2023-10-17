@@ -37,8 +37,7 @@ function TournamentsList() {
         const tournamentsInGroup = orderBy(
           tournaments
             .filter(tournament => tournament.group?.id === group.id)
-            .map(tournament => omit(tournament, 'group')),
-          'id'
+            .map(tournament => omit(tournament, 'group'))
         );
 
         return {
