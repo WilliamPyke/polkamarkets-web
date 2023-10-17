@@ -180,7 +180,9 @@ const PortfolioMarketTable = ({
                           $radius="xs"
                         />
                       )}
-                      {market.title}
+                      <p className={portfolioMarketTableClasses.rowMarketTitle}>
+                        {market.title}
+                      </p>
                     </div>
                   </td>
                 )}
