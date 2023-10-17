@@ -50,6 +50,12 @@
 }
 
 .footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-8);
+
   padding: 10px 16px;
   background-color: var(--color-bg-2);
   border-radius: 0px 0px 4px 4px;
