@@ -34,6 +34,7 @@ import marketClasses from './Market.module.scss';
 import MarketAbout from './MarketAbout';
 import MarketAnalytics from './MarketAnalytics';
 import MarketChart from './MarketChart';
+import MarketComments from './MarketComments';
 import MarketHead from './MarketHead';
 import MarketNews from './MarketNews';
 import MarketPredictions from './MarketPredictions';
@@ -234,6 +235,9 @@ function MarketUI() {
                   )}
                 </Tabs.TabPane>
               ) : null}
+              <Tabs.TabPane tab="Comments" id="comments">
+                <MarketComments />
+              </Tabs.TabPane>
             </Tabs>
           </section>
         </Container>
