@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { ui } from 'config';
+import dayjs from 'dayjs';
 import {
   useGetLeaderboardByTimeframeQuery,
   useGetTournamentBySlugQuery
@@ -63,6 +64,11 @@ export default function Tournament() {
     [marketsIds, networkId]
   );
 
+  const isTournamentEnded = useMemo(
+    () => dayjs().utc().isAfter(dayjs(data?.expiresAt).utc()),
+    [data?.expiresAt]
+  );
+
   return (
     <div className="max-width-screen-xl">
       {ui.hero.enabled && (
@@ -85,7 +91,14 @@ export default function Tournament() {
         />
       </Container>
       <div className={styles.root}>
-        <HomeFilter onFilterHide={handleHide} rect={rect} show={show} />
+        <HomeFilter
+          onFilterHide={handleHide}
+          rect={rect}
+          show={show}
+          resetStatesDropdown={
+            !isLoadingTournamentBySlugQuery && isTournamentEnded
+          }
+        />
         {isLoadingTournamentBySlugQuery ? (
           <div
             className={cn('pm-c-market-list', {
