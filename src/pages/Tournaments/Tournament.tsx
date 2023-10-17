@@ -6,6 +6,8 @@ import isNull from 'lodash/isNull';
 import type { Tournament as TournamentType } from 'types/tournament';
 import { Avatar } from 'ui';
 
+import { Pill } from 'components';
+
 import styles from './Tournament.module.scss';
 
 type TournamentProps = {
@@ -38,6 +40,10 @@ function Tournament({ tournament }: TournamentProps) {
 
     return altWithoutSpecialChars.substring(0, 2).toUpperCase();
   }, []);
+
+  const isTournamentEnded = dayjs()
+    .utc()
+    .isAfter(dayjs(tournament.expiresAt).utc());
 
   return (
     <Link to={`/tournaments/${tournament.slug}`} className={styles.root}>
@@ -83,6 +89,7 @@ function Tournament({ tournament }: TournamentProps) {
             </>
           ) : null}
         </div>
+        {isTournamentEnded ? <Pill badge>Ended</Pill> : null}
       </div>
     </Link>
   );

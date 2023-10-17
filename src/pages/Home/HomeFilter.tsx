@@ -180,11 +180,13 @@ function ListItemNested({
 export default function HomeFilter({
   onFilterHide,
   rect,
-  show
+  show,
+  resetStatesDropdown = false
 }: {
   onFilterHide(): void;
   rect: DOMRect;
   show: boolean;
+  resetStatesDropdown?: boolean;
 }) {
   const theme = useTheme();
   const { filters, state, controls } = useFilters();
@@ -200,6 +202,18 @@ export default function HomeFilter({
       ...state.dropdowns
     }
   });
+
+  useEffect(() => {
+    if (resetStatesDropdown) {
+      controls.updateDropdown({
+        dropdown: Dropdowns.STATES,
+        state: []
+      });
+
+      setValue('states', []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetStatesDropdown]);
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
