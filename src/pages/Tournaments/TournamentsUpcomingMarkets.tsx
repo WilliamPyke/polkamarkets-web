@@ -61,6 +61,7 @@ function TournamentsUpcomingMarkets({
   const marketsByVolume = useMemo(
     () =>
       orderBy(markets, 'volume', 'desc')
+        .filter(market => market.state === 'open')
         .slice(0, 8)
         .map(market => {
           const network = getNetworkById(market.networkId);
