@@ -7,3 +7,13 @@ export type News = {
   url: string;
   imageUrl: string;
 };
+
+export type Comment = {
+  id: number;
+  content: string;
+  contentAt: string;
+  user: {
+    username: string;
+    avatar: string;
+  };
+};
