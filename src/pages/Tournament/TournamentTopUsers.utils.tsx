@@ -64,7 +64,7 @@ type PrepareTournamentTopUsersRowArgs = {
 };
 
 function prepareTournamentTopUsersRow({
-  rows
+  rows = []
 }: PrepareTournamentTopUsersRowArgs) {
   const firstPlace = rows && rows[0];
   const secondPlace = rows && rows[1];
