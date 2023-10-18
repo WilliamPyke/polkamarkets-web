@@ -76,7 +76,6 @@ export default function Tournament() {
           topUsers={
             <TournamentTopUsers
               rows={leaderboardByTimeframe?.filter(row => row.username)}
-              sortBy="claimWinningsCount"
               isLoading={isLoadingLeaderboardByTimeframeQuery}
             />
           }

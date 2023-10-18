@@ -37,19 +37,12 @@ const columns: TournamentTopUsersColumn[] = [
 
 type TournamentTopUsersProps = {
   isLoading: boolean;
-} & Pick<PrepareLeaderboardTableRowsArgs, 'rows' | 'sortBy'>;
+} & Pick<PrepareLeaderboardTableRowsArgs, 'rows'>;
 
-function TournamentTopUsers({
-  rows,
-  sortBy,
-  isLoading
-}: TournamentTopUsersProps) {
+function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
   const location = useLocation();
 
-  const row = useMemo(
-    () => prepareTournamentTopUsersRow({ rows, sortBy }),
-    [rows, sortBy]
-  );
+  const row = useMemo(() => prepareTournamentTopUsersRow({ rows }), [rows]);
 
   return (
     <LeaderboardStats
