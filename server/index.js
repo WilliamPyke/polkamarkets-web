@@ -7,6 +7,20 @@ const helmet = require('helmet');
 const app = express();
 app.use(helmet.frameguard({ action: 'deny' }));
 
+app.use((request, response, next) => {
+  if (
+    request.headers['x-forwarded-proto'] !== 'https' &&
+    process.env.NODE_ENV !== 'development' &&
+    !request.secure
+  ) {
+    return response.redirect(
+      `https://${request.headers.host}${request.originalUrl}`
+    );
+  }
+
+  next();
+});
+
 const port = process.env.PORT || 5000;
 const isClubsEnabled =
   process.env.REACT_APP_FEATURE_CLUBS?.toLowerCase() === 'true';
@@ -463,16 +477,6 @@ app.use(express.static(path.resolve(__dirname, '..', 'build')));
 
 app.get('*', (_request, response) => {
   response.redirect('/');
-});
-
-app.use((request, response, next) => {
-  if (process.env.NODE_ENV !== 'development' && !request.secure) {
-    return response.redirect(
-      `https://${request.headers.host}${request.originalUrl}`
-    );
-  }
-
-  next();
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
