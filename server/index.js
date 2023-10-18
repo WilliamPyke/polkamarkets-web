@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable import-helpers/order-imports */
 require('dotenv').config();
 const express = require('express');
@@ -5,6 +6,20 @@ const helmet = require('helmet');
 
 const app = express();
 app.use(helmet.frameguard({ action: 'deny' }));
+
+app.use((request, response, next) => {
+  if (
+    request.headers['x-forwarded-proto'] !== 'https' &&
+    process.env.NODE_ENV !== 'development' &&
+    !request.secure
+  ) {
+    return response.redirect(
+      `https://${request.headers.host}${request.originalUrl}`
+    );
+  }
+
+  next();
+});
 
 const port = process.env.PORT || 5000;
 const isClubsEnabled =
