@@ -454,91 +454,137 @@ function Leaderboard() {
           </ButtonLoading>
         ) : null}
       </div>
-      <Tabs
-        direction="row"
-        fullwidth
-        value={activeTab}
-        onChange={tab => setActiveTab(tab)}
-        filters={[
-          <Dropdown
-            key="timeframe"
-            defaultOption="at"
-            options={[
-              { label: 'Weekly', value: '1w' },
-              { label: 'Monthly', value: '1m' },
-              { label: 'All-time', value: 'at' }
-            ]}
-            onSelect={value => setTimeframe(value)}
+      {leaderboardType.tournament ? (
+        <div
+          className={cn('gap-6 justify-space-between align-start width-full', {
+            'flex-row': theme.device.isDesktop,
+            'flex-column': !theme.device.isDesktop
+          })}
+        >
+          <LeaderboardTable
+            loggedInUser={userEthAddress}
+            columns={
+              theme.device.isDesktop
+                ? columns
+                : columns.filter(
+                    column =>
+                      column.key === activeTab || column.key === 'wallet'
+                  )
+            }
+            rows={data}
+            ticker={ticker}
+            isLoading={isLoadingQuery}
           />
-        ]}
-      >
-        {tabs.map(tab => (
-          <Tabs.TabPane key={tab.id} id={tab.id} tab={tab.title}>
-            <div
-              className={cn(
-                'gap-6 justify-space-between align-start width-full',
-                {
-                  'flex-row': theme.device.isDesktop,
-                  'flex-column': !theme.device.isDesktop
-                }
-              )}
-            >
-              <LeaderboardTable
-                loggedInUser={userEthAddress}
-                columns={
-                  theme.device.isDesktop
-                    ? columns
-                    : columns.filter(
-                        column =>
-                          column.key === activeTab || column.key === 'wallet'
-                      )
-                }
-                rows={data}
-                sortBy={tab.sortBy}
-                ticker={ticker}
-                isLoading={isLoadingQuery}
-              />
 
-              <div
-                className={cn('flex-column gap-6 justify-start align-start', {
-                  'width-min-content': theme.device.isDesktop,
-                  'width-full': !theme.device.isDesktop
-                })}
-              >
-                {theme.device.isDesktop ? (
-                  <>
-                    {walletConnected ? (
-                      <LeaderboardYourStats
-                        loggedInUser={userEthAddress}
-                        rows={data}
-                        sortBy={tab.sortBy}
-                        ticker={ticker}
-                        isLoading={isLoadingQuery}
-                      />
-                    ) : null}
-                    <LeaderboardTopWallets
-                      rows={data}
-                      sortBy={tab.sortBy}
-                      isLoading={isLoadingQuery}
-                    />
-                    {leaderboardType.club && walletConnected ? (
-                      <LeaderboardMyLeaderboards
-                        loggedInUser={userEthAddress}
-                      />
-                    ) : null}
-                  </>
-                ) : null}
-                {leaderboardType.tournament ? (
-                  <LeaderboardMarkets
-                    data={tournamentBySlug?.markets}
-                    isLoading={isLoadingTournamentBySlugQuery}
+          <div
+            className={cn('flex-column gap-6 justify-start align-start', {
+              'width-min-content': theme.device.isDesktop,
+              'width-full': !theme.device.isDesktop
+            })}
+          >
+            {theme.device.isDesktop ? (
+              <>
+                {walletConnected ? (
+                  <LeaderboardYourStats
+                    loggedInUser={userEthAddress}
+                    rows={data}
+                    ticker={ticker}
+                    isLoading={isLoadingQuery}
                   />
                 ) : null}
+                <LeaderboardTopWallets rows={data} isLoading={isLoadingQuery} />
+                {leaderboardType.club && walletConnected ? (
+                  <LeaderboardMyLeaderboards loggedInUser={userEthAddress} />
+                ) : null}
+              </>
+            ) : null}
+            <LeaderboardMarkets
+              data={tournamentBySlug?.markets}
+              isLoading={isLoadingTournamentBySlugQuery}
+            />
+          </div>
+        </div>
+      ) : (
+        <Tabs
+          direction="row"
+          fullwidth
+          value={activeTab}
+          onChange={tab => setActiveTab(tab)}
+          filters={[
+            <Dropdown
+              key="timeframe"
+              defaultOption="at"
+              options={[
+                { label: 'Weekly', value: '1w' },
+                { label: 'Monthly', value: '1m' },
+                { label: 'All-time', value: 'at' }
+              ]}
+              onSelect={value => setTimeframe(value)}
+            />
+          ]}
+        >
+          {tabs.map(tab => (
+            <Tabs.TabPane key={tab.id} id={tab.id} tab={tab.title}>
+              <div
+                className={cn(
+                  'gap-6 justify-space-between align-start width-full',
+                  {
+                    'flex-row': theme.device.isDesktop,
+                    'flex-column': !theme.device.isDesktop
+                  }
+                )}
+              >
+                <LeaderboardTable
+                  loggedInUser={userEthAddress}
+                  columns={
+                    theme.device.isDesktop
+                      ? columns
+                      : columns.filter(
+                          column =>
+                            column.key === activeTab || column.key === 'wallet'
+                        )
+                  }
+                  rows={data}
+                  sortBy={tab.sortBy}
+                  ticker={ticker}
+                  isLoading={isLoadingQuery}
+                />
+
+                <div
+                  className={cn('flex-column gap-6 justify-start align-start', {
+                    'width-min-content': theme.device.isDesktop,
+                    'width-full': !theme.device.isDesktop
+                  })}
+                >
+                  {theme.device.isDesktop ? (
+                    <>
+                      {walletConnected ? (
+                        <LeaderboardYourStats
+                          loggedInUser={userEthAddress}
+                          rows={data}
+                          sortBy={tab.sortBy}
+                          ticker={ticker}
+                          isLoading={isLoadingQuery}
+                        />
+                      ) : null}
+                      <LeaderboardTopWallets
+                        rows={data}
+                        sortBy={tab.sortBy}
+                        isLoading={isLoadingQuery}
+                      />
+                      {leaderboardType.club && walletConnected ? (
+                        <LeaderboardMyLeaderboards
+                          loggedInUser={userEthAddress}
+                        />
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          </Tabs.TabPane>
-        ))}
-      </Tabs>
+            </Tabs.TabPane>
+          ))}
+        </Tabs>
+      )}
     </Container>
   );
 }
