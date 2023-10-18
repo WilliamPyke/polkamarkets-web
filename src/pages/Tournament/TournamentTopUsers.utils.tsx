@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 
-import orderBy from 'lodash/orderBy';
 import type { GetLeaderboardByTimeframeData } from 'services/Polkamarkets/types';
 
 const USER_PLACES = {
@@ -62,23 +61,15 @@ function topUserRowRender({ place }: TopUserRowRenderArgs) {
 
 type PrepareTournamentTopUsersRowArgs = {
   rows?: GetLeaderboardByTimeframeData;
-  sortBy: string;
 };
 
 function prepareTournamentTopUsersRow({
-  rows,
-  sortBy
+  rows
 }: PrepareTournamentTopUsersRowArgs) {
-  const sortedRows = orderBy(
-    rows,
-    sortBy,
-    'desc'
-  ) as GetLeaderboardByTimeframeData;
-
-  const firstPlace = sortedRows[0];
-  const secondPlace = sortedRows[1];
-  const thirdPlace = sortedRows[2];
-  const fourthPlace = sortedRows[3];
+  const firstPlace = rows && rows[0];
+  const secondPlace = rows && rows[1];
+  const thirdPlace = rows && rows[2];
+  const fourthPlace = rows && rows[3];
 
   return {
     firstPlace: {
