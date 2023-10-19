@@ -44,14 +44,12 @@ function MarketComment({ user, body, timestamp }: MarketCommentProps) {
 
   return (
     <div className={styles.comment}>
-      {!isNull(user.avatar) ? (
-        <Avatar
-          src={user.avatar}
-          alt=""
-          $size="sm"
-          className={styles.commentAvatar}
-        />
-      ) : null}
+      <Avatar
+        src={!isNull(user.avatar) ? user.avatar : undefined}
+        alt={user.username}
+        $size="sm"
+        className={styles.commentAvatar}
+      />
       <div className={styles.commentBody}>
         <p className={styles.commentBodyDetails}>
           <span className={styles.commentBodyDetailsUsername}>
