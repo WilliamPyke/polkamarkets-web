@@ -102,6 +102,12 @@
       background-color: var(--color-bg-3);
       border-top: solid 1px var(--color-border);
       border-radius: 0 0 var(--size-12) var(--size-12);
+
+      &Signin {
+        &Icon {
+          fill: var(--color-text-secondary) !important;
+        }
+      }
     }
   }
 }
