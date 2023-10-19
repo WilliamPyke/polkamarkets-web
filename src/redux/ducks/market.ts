@@ -124,7 +124,8 @@ const initialState: MarketInitialState = {
       finalizeTs: 0
     },
     news: [],
-    users: 0
+    users: 0,
+    comments: []
   },
   chartViews: chartViewsEnum,
   chartViewType: 'marketOverview',
