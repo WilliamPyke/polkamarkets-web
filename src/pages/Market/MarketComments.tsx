@@ -4,6 +4,8 @@ import { relativeTimeFromNow } from 'helpers/date';
 import type { Comment } from 'types/market';
 import Avatar from 'ui/Avatar';
 
+import { Button } from 'components';
+
 import { useLanguage } from 'hooks';
 
 import styles from './MarketComments.module.scss';
@@ -31,6 +33,33 @@ const comments: Comment[] = [
   }
 ];
 
+function MarketNewComment() {
+  return (
+    <form action="">
+      <div className={styles.newComment}>
+        <Avatar
+          src="https://drive.google.com/uc?id=184zxQaHisHzJnKO1L1FbelwRV4O5EFAT&export=download"
+          alt=""
+          $size="sm"
+          className={styles.commentAvatar}
+        />
+        <div className={styles.newCommentBox}>
+          <textarea
+            rows={6}
+            className={styles.newCommentBoxTextarea}
+            placeholder="Write a comment..."
+          />
+          <div className={styles.newCommentBoxFooter}>
+            <Button type="submit" size="xs" color="primary">
+              Comment
+            </Button>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+}
+
 type MarketCommentProps = Comment;
 
 function MarketComment({ user, content, contentAt }: MarketCommentProps) {
@@ -41,7 +70,7 @@ function MarketComment({ user, content, contentAt }: MarketCommentProps) {
       <Avatar
         src={user.avatar}
         alt=""
-        $size="md"
+        $size="sm"
         className={styles.commentAvatar}
       />
       <div className={styles.commentBody}>
@@ -60,17 +89,20 @@ function MarketComment({ user, content, contentAt }: MarketCommentProps) {
 
 export default function MarketComments() {
   return (
-    <ul className={styles.comments}>
-      {comments.map((comment, index) => (
-        <li
-          key={comment.id}
-          className={cn({
-            'bg-3': index % 2 === 0
-          })}
-        >
-          <MarketComment {...comment} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      <MarketNewComment />
+      <ul className={styles.comments}>
+        {comments.map((comment, index) => (
+          <li
+            key={comment.id}
+            className={cn({
+              'bg-3': index % 2 === 0
+            })}
+          >
+            <MarketComment {...comment} />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

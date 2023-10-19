@@ -3,13 +3,7 @@
   align-items: flex-start;
   gap: var(--size-16);
 
-  padding: var(--size-12) var(--size-16);
-
-  @media (min-width: 768px) {
-    padding-left: var(--size-32);
-    padding-right: var(--size-32);
-    padding-top: var(--size-24);
-  }
+  padding: var(--size-24) var(--size-32);
 
   &Avatar {
     aspect-ratio: 1 / 1;
@@ -46,6 +40,68 @@
 }
 
 .comments {
-  border-radius: var(--size-4);
+  border-radius: 0 0 var(--size-12) var(--size-12);
   border: solid 1px var(--color-border);
+
+  &:last-of-type {
+    li {
+      border-radius: 0 0 var(--size-12) var(--size-12);
+    }
+  }
+}
+
+.newComment {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--size-16);
+
+  padding: var(--size-24) var(--size-32);
+  width: 100%;
+
+  border: solid 1px var(--color-border);
+  border-bottom: none;
+  border-radius: var(--size-12) var(--size-12) 0 0;
+
+  &Box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    border: solid 1px var(--color-border);
+    border-radius: var(--size-12);
+
+    &Textarea {
+      resize: none;
+
+      background-color: transparent;
+      padding: var(--size-12) var(--size-16);
+
+      font-size: var(--size-14--rem);
+      line-height: 1.4;
+      font-weight: 400;
+      color: var(--color-text-1);
+
+      border: none;
+      border-radius: var(--size-12) var(--size-12) 0 0;
+      outline: none;
+
+      &::placeholder {
+        color: var(--color-text-3);
+      }
+    }
+
+    &Footer {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+
+      padding: var(--size-8) var(--size-12);
+
+      background-color: var(--color-bg-3);
+      border-top: solid 1px var(--color-border);
+      border-radius: 0 0 var(--size-12) var(--size-12);
+    }
+  }
 }
