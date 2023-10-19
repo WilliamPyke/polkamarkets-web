@@ -10,10 +10,10 @@ export type News = {
 
 export type Comment = {
   id: number;
-  content: string;
-  contentAt: string;
+  body: string;
+  timestamp: number;
   user: {
     username: string;
-    avatar: string;
+    avatar: string | null;
   };
 };
