@@ -1,10 +1,9 @@
 import cn from 'classnames';
+import { environment } from 'config';
 import { Market } from 'models/market';
 
 import FavoriteMarket from 'components/FavoriteMarket';
 import Icon from 'components/Icon';
-
-import { environment } from 'config';
 
 type MarketFooterActionsProps = {
   market: Market;
@@ -15,7 +14,6 @@ export default function MarketFooterActions({
   market,
   $variant = 'text'
 }: MarketFooterActionsProps) {
-
   // stripping protocol from publicUrl
   const publicUrl = environment.PUBLIC_URL?.replace(/(^\w+:|^)\/\//, '') || '';
 
