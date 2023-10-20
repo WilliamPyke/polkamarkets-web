@@ -6,7 +6,7 @@ import {
   LeaderboardTimeframe,
   UserLeaderboard
 } from 'types/leaderboard';
-import { MarketState } from 'types/market';
+import { MarketState, Comment } from 'types/market';
 import { FeedActivity } from 'types/portfolio';
 import { Tournament } from 'types/tournament';
 
@@ -175,7 +175,7 @@ export type GetWhitelistStatusArgs = {
 };
 
 // addComment
-export type AddCommentData = void;
+export type AddCommentData = Comment;
 export type AddCommentParams = {
   user: {
     authenticationToken: string;
