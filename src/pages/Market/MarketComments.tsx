@@ -43,6 +43,7 @@ function MarketNewComment() {
   const {
     register,
     handleSubmit,
+    watch,
     reset: resetForm
   } = useForm<NewCommentForm>();
 
@@ -79,6 +80,8 @@ function MarketNewComment() {
     }
   }, [isSuccessAddComment, addCommentData, resetAddComment, resetForm]);
 
+  const comment = watch('comment');
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.newComment}>
@@ -113,7 +116,7 @@ function MarketNewComment() {
                 size="xs"
                 color="primary"
                 loading={isLoadingAddComment}
-                disabled={isLoadingUser}
+                disabled={isLoadingUser || isEmpty(comment)}
               >
                 Comment
               </ButtonLoading>
