@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import cn from 'classnames';
@@ -6,6 +6,7 @@ import { relativeTimeFromNow } from 'helpers/date';
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
 import orderBy from 'lodash/orderBy';
+import { changeData } from 'redux/ducks/market';
 import { useAddCommentMutation } from 'services/Polkamarkets';
 import type { Comment } from 'types/market';
 import Avatar from 'ui/Avatar';
@@ -13,7 +14,7 @@ import Avatar from 'ui/Avatar';
 import { Icon, ProfileSignin } from 'components';
 import { ButtonLoading } from 'components/Button';
 
-import { useAppSelector, useLanguage } from 'hooks';
+import { useAppDispatch, useAppSelector, useLanguage } from 'hooks';
 
 import styles from './MarketComments.module.scss';
 
@@ -22,6 +23,8 @@ type NewCommentForm = {
 };
 
 function MarketNewComment() {
+  const dispatch = useAppDispatch();
+
   // User
   const user = useAppSelector(state => state.polkamarkets.socialLoginInfo);
   const isLoadingUser = useAppSelector(
@@ -38,6 +41,7 @@ function MarketNewComment() {
 
   // Market
   const marketSlug = useAppSelector(state => state.market.market.slug);
+  const marketComments = useAppSelector(state => state.market.market.comments);
 
   // Form
   const {
@@ -73,12 +77,28 @@ function MarketNewComment() {
     }
   };
 
+  const updateMarketComments = useCallback(
+    (comment: Comment) => {
+      dispatch(
+        changeData({ data: { comments: [...marketComments, comment] } })
+      );
+    },
+    [dispatch, marketComments]
+  );
+
   useEffect(() => {
     if (isSuccessAddComment && addCommentData) {
+      updateMarketComments(addCommentData);
       resetAddComment();
       resetForm();
     }
-  }, [isSuccessAddComment, addCommentData, resetAddComment, resetForm]);
+  }, [
+    isSuccessAddComment,
+    addCommentData,
+    resetAddComment,
+    resetForm,
+    updateMarketComments
+  ]);
 
   const comment = watch('comment');
 
@@ -96,7 +116,6 @@ function MarketNewComment() {
             rows={6}
             className={styles.newCommentBoxTextarea}
             placeholder="Share your thoughts..."
-            disabled={isLoadingUser || !isLoggedIn}
             {...register('comment')}
           />
           <div className={styles.newCommentBoxFooter}>
