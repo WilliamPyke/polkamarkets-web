@@ -1,31 +1,69 @@
+import { useForm, SubmitHandler } from 'react-hook-form';
+
 import cn from 'classnames';
 import { relativeTimeFromNow } from 'helpers/date';
 import isNull from 'lodash/isNull';
+import orderBy from 'lodash/orderBy';
+import { useAddCommentMutation } from 'services/Polkamarkets';
 import type { Comment } from 'types/market';
 import Avatar from 'ui/Avatar';
 
-import { Button, Icon, ProfileSignin } from 'components';
+import { Icon, ProfileSignin } from 'components';
+import { ButtonLoading } from 'components/Button';
 
 import { useAppSelector, useLanguage } from 'hooks';
 
 import styles from './MarketComments.module.scss';
 
-function MarketNewComment() {
-  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+type NewCommentForm = {
+  comment: string;
+};
 
+function MarketNewComment() {
+  // User
   const user = useAppSelector(state => state.polkamarkets.socialLoginInfo);
   const isLoadingUser = useAppSelector(
     state => state.polkamarkets.isLoading.login
   );
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
 
+  // User-derivated data
   const username = user?.name?.includes('#')
     ? user?.name?.split('#')[0]
     : user?.name?.split('@')[0];
 
   const avatar = user?.profileImage;
 
+  // Market
+  const marketSlug = useAppSelector(state => state.market.market.slug);
+
+  // Form
+  const { register, handleSubmit, reset } = useForm<NewCommentForm>();
+
+  // Mutation
+  const [addComment, { isLoading, isSuccess }] = useAddCommentMutation();
+
+  // Handlers
+  const onSubmit: SubmitHandler<NewCommentForm> = async data => {
+    if (user.idToken) {
+      await addComment({
+        user: {
+          authenticationToken: user.idToken
+        },
+        comment: {
+          body: data.comment,
+          marketSlug
+        }
+      });
+
+      if (isSuccess) {
+        reset();
+      }
+    }
+  };
+
   return (
-    <form action="">
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.newComment}>
         <Avatar
           src={avatar}
@@ -39,6 +77,7 @@ function MarketNewComment() {
             className={styles.newCommentBoxTextarea}
             placeholder="Share your thoughts..."
             disabled={isLoadingUser || !isLoggedIn}
+            {...register('comment')}
           />
           <div className={styles.newCommentBoxFooter}>
             {!isLoadingUser && !isLoggedIn ? (
@@ -52,14 +91,15 @@ function MarketNewComment() {
               </ProfileSignin>
             ) : null}
             {isLoadingUser || (!isLoadingUser && isLoggedIn) ? (
-              <Button
+              <ButtonLoading
                 type="submit"
                 size="xs"
                 color="primary"
+                loading={isLoading}
                 disabled={isLoadingUser}
               >
                 Comment
-              </Button>
+              </ButtonLoading>
             ) : null}
           </div>
         </div>
@@ -96,7 +136,9 @@ function MarketComment({ user, body, timestamp }: MarketCommentProps) {
 }
 
 export default function MarketComments() {
-  const comments = useAppSelector(state => state.market.market.comments);
+  const marketComments = useAppSelector(state => state.market.market.comments);
+
+  const comments = orderBy(marketComments, ['timestamp'], ['desc']);
 
   return (
     <div>
