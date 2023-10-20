@@ -173,3 +173,15 @@ export type GetWhitelistStatusData = {
 export type GetWhitelistStatusArgs = {
   email: string;
 };
+
+// addComment
+export type AddCommentData = void;
+export type AddCommentParams = {
+  user: {
+    authenticationToken: string;
+  };
+  comment: {
+    body: string;
+    marketSlug: string;
+  };
+};
