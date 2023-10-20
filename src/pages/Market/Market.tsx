@@ -105,7 +105,11 @@ function MarketUI() {
   const bondActions = useAppSelector(state => state.polkamarkets.bondActions);
   const market = useAppSelector(state => state.market.market);
   const chartViews = useAppSelector(state => state.market.chartViews);
-  const [tab, setTab] = useState('positions');
+  const [tab, setTab] = useState(
+    features.fantasy.enabled && ui.socialLogin.enabled
+      ? 'comments'
+      : 'positions'
+  );
 
   const handleChartChange = useCallback(
     async (type: string) => {
@@ -222,7 +226,7 @@ function MarketUI() {
               <Tabs.TabPane tab="Positions" id="positions">
                 {tabPositions}
               </Tabs.TabPane>
-              {ui.market.news.enabled ? (
+              {theme.device.isDesktop && ui.market.news.enabled ? (
                 <Tabs.TabPane tab="News" id="news">
                   {market.news?.length ? (
                     <MarketNews news={market.news} />
