@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, KeyboardEvent } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
@@ -78,6 +78,14 @@ function MarketNewComment() {
     }
   };
 
+  function onCmdCtrlEnter(callback) {
+    return (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        callback();
+      }
+    };
+  }
+
   const updateMarketComments = useCallback(
     (comment: Comment) => {
       dispatch(
@@ -117,6 +125,7 @@ function MarketNewComment() {
             rows={6}
             className={styles.newCommentBoxTextarea}
             placeholder="Share your thoughts..."
+            onKeyDown={onCmdCtrlEnter(handleSubmit(onSubmit))}
             disabled={isLoadingAddComment}
             {...register('comment')}
           />
