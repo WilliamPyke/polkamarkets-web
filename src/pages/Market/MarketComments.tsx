@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 import cn from 'classnames';
@@ -39,10 +40,22 @@ function MarketNewComment() {
   const marketSlug = useAppSelector(state => state.market.market.slug);
 
   // Form
-  const { register, handleSubmit, reset } = useForm<NewCommentForm>();
+  const {
+    register,
+    handleSubmit,
+    reset: resetForm
+  } = useForm<NewCommentForm>();
 
   // Mutation
-  const [addComment, { isLoading, isSuccess }] = useAddCommentMutation();
+  const [
+    addComment,
+    {
+      data: addCommentData,
+      isLoading: isLoadingAddComment,
+      isSuccess: isSuccessAddComment,
+      reset: resetAddComment
+    }
+  ] = useAddCommentMutation();
 
   // Handlers
   const onSubmit: SubmitHandler<NewCommentForm> = async data => {
@@ -56,12 +69,15 @@ function MarketNewComment() {
           marketSlug
         }
       });
-
-      if (isSuccess) {
-        reset();
-      }
     }
   };
+
+  useEffect(() => {
+    if (isSuccessAddComment && addCommentData) {
+      resetAddComment();
+      resetForm();
+    }
+  }, [isSuccessAddComment, addCommentData, resetAddComment, resetForm]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -96,7 +112,7 @@ function MarketNewComment() {
                 type="submit"
                 size="xs"
                 color="primary"
-                loading={isLoading}
+                loading={isLoadingAddComment}
                 disabled={isLoadingUser}
               >
                 Comment
