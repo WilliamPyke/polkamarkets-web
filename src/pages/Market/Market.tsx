@@ -235,9 +235,11 @@ function MarketUI() {
                   )}
                 </Tabs.TabPane>
               ) : null}
-              <Tabs.TabPane tab="Comments" id="comments">
-                <MarketComments />
-              </Tabs.TabPane>
+              {features.fantasy.enabled && ui.socialLogin.enabled ? (
+                <Tabs.TabPane tab="Comments" id="comments">
+                  <MarketComments />
+                </Tabs.TabPane>
+              ) : null}
             </Tabs>
           </section>
         </Container>
