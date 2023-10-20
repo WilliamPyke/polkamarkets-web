@@ -155,7 +155,7 @@ function MarketComment({ user, body, timestamp }: MarketCommentProps) {
   const lang = useLanguage();
 
   return (
-    <div className={styles.comment}>
+    <div className={`${styles.comment} notranslate`}>
       <Link to={`/user/${user.username}`}>
         <Avatar
           src={!isNull(user.avatar) ? user.avatar : undefined}
