@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 import { relativeTimeFromNow } from 'helpers/date';
@@ -155,17 +156,22 @@ function MarketComment({ user, body, timestamp }: MarketCommentProps) {
 
   return (
     <div className={styles.comment}>
-      <Avatar
-        src={!isNull(user.avatar) ? user.avatar : undefined}
-        alt={user.username}
-        $size="sm"
-        className={styles.commentAvatar}
-      />
+      <Link to={`/user/${user.username}`}>
+        <Avatar
+          src={!isNull(user.avatar) ? user.avatar : undefined}
+          alt={user.username}
+          $size="sm"
+          className={styles.commentAvatar}
+        />
+      </Link>
       <div className={styles.commentBody}>
         <p className={styles.commentBodyDetails}>
-          <span className={styles.commentBodyDetailsUsername}>
+          <Link
+            to={`/user/${user.username}`}
+            className={styles.commentBodyDetailsUsername}
+          >
             {user.username}
-          </span>
+          </Link>
           <span className={styles.commentBodyDetailsDivider}>&middot;</span>
           {relativeTimeFromNow(timestamp * 1000, lang)}
         </p>
