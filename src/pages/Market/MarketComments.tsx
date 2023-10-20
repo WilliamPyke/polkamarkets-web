@@ -116,6 +116,7 @@ function MarketNewComment() {
             rows={6}
             className={styles.newCommentBoxTextarea}
             placeholder="Share your thoughts..."
+            disabled={isLoadingAddComment}
             {...register('comment')}
           />
           <div className={styles.newCommentBoxFooter}>
