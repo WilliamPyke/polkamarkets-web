@@ -40,7 +40,7 @@ function generateMarketChartRandomData(size: number) {
 
 type ItemAlign = 'left' | 'center' | 'right';
 
-type Column = {
+export type Column = {
   title: string;
   key: string;
   align: ItemAlign;
@@ -58,24 +58,13 @@ type Row = {
 };
 
 function formatMarketPositions<A, O>(
+  columns: Column[],
   actions: A[],
   bondActions: A[],
   outcomes: O,
   ticker: string,
   network
 ) {
-  const columns: Column[] = [
-    { title: 'Outcome', key: 'outcome', align: 'left' },
-    { title: 'Date', key: 'date', align: 'right' },
-    { title: 'Price', key: 'price', align: 'right' },
-    { title: 'Shares', key: 'shares', align: 'right' },
-    { title: 'Total Value', key: 'value', align: 'right' },
-    { title: 'Trade Type', key: 'tradeType', align: 'center' },
-    { title: 'TX', key: 'transactionHash', align: 'right' }
-  ].filter(column =>
-    features.fantasy.enabled ? column.key !== 'transactionHash' : true
-  ) as Column[];
-
   const actionColorReducer = action => {
     switch (action) {
       case 'Buy':

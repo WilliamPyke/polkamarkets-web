@@ -39,7 +39,7 @@ import MarketHead from './MarketHead';
 import MarketNews from './MarketNews';
 import MarketPredictions from './MarketPredictions';
 import MarketTitle from './MarketTitle';
-import { formatMarketPositions, formatSEODescription } from './utils';
+import { Column, formatMarketPositions, formatSEODescription } from './utils';
 
 const forms = {
   liquidityForm: 'Liquidity',
@@ -119,7 +119,33 @@ function MarketUI() {
     },
     [dispatch]
   );
+
+  const columns = useMemo(
+    () =>
+      [
+        { title: 'Outcome', key: 'outcome', align: 'left' },
+        { title: 'Date', key: 'date', align: 'right' },
+        { title: 'Price', key: 'price', align: 'right' },
+        { title: 'Shares', key: 'shares', align: 'right' },
+        { title: 'Total Value', key: 'value', align: 'right' },
+        { title: 'Trade Type', key: 'tradeType', align: 'center' },
+        { title: 'TX', key: 'transactionHash', align: 'right' }
+      ].filter(column => {
+        if (!theme.device.isDesktop) {
+          return ['outcome', 'shares', 'tradeType'].includes(column.key);
+        }
+
+        if (features.fantasy.enabled) {
+          return column.key !== 'transactionHash';
+        }
+
+        return true;
+      }) as Column[],
+    [theme.device.isDesktop]
+  );
+
   const tableItems = formatMarketPositions<Action, MarketInterface['outcomes']>(
+    columns,
     actions.filter(action => action.marketId === +market.id),
     bondActions.filter(action => action.questionId === market.questionId),
     market.outcomes,
