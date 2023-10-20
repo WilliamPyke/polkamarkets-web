@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 
 import cn from 'classnames';
 import { relativeTimeFromNow } from 'helpers/date';
+import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
 import orderBy from 'lodash/orderBy';
 import { useAddCommentMutation } from 'services/Polkamarkets';
@@ -141,20 +142,22 @@ export default function MarketComments() {
   const comments = orderBy(marketComments, ['timestamp'], ['desc']);
 
   return (
-    <div>
+    <div className={styles.root}>
       <MarketNewComment />
-      <ul className={styles.comments}>
-        {comments.map((comment, index) => (
-          <li
-            key={comment.id}
-            className={cn({
-              'bg-3': index % 2 === 0
-            })}
-          >
-            <MarketComment {...comment} />
-          </li>
-        ))}
-      </ul>
+      {!isEmpty(comments) ? (
+        <ul className={styles.comments}>
+          {comments.map((comment, index) => (
+            <li
+              key={comment.id}
+              className={cn({
+                'bg-3': index % 2 === 0
+              })}
+            >
+              <MarketComment {...comment} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   );
 }
