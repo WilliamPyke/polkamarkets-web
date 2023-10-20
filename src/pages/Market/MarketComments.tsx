@@ -37,7 +37,7 @@ function MarketNewComment() {
           <textarea
             rows={6}
             className={styles.newCommentBoxTextarea}
-            placeholder="Write a comment..."
+            placeholder="Share your thoughts..."
             disabled={isLoadingUser || !isLoggedIn}
           />
           <div className={styles.newCommentBoxFooter}>
