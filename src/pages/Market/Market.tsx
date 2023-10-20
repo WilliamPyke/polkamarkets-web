@@ -144,14 +144,28 @@ function MarketUI() {
     [theme.device.isDesktop]
   );
 
+  const rowsToOmit = useMemo(() => {
+    if (!theme.device.isDesktop) {
+      return ['date', 'price', 'value', 'transactionHash'];
+    }
+
+    if (features.fantasy.enabled) {
+      return ['transactionHash'];
+    }
+
+    return [];
+  }, [theme.device.isDesktop]);
+
   const tableItems = formatMarketPositions<Action, MarketInterface['outcomes']>(
     columns,
     actions.filter(action => action.marketId === +market.id),
     bondActions.filter(action => action.questionId === market.questionId),
     market.outcomes,
     market.token.ticker,
-    network.network
+    network.network,
+    rowsToOmit
   );
+
   const SidebarWrapperComponent = theme.device.isDesktop
     ? Fragment
     : SidebarWrapper;

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { features } from 'config';
 import dayjs from 'dayjs';
 import { colorByOutcomeId } from 'helpers/color';
 import { fromTimestampToDate, toUTC } from 'helpers/date';
@@ -63,7 +62,8 @@ function formatMarketPositions<A, O>(
   bondActions: A[],
   outcomes: O,
   ticker: string,
-  network
+  network,
+  rowsToOmit: string[] = []
 ) {
   const actionColorReducer = action => {
     switch (action) {
@@ -206,7 +206,7 @@ function formatMarketPositions<A, O>(
             align: 'right'
           }
         },
-        features.fantasy.enabled ? ['transactionHash'] : []
+        rowsToOmit
       ) as Row;
     });
 
