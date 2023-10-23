@@ -176,6 +176,10 @@
 }
 
 .tabs {
+  &Header {
+    justify-content: flex-start !important;
+  }
+
   &Adornment {
     padding: 0 var(--size-12) !important;
     height: var(--size-32) !important;

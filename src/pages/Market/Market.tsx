@@ -35,6 +35,7 @@ import MarketAbout from './MarketAbout';
 import MarketAnalytics from './MarketAnalytics';
 import MarketChart from './MarketChart';
 import MarketComments from './MarketComments';
+import MarketFeed from './MarketFeed';
 import MarketHead from './MarketHead';
 import MarketNews from './MarketNews';
 import MarketPredictions from './MarketPredictions';
@@ -262,7 +263,13 @@ function MarketUI() {
             </section>
           )}
           <section className={`pm-p-market__tabs ${marketClasses.section}`}>
-            <Tabs value={tab} onChange={setTab}>
+            <Tabs
+              value={tab}
+              onChange={setTab}
+              className={{
+                header: marketClasses.tabsHeader
+              }}
+            >
               <Tabs.TabPane tab="Positions" id="positions">
                 {tabPositions}
               </Tabs.TabPane>
@@ -282,6 +289,11 @@ function MarketUI() {
               {features.fantasy.enabled && ui.socialLogin.enabled ? (
                 <Tabs.TabPane tab="Comments" id="comments">
                   <MarketComments />
+                </Tabs.TabPane>
+              ) : null}
+              {features.fantasy.enabled && ui.socialLogin.enabled ? (
+                <Tabs.TabPane tab="Activity" id="activity">
+                  <MarketFeed />
                 </Tabs.TabPane>
               ) : null}
             </Tabs>
