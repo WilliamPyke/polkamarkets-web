@@ -1,3 +1,4 @@
+import features from 'config/features';
 import { categoricalColorsInHex } from 'helpers/color';
 
 function generateCustomOptions(
@@ -27,7 +28,10 @@ function generateCustomOptions(
       },
       y: {
         show: true,
-        formatter: value => `${parseFloat(value).toFixed(3)} ${ticker}`
+        formatter: value =>
+          features.fantasy.enabled
+            ? `${(parseFloat(value) * 100).toFixed(1)}%`
+            : `${parseFloat(value).toFixed(3)} ${ticker}`
       }
     },
     legend: {
@@ -103,7 +107,9 @@ function generateCustomOptions(
       labels: {
         show: true,
         formatter(value) {
-          return `${value}`;
+          return features.fantasy.enabled
+            ? `${(value * 100).toFixed(0)}%`
+            : `${value}`;
         },
         offsetX: -15,
         style: {
