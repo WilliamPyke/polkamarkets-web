@@ -65,7 +65,7 @@ function MarketNewComment() {
 
   // Handlers
   const onSubmit: SubmitHandler<NewCommentForm> = async data => {
-    if (user.idToken) {
+    if (user?.idToken) {
       await addComment({
         user: {
           authenticationToken: user.idToken
@@ -80,6 +80,8 @@ function MarketNewComment() {
 
   function onCmdCtrlEnter(callback) {
     return (e: KeyboardEvent) => {
+      if (!isLoadingUser && !isLoggedIn) return;
+
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         callback();
       }
