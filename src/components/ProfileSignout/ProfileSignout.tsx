@@ -52,12 +52,16 @@ export default function ProfileSignout() {
       ? socialLoginInfo?.name?.split('#')[0]
       : socialLoginInfo?.name?.split('@')[0]
   );
+  const [hasUpdatedSocialLoginInfo, setHasUpdatedSocialLoginInfo] =
+    useState(false);
 
   useEffect(() => {
     async function handleSocialLogin() {
       const { updateSocialLoginInfo } = await import(
         'services/Polkamarkets/user'
       );
+
+      if (hasUpdatedSocialLoginInfo) return;
 
       // send data to backend
       const res = await updateSocialLoginInfo(
@@ -80,10 +84,12 @@ export default function ProfileSignout() {
           })
         );
       }
+
+      setHasUpdatedSocialLoginInfo(true);
     }
 
     handleSocialLogin();
-  }, [socialLoginInfo, address, dispatch]);
+  }, [socialLoginInfo, address, dispatch, hasUpdatedSocialLoginInfo]);
 
   return (
     <div className={profileSignoutClasses.root}>
