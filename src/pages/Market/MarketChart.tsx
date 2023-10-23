@@ -32,14 +32,18 @@ function MarketOverview() {
     <>
       <div className="market-chart__header">
         <div>
-          <Text scale="tiny-uppercase" color="gray" fontWeight="semibold">
-            {highOutcome.title}
+          <Text
+            scale="body"
+            fontWeight="semibold"
+            className="market-chart__view-title"
+          >
+            {highOutcome.title.toUpperCase()}
           </Text>
           <Text
-            as="h3"
-            scale="heading-large"
+            color="light-gray"
+            scale="heading"
             fontWeight="semibold"
-            className="market-chart__view-title notranslate"
+            className="notranslate"
           >
             {features.fantasy.enabled ? (
               <>{roundNumber(highOutcome.price * 100, 3)}%</>
