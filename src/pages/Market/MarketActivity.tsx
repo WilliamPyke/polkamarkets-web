@@ -12,11 +12,11 @@ import { Text } from 'components/new';
 
 import { useLanguage, useAppSelector } from 'hooks';
 
-import { getMarketFeedBySlugTransformResponse } from './MarketFeed.utils';
+import { getMarketFeedBySlugTransformResponse } from './MarketActivity.utils';
 
 const LIST_HEIGHT = Math.min(Math.ceil(window.innerHeight * 0.5), 700);
 
-export default function MarketFeed() {
+export default function MarketActivity() {
   const language = useLanguage();
   const marketSlug = useAppSelector(state => state.market.market.slug);
 

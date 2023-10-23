@@ -32,10 +32,10 @@ import {
 
 import marketClasses from './Market.module.scss';
 import MarketAbout from './MarketAbout';
+import MarketActivity from './MarketActivity';
 import MarketAnalytics from './MarketAnalytics';
 import MarketChart from './MarketChart';
 import MarketComments from './MarketComments';
-import MarketFeed from './MarketFeed';
 import MarketHead from './MarketHead';
 import MarketNews from './MarketNews';
 import MarketPredictions from './MarketPredictions';
@@ -293,7 +293,7 @@ function MarketUI() {
               ) : null}
               {features.fantasy.enabled && ui.socialLogin.enabled ? (
                 <Tabs.TabPane tab="Activity" id="activity">
-                  <MarketFeed />
+                  <MarketActivity />
                 </Tabs.TabPane>
               ) : null}
             </Tabs>
