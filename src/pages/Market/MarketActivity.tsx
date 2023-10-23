@@ -5,7 +5,7 @@ import { relativeTimeFromNow } from 'helpers/date';
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
 import { useGetMarketFeedBySlugQuery } from 'services/Polkamarkets';
-import { Avatar, Skeleton } from 'ui';
+import { Avatar } from 'ui';
 
 import { AlertMini, ScrollableArea } from 'components';
 import { Text } from 'components/new';
@@ -31,7 +31,15 @@ export default function MarketActivity() {
   return (
     <div className="width-full border-radius-small border-solid border-1">
       {(() => {
-        if (isLoading) return <Skeleton style={{ height: LIST_HEIGHT }} />;
+        if (isLoading)
+          return (
+            <div
+              className="flex-row justify-center align-center padding-y-10 padding-x-6 border-solid border-1 border-radius-medium"
+              style={{ height: LIST_HEIGHT }}
+            >
+              <span className="spinner--primary" />
+            </div>
+          );
         if (!feed?.length)
           return (
             <AlertMini
