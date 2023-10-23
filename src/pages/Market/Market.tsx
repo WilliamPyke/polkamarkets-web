@@ -34,11 +34,12 @@ import marketClasses from './Market.module.scss';
 import MarketAbout from './MarketAbout';
 import MarketAnalytics from './MarketAnalytics';
 import MarketChart from './MarketChart';
+import MarketComments from './MarketComments';
 import MarketHead from './MarketHead';
 import MarketNews from './MarketNews';
 import MarketPredictions from './MarketPredictions';
 import MarketTitle from './MarketTitle';
-import { formatMarketPositions, formatSEODescription } from './utils';
+import { Column, formatMarketPositions, formatSEODescription } from './utils';
 
 const forms = {
   liquidityForm: 'Liquidity',
@@ -104,7 +105,11 @@ function MarketUI() {
   const bondActions = useAppSelector(state => state.polkamarkets.bondActions);
   const market = useAppSelector(state => state.market.market);
   const chartViews = useAppSelector(state => state.market.chartViews);
-  const [tab, setTab] = useState('positions');
+  const [tab, setTab] = useState(
+    features.fantasy.enabled && ui.socialLogin.enabled
+      ? 'comments'
+      : 'positions'
+  );
 
   const handleChartChange = useCallback(
     async (type: string) => {
@@ -114,13 +119,53 @@ function MarketUI() {
     },
     [dispatch]
   );
+
+  const columns = useMemo(
+    () =>
+      [
+        { title: 'Outcome', key: 'outcome', align: 'left' },
+        { title: 'Date', key: 'date', align: 'right' },
+        { title: 'Price', key: 'price', align: 'right' },
+        { title: 'Shares', key: 'shares', align: 'right' },
+        { title: 'Total Value', key: 'value', align: 'right' },
+        { title: 'Trade Type', key: 'tradeType', align: 'center' },
+        { title: 'TX', key: 'transactionHash', align: 'right' }
+      ].filter(column => {
+        if (!theme.device.isDesktop) {
+          return ['outcome', 'shares', 'tradeType'].includes(column.key);
+        }
+
+        if (features.fantasy.enabled) {
+          return column.key !== 'transactionHash';
+        }
+
+        return true;
+      }) as Column[],
+    [theme.device.isDesktop]
+  );
+
+  const rowsToOmit = useMemo(() => {
+    if (!theme.device.isDesktop) {
+      return ['date', 'price', 'value', 'transactionHash'];
+    }
+
+    if (features.fantasy.enabled) {
+      return ['transactionHash'];
+    }
+
+    return [];
+  }, [theme.device.isDesktop]);
+
   const tableItems = formatMarketPositions<Action, MarketInterface['outcomes']>(
+    columns,
     actions.filter(action => action.marketId === +market.id),
     bondActions.filter(action => action.questionId === market.questionId),
     market.outcomes,
     market.token.ticker,
-    network.network
+    network.network,
+    rowsToOmit
   );
+
   const SidebarWrapperComponent = theme.device.isDesktop
     ? Fragment
     : SidebarWrapper;
@@ -221,7 +266,7 @@ function MarketUI() {
               <Tabs.TabPane tab="Positions" id="positions">
                 {tabPositions}
               </Tabs.TabPane>
-              {ui.market.news.enabled ? (
+              {theme.device.isDesktop && ui.market.news.enabled ? (
                 <Tabs.TabPane tab="News" id="news">
                   {market.news?.length ? (
                     <MarketNews news={market.news} />
@@ -232,6 +277,11 @@ function MarketUI() {
                       description="There's no news to be shown."
                     />
                   )}
+                </Tabs.TabPane>
+              ) : null}
+              {features.fantasy.enabled && ui.socialLogin.enabled ? (
+                <Tabs.TabPane tab="Comments" id="comments">
+                  <MarketComments />
                 </Tabs.TabPane>
               ) : null}
             </Tabs>

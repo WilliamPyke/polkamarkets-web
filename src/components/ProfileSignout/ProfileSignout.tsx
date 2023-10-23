@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { features } from 'config';
 import { formatNumberToString } from 'helpers/math';
 import shortenAddress from 'helpers/shortenAddress';
+import { changeSocialLoginInfo } from 'redux/ducks/polkamarkets';
 import { useGetLeaderboardByAddressQuery } from 'services/Polkamarkets';
 import { Avatar, Skeleton } from 'ui';
 
@@ -52,10 +53,6 @@ export default function ProfileSignout() {
       : socialLoginInfo?.name?.split('@')[0]
   );
 
-  const [profileImage, setProfileImage] = useState(
-    socialLoginInfo?.profileImage
-  );
-
   useEffect(() => {
     async function handleSocialLogin() {
       const { updateSocialLoginInfo } = await import(
@@ -76,12 +73,17 @@ export default function ProfileSignout() {
       }
 
       if (res.data?.user?.avatar) {
-        setProfileImage(res.data?.user?.avatar);
+        dispatch(
+          changeSocialLoginInfo({
+            ...socialLoginInfo,
+            profileImage: res.data?.user?.avatar
+          })
+        );
       }
     }
 
     handleSocialLogin();
-  }, [socialLoginInfo, address]);
+  }, [socialLoginInfo, address, dispatch]);
 
   return (
     <div className={profileSignoutClasses.root}>
@@ -110,7 +112,7 @@ export default function ProfileSignout() {
           <Avatar
             $size="sm"
             $radius="lg"
-            src={profileImage}
+            src={socialLoginInfo?.profileImage}
             alt={username || 'avatar'}
           />
         </Link>
