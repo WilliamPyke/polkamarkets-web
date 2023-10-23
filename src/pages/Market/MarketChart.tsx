@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 
+import { features } from 'config';
+import { roundNumber } from 'helpers/math';
 import sortOutcomes from 'helpers/sortOutcomes';
 import { useTheme } from 'ui';
 
@@ -39,7 +41,13 @@ function MarketOverview() {
             fontWeight="semibold"
             className="market-chart__view-title notranslate"
           >
-            {highOutcome.price} {ticker}
+            {features.fantasy.enabled ? (
+              <>{roundNumber(highOutcome.price * 100, 3)}%</>
+            ) : (
+              <>
+                {highOutcome.price} {ticker}
+              </>
+            )}
           </Text>
           <Text
             as="span"
@@ -48,8 +56,14 @@ function MarketOverview() {
             fontWeight="semibold"
             className="notranslate"
           >
-            {highOutcome.pricesDiff.value} {ticker} (
-            {highOutcome.pricesDiff.pct})
+            {features.fantasy.enabled ? (
+              <>{highOutcome.pricesDiff.pct}</>
+            ) : (
+              <>
+                {highOutcome.pricesDiff.value} {ticker} (
+                {highOutcome.pricesDiff.pct})
+              </>
+            )}
           </Text>{' '}
           <Text as="span" scale="tiny" color="gray" fontWeight="semibold">
             Since Market Creation
