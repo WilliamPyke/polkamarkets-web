@@ -60,6 +60,7 @@ export function getMarketFeedBySlugTransformResponse(
     .filter(activity =>
       ['buy', 'sell', 'claim_winnings'].includes(activity.action)
     )
+    .filter(activity => !activity.user.startsWith('0x'))
     .map(activity => {
       return {
         ...activity,
