@@ -6,7 +6,7 @@ import {
   LeaderboardTimeframe,
   UserLeaderboard
 } from 'types/leaderboard';
-import { MarketState, Comment } from 'types/market';
+import { MarketState, Comment, MarketActivity } from 'types/market';
 import { FeedActivity } from 'types/portfolio';
 import { Tournament } from 'types/tournament';
 
@@ -184,4 +184,12 @@ export type AddCommentParams = {
     body: string;
     marketSlug: string;
   };
+};
+
+// getMarketFeedBySlug
+
+export type GetMarketFeedBySlugData = MarketActivity[];
+
+export type GetMarketFeedBySlugArgs = {
+  slug: string;
 };

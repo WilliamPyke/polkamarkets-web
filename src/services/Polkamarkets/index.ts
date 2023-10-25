@@ -50,7 +50,9 @@ import {
   GetWhitelistStatusData,
   GetWhitelistStatusArgs,
   AddCommentData,
-  AddCommentParams
+  AddCommentParams,
+  GetMarketFeedBySlugArgs,
+  GetMarketFeedBySlugData
 } from './types';
 
 function camelize<T extends object>(response: T): T {
@@ -253,6 +255,14 @@ const polkamarketsApi = createApi({
           comment: decamelizeKeys(comment)
         }
       })
+    }),
+    getMarketFeedBySlug: builder.query<
+      GetMarketFeedBySlugData,
+      GetMarketFeedBySlugArgs
+    >({
+      query: ({ slug }) => `/markets/${slug}/feed`,
+      transformResponse: (response: GetMarketFeedBySlugData) =>
+        camelize(response)
     })
   })
 });
@@ -279,5 +289,6 @@ export const {
   useGetTournamentBySlugQuery,
   useGetPortfolioFeedByAddressQuery,
   useGetWhitelistStatusQuery,
-  useAddCommentMutation
+  useAddCommentMutation,
+  useGetMarketFeedBySlugQuery
 } = polkamarketsApi;

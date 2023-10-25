@@ -32,6 +32,7 @@ import {
 
 import marketClasses from './Market.module.scss';
 import MarketAbout from './MarketAbout';
+import MarketActivity from './MarketActivity';
 import MarketAnalytics from './MarketAnalytics';
 import MarketChart from './MarketChart';
 import MarketComments from './MarketComments';
@@ -262,7 +263,23 @@ function MarketUI() {
             </section>
           )}
           <section className={`pm-p-market__tabs ${marketClasses.section}`}>
-            <Tabs value={tab} onChange={setTab}>
+            <Tabs
+              value={tab}
+              onChange={setTab}
+              className={{
+                header: marketClasses.tabsHeader
+              }}
+            >
+              {features.fantasy.enabled && ui.socialLogin.enabled ? (
+                <Tabs.TabPane tab="Comments" id="comments">
+                  <MarketComments />
+                </Tabs.TabPane>
+              ) : null}
+              {features.fantasy.enabled && ui.socialLogin.enabled ? (
+                <Tabs.TabPane tab="Activity" id="activity">
+                  <MarketActivity />
+                </Tabs.TabPane>
+              ) : null}
               <Tabs.TabPane tab="Positions" id="positions">
                 {tabPositions}
               </Tabs.TabPane>
@@ -277,11 +294,6 @@ function MarketUI() {
                       description="There's no news to be shown."
                     />
                   )}
-                </Tabs.TabPane>
-              ) : null}
-              {features.fantasy.enabled && ui.socialLogin.enabled ? (
-                <Tabs.TabPane tab="Comments" id="comments">
-                  <MarketComments />
                 </Tabs.TabPane>
               ) : null}
             </Tabs>

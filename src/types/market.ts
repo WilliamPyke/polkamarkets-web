@@ -17,3 +17,16 @@ export type Comment = {
     avatar: string | null;
   };
 };
+
+export type MarketActivity = {
+  user: string;
+  action: 'buy' | 'sell';
+  marketTitle: string;
+  marketSlug: string;
+  outcomeTitle: string;
+  imageUrl: string;
+  shares: number;
+  value: number;
+  timestamp: number;
+  ticker: string;
+};

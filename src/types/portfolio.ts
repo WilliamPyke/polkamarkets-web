@@ -22,4 +22,5 @@ export type FeedActivity = {
   shares: number;
   value: number;
   timestamp: number;
+  ticker: string;
 };
