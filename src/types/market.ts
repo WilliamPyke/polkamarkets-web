@@ -28,4 +28,5 @@ export type MarketActivity = {
   shares: number;
   value: number;
   timestamp: number;
+  ticker: string;
 };

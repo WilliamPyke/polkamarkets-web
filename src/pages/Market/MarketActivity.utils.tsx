@@ -7,27 +7,37 @@ import type { LanguageCode } from 'hooks/useLanguage/useLanguage.type';
 
 const getActivityActionTitle = (
   user: string,
-  action: 'buy' | 'sell',
+  action: 'buy' | 'sell' | 'claim_winnings',
   language: LanguageCode
 ) => {
   const titles = {
-    buy: (shares: number, outcomeTitle?: string) => {
+    buy: (value: number, ticker: string, outcomeTitle?: string) => {
       if (language === 'tr') {
-        return `${shares} adet "${outcomeTitle}" sonucu hisse senedi alındı`;
+        return `${value} ${ticker} adet "${outcomeTitle}" sonucu hisse senedi alındı`;
       }
       if (language === 'pt') {
-        return `${user} comprou ${shares} ações de "${outcomeTitle}"`;
+        return `${user} previu "${outcomeTitle}" com ${value} ${ticker}`;
       }
-      return `${user} bought ${shares} shares of outcome "${outcomeTitle}"`;
+      return `${user} bought ${value} ${ticker} of outcome "${outcomeTitle}"`;
     },
-    sell: (shares: number, outcomeTitle?: string) => {
+    sell: (value: number, ticker: string, outcomeTitle?: string) => {
       if (language === 'tr') {
-        return `${shares} adet "${outcomeTitle}" sonucu hisse senedi satıldı`;
+        return `${value} adet "${outcomeTitle}" sonucu hisse senedi satıldı`;
       }
       if (language === 'pt') {
-        return `${user} vendeu ${shares} ações de "${outcomeTitle}"`;
+        return `${user} vendeu ${value} ${ticker} de "${outcomeTitle}"`;
       }
-      return `${user} sold ${shares} shares of outcome "${outcomeTitle}"`;
+      return `${user} sold ${value} ${ticker} of outcome "${outcomeTitle}"`;
+    },
+    claim_winnings: (
+      _value: number,
+      _ticker: string,
+      _outcomeTitle?: string
+    ) => {
+      if (language === 'pt') {
+        return `${user} acertou uma previsão`;
+      }
+      return `${user} won a prediction`;
     }
   };
   return titles[action] || 'buy';
@@ -35,7 +45,8 @@ const getActivityActionTitle = (
 
 const activityAccentColors: { [key: string]: 'success' | 'danger' } = {
   buy: 'success',
-  sell: 'danger'
+  sell: 'danger',
+  claim_winnings: 'success'
 };
 
 export function getMarketFeedBySlugTransformResponse(
@@ -46,7 +57,9 @@ export function getMarketFeedBySlugTransformResponse(
   accentColor: 'success' | 'danger';
 })[] {
   return response
-    .filter(activity => ['buy', 'sell'].includes(activity.action))
+    .filter(activity =>
+      ['buy', 'sell', 'claim_winnings'].includes(activity.action)
+    )
     .map(activity => {
       return {
         ...activity,
@@ -57,7 +70,11 @@ export function getMarketFeedBySlugTransformResponse(
           activity.user,
           activity.action,
           language
-        )(roundNumber(activity.shares, 3), activity.outcomeTitle),
+        )(
+          roundNumber(activity.value, 3),
+          activity.ticker,
+          activity.outcomeTitle
+        ),
         accentColor: activityAccentColors[activity.action]
       };
     });
