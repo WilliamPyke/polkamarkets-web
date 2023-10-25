@@ -113,7 +113,7 @@ const getFeedActionTitle = (action: FeedAction, language: LanguageCode) => {
     },
     sell: (value: number, ticker: string, outcomeTitle?: string) => {
       if (language === 'tr') {
-        return `${value} adet "${outcomeTitle}" sonucu hisse senedi satıldı`;
+        return `${value} ${ticker} adet "${outcomeTitle}" sonucu hisse senedi satıldı`;
       }
       if (language === 'pt') {
         return `Vendeu ${value} ${ticker} de "${outcomeTitle}"`;

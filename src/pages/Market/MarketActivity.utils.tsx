@@ -22,7 +22,7 @@ const getActivityActionTitle = (
     },
     sell: (value: number, ticker: string, outcomeTitle?: string) => {
       if (language === 'tr') {
-        return `${value} adet "${outcomeTitle}" sonucu hisse senedi satıldı`;
+        return `${value} ${ticker} adet "${outcomeTitle}" sonucu hisse senedi satıldı`;
       }
       if (language === 'pt') {
         return `${user} vendeu ${value} ${ticker} de "${outcomeTitle}"`;
