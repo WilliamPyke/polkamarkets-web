@@ -452,9 +452,14 @@ export { prepareLeaderboardYourStatsRow };
 type TopWalletRenderArgs = {
   address: string;
   place: number;
+  bankrupt?: boolean | null;
 };
 
-function topWalletColumnRender({ address, place }: TopWalletRenderArgs) {
+function topWalletColumnRender({
+  address,
+  place,
+  bankrupt
+}: TopWalletRenderArgs) {
   const walletPlace = WALLET_PLACES[place] || {
     icon: null,
     textColor: '1'
@@ -463,16 +468,19 @@ function topWalletColumnRender({ address, place }: TopWalletRenderArgs) {
   return (
     <div className="pm-c-leaderboard-top-wallets__wallet notranslate">
       {walletPlace.icon}
-      <Link
-        className={`caption semibold text-${walletPlace.textColor}`}
-        to={`/user/${address}`}
-      >
-        {address.startsWith('0x')
-          ? `${address.substring(0, 6)}...${address.substring(
-              address.length - 4
-            )}`
-          : address}
-      </Link>
+      <div className="flex-row gap-3 align-center">
+        <Link
+          className={`caption semibold text-${walletPlace.textColor}`}
+          to={`/user/${address}`}
+        >
+          {address.startsWith('0x')
+            ? `${address.substring(0, 6)}...${address.substring(
+                address.length - 4
+              )}`
+            : address}
+        </Link>
+        <BankruptBadge bankrupt={bankrupt} />
+      </div>
     </div>
   );
 }
@@ -516,7 +524,8 @@ function prepareLeaderboardTopWalletsRow({
         ? {
             address: firstPlace.username || firstPlace.user,
             place: 1,
-            change: 'stable'
+            change: 'stable',
+            bankrupt: firstPlace.bankrupt
           }
         : null,
       render: topWalletRowRender
@@ -526,7 +535,8 @@ function prepareLeaderboardTopWalletsRow({
         ? {
             address: secondPlace.username || secondPlace.user,
             place: 2,
-            change: 'stable'
+            change: 'stable',
+            bankrupt: secondPlace.bankrupt
           }
         : null,
       render: topWalletRowRender
@@ -536,7 +546,8 @@ function prepareLeaderboardTopWalletsRow({
         ? {
             address: thirdPlace.username || thirdPlace.user,
             place: 3,
-            change: 'stable'
+            change: 'stable',
+            bankrupt: thirdPlace.bankrupt
           }
         : null,
       render: topWalletRowRender
