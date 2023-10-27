@@ -2,6 +2,7 @@ import { Alert, AlertMini, AlertMinimal } from './Alert';
 import AmountInput from './AmountInput';
 import AreaChart from './AreaChart';
 import Badge from './Badge';
+import BankruptBadge from './BankruptBadge';
 import BetaWarning from './BetaWarning';
 import Breadcrumb from './Breadcrumb';
 import { Button, ButtonText } from './Button';
@@ -74,6 +75,7 @@ export {
   AmountInput,
   AreaChart,
   Badge,
+  BankruptBadge,
   BetaWarning,
   Breadcrumb,
   Button,
