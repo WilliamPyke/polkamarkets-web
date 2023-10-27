@@ -73,7 +73,8 @@ export default function Profile() {
           network={network}
           {...(features.fantasy.enabled && {
             username: leaderboard.data?.username,
-            avatar: leaderboard.data?.userImageUrl
+            avatar: leaderboard.data?.userImageUrl,
+            bankrupt: leaderboard.data?.bankrupt
           })}
         />
         <ProfileSummaryStat
