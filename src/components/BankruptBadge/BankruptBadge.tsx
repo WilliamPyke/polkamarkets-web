@@ -1,12 +1,12 @@
 import { features, ui } from 'config';
 
-import { useAppSelector } from 'hooks';
-
 import Pill from '../Pill';
 
-function BankruptBadge() {
-  const bankrupt = useAppSelector(state => state.polkamarkets.bankrupt);
+type BankruptBadgeProps = {
+  bankrupt?: boolean | null;
+};
 
+function BankruptBadge({ bankrupt }: BankruptBadgeProps) {
   if (!features.fantasy.enabled || !ui.socialLogin.enabled) return null;
 
   if (!bankrupt) return null;
