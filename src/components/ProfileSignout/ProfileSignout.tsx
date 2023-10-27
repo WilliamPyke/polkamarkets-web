@@ -134,7 +134,7 @@ export default function ProfileSignout() {
           {isPolkLoading ? (
             <Skeleton style={{ height: 16, width: 52 }} />
           ) : (
-            <div className="flex-row gap-2 align-center">
+            <div className="flex-row gap-3 align-center">
               <Text
                 scale="tiny-uppercase"
                 fontWeight="semibold"
