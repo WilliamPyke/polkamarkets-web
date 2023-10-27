@@ -18,7 +18,7 @@ import {
   RankStableIcon
 } from 'assets/icons/pages/leaderboard';
 
-import { Icon, Tooltip } from 'components';
+import { BankruptBadge, Icon, Tooltip } from 'components';
 
 import LeaderboardClasses from './Leaderboard.module.scss';
 import { Achievement, LeaderboardTableRow } from './types';
@@ -90,6 +90,7 @@ type WalletColumnRenderArgs = {
   explorerURL: string;
   achievements: Achievement[];
   malicious?: boolean;
+  bankrupt?: boolean | null;
 } & Record<'username' | 'userImageUrl', string | null>;
 
 function walletColumnRender({
@@ -99,7 +100,8 @@ function walletColumnRender({
   achievements,
   username,
   userImageUrl,
-  malicious
+  malicious,
+  bankrupt
 }: WalletColumnRenderArgs) {
   const walletPlace = WALLET_PLACES[place] || {
     icon: null,
@@ -135,6 +137,7 @@ function walletColumnRender({
             <span className="caption semibold text-3"> (You)</span>
           )}
         </p>
+        <BankruptBadge bankrupt={bankrupt} />
         {!isEmpty(achievements)
           ? achievementsColumnRender(
               achievements,
@@ -319,7 +322,8 @@ function prepareLeaderboardTableRows({
           achievements: row.achievements,
           malicious: row.malicious,
           username: row.username,
-          userImageUrl: row.userImageUrl
+          userImageUrl: row.userImageUrl,
+          bankrupt: row.bankrupt
         },
         volumeEur: {
           volume: row.volumeEur,
