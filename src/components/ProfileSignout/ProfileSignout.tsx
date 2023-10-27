@@ -32,6 +32,7 @@ export default function ProfileSignout() {
   const isPolkLoading = useAppSelector(
     state => state.polkamarkets.isLoading.polk
   );
+  const bankrupt = useAppSelector(state => state.polkamarkets.bankrupt);
   const network = useNetwork();
   const leaderboard = useGetLeaderboardByAddressQuery({
     address,
@@ -143,7 +144,7 @@ export default function ProfileSignout() {
                 {formatNumberToString(polkBalance)}{' '}
                 {fantasyTokenTicker || 'POLK'}
               </Text>
-              <BankruptBadge />
+              <BankruptBadge bankrupt={bankrupt} />
             </div>
           )}
         </div>
