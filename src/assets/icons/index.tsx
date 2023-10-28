@@ -23,6 +23,7 @@ import DamatTweenLogo from './DamatTweenLogo';
 import EthereumIcon from './EthereumIcon';
 import ExploreIcon from './ExploreIcon';
 import FavoriteIcon from './FavoriteIcon';
+import ForelandLogo from './ForelandLogo';
 import GamingConsoleIcon from './GamingConsoleIcon';
 import GitHubIcon from './GitHubIcon';
 import HamburguerMenuIcon from './HamburguerMenuIcon';
@@ -94,6 +95,7 @@ export {
   EthereumIcon,
   ExploreIcon,
   FavoriteIcon,
+  ForelandLogo,
   GamingConsoleIcon,
   GitHubIcon,
   InfoIcon,
