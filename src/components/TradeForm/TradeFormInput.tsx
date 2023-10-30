@@ -59,7 +59,7 @@ function TradeFormInput() {
 
   // buy and sell have different maxes
 
-  const [amount, setAmount] = useState<number | undefined>(0);
+  const [amount, setAmount] = useState<number | string | undefined>(0);
   const [stepAmount, setStepAmount] = useState<number>(0);
 
   const portfolio = useAppSelector(state => state.polkamarkets.portfolio);
@@ -117,6 +117,12 @@ function TradeFormInput() {
     dispatch(setTradeAmount(newAmount || 0));
     setStepAmount(100 * ((newAmount || 0) / max()));
   }
+
+  const handleFocus = useCallback(() => {
+    if (amount === 0) {
+      setAmount('');
+    }
+  }, [amount]);
 
   function handleSetMaxAmount() {
     const newMax = max();
@@ -205,6 +211,7 @@ function TradeFormInput() {
           min={0}
           max={max()}
           onChange={event => handleChangeAmount(event)}
+          onFocus={() => handleFocus()}
           onWheel={event => event.currentTarget.blur()}
           disabled={isWrongNetwork || isLoadingBalance}
         />
