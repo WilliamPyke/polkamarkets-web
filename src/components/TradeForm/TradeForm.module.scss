@@ -42,3 +42,14 @@
 .gutterOutcome {
   margin-bottom: var(--size-16);
 }
+
+.input {
+  &Actions {
+    gap: var(--size-8);
+    margin-top: var(--size-8);
+
+    button {
+      margin: 0 !important;
+    }
+  }
+}

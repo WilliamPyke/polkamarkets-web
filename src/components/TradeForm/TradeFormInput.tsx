@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 
+import cn from 'classnames';
 import { features, ui } from 'config';
 import { setTokenTicker } from 'redux/ducks/market';
 import {
@@ -125,6 +126,11 @@ function TradeFormInput() {
     setStepAmount(100);
   }
 
+  function handleSetAmount(newAmount: number) {
+    setAmount(newAmount);
+    dispatch(setTradeAmount(newAmount));
+  }
+
   function handleChangeSlider(value: number) {
     const percentage = value / 100;
 
@@ -143,6 +149,23 @@ function TradeFormInput() {
       })
     );
   }, [dispatch, token.symbol, wrapped]);
+
+  const amountInputButtons = useMemo((): number[] => {
+    switch (true) {
+      case balance < 10:
+        return [0.5, 1];
+      case balance >= 10 && balance < 100:
+        return [1, 5, 10];
+      case balance >= 100 && balance < 200:
+        return [5, 10, 25, 50];
+      case balance >= 200 && balance < 500:
+        return [10, 20, 50, 100];
+      case balance >= 500:
+        return [10, 50, 100, 200];
+      default:
+        return [];
+    }
+  }, [balance]);
 
   return (
     <form className="pm-c-amount-input">
@@ -226,7 +249,27 @@ function TradeFormInput() {
           onChange={value => handleChangeSlider(value)}
           disabled={isWrongNetwork || isLoadingBalance}
         />
-      ) : null}
+      ) : (
+        <ul
+          className={cn(
+            'pm-c-amount-input__actions',
+            TradeFormClasses.inputActions
+          )}
+        >
+          {amountInputButtons.map(button => (
+            <button
+              key={button}
+              type="button"
+              onClick={() => handleSetAmount(button)}
+              disabled={isWrongNetwork || isLoadingBalance}
+            >
+              <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
+                {`${button} ${ticker}`}
+              </Text>
+            </button>
+          ))}
+        </ul>
+      )}
       {!isWrongNetwork && tokenWrapped ? (
         <div className={TradeFormClasses.wrappedToggle}>
           <Text
