@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { ui } from 'config';
+import { features, ui } from 'config';
 import { setTokenTicker } from 'redux/ducks/market';
 import {
   setTradeAmount,
@@ -53,6 +53,8 @@ function TradeFormInput() {
 
   const isWrongNetwork =
     !ui.socialLogin.enabled && network.id !== `${marketNetworkId}`;
+
+  const preventBankruptcy = features.fantasy.enabled && ui.socialLogin.enabled;
 
   // buy and sell have different maxes
 
@@ -184,15 +186,17 @@ function TradeFormInput() {
           disabled={isWrongNetwork || isLoadingBalance}
         />
         <div className="pm-c-amount-input__actions">
-          <button
-            type="button"
-            onClick={handleSetMaxAmount}
-            disabled={isWrongNetwork || isLoadingBalance}
-          >
-            <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
-              Max
-            </Text>
-          </button>
+          {!preventBankruptcy ? (
+            <button
+              type="button"
+              onClick={handleSetMaxAmount}
+              disabled={isWrongNetwork || isLoadingBalance}
+            >
+              <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
+                Max
+              </Text>
+            </button>
+          ) : null}
           {type === 'buy' ? (
             <div className="pm-c-amount-input__logo">
               <figure aria-label={name}>
@@ -216,11 +220,13 @@ function TradeFormInput() {
           ) : null}
         </div>
       </div>
-      <StepSlider
-        currentValue={stepAmount}
-        onChange={value => handleChangeSlider(value)}
-        disabled={isWrongNetwork || isLoadingBalance}
-      />
+      {!preventBankruptcy ? (
+        <StepSlider
+          currentValue={stepAmount}
+          onChange={value => handleChangeSlider(value)}
+          disabled={isWrongNetwork || isLoadingBalance}
+        />
+      ) : null}
       {!isWrongNetwork && tokenWrapped ? (
         <div className={TradeFormClasses.wrappedToggle}>
           <Text
