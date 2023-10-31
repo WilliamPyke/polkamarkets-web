@@ -242,7 +242,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   const preventBankruptcy = features.fantasy.enabled && ui.socialLogin.enabled;
 
-  const amountOverHalfBalance = amount > balance / 2;
+  const amountOverHalfBalance = amount >= balance / 2;
 
   return (
     <div className="pm-c-trade-form-actions__group--column">
