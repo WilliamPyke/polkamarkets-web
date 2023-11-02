@@ -3,6 +3,69 @@ import { lazy } from 'react';
 import features from './features';
 import ui from './ui';
 
+const defaultMetadata = {
+  title:
+    process.env.REACT_APP_METADATA_TITLE ||
+    'Polkamarkets - Autonomous Prediction Markets',
+  description:
+    process.env.REACT_APP_METADATA_DESCRIPTION ||
+    'Polkamarkets is a DeFi-Powered Prediction Market built for cross-chain information exchange.',
+  image: process.env.REACT_APP_METADATA_IMAGE || '/metadata-homepage.png'
+};
+
+const metadataByPage = {
+  achievements: {
+    title:
+      process.env.REACT_APP_METADATA_ACHIEVEMENTS_TITLE ||
+      'Achievements - Polkamarkets',
+    description:
+      process.env.REACT_APP_METADATA_ACHIEVEMENTS_DESCRIPTION ||
+      'Place predictions in the Polkamarkets app and grab your exclusive NFT Achievements.',
+    image:
+      process.env.REACT_APP_METADATA_ACHIEVEMENTS_IMAGE ||
+      '/metadata-homepage.png'
+  },
+  clubs: {
+    title: process.env.REACT_APP_METADATA_CLUBS_TITLE || 'Clubs - Polkamarkets',
+    description:
+      process.env.REACT_APP_METADATA_CLUBS_DESCRIPTION ||
+      "Build your own Club, league and leaderboard with your friends, against colleagues or around communities. Wear your own logo, tease your clubmates and let all fight to climb the Club's leaderboard.",
+    image:
+      process.env.REACT_APP_METADATA_CLUBS_IMAGE || '/metadata-homepage.png'
+  },
+  tournaments: {
+    title:
+      process.env.REACT_APP_METADATA_TOURNAMENTS_TITLE ||
+      'Tournaments - Polkamarkets',
+    description: process.env.REACT_APP_METADATA_TOURNAMENTS_DESCRIPTION || '',
+    image:
+      process.env.REACT_APP_METADATA_TOURNAMENTS_IMAGE ||
+      '/metadata-homepage.png'
+  },
+  leaderboard: {
+    title:
+      process.env.REACT_APP_METADATA_LEADERBOARD_TITLE ||
+      'Leaderboard - Polkamarkets',
+    description:
+      process.env.REACT_APP_METADATA_LEADERBOARD_DESCRIPTION ||
+      'Rank up higher on the leaderboard and be the #1 forecaster of Polkamarkets.',
+    image:
+      process.env.REACT_APP_METADATA_LEADERBOARD_IMAGE ||
+      '/metadata-leaderboard.png'
+  },
+  portfolio: {
+    title:
+      process.env.REACT_APP_METADATA_PORTFOLIO_TITLE ||
+      'Portfolio - Polkamarkets',
+    description:
+      process.env.REACT_APP_METADATA_PORTFOLIO_DESCRIPTION ||
+      'Participate in the Polkamarkets app and compete with your friends, coworkers or other community members.',
+    image:
+      process.env.REACT_APP_METADATA_PORTFOLIO_IMAGE ||
+      '/metadata-portfolio.png'
+  }
+};
+
 const Leaderboard = lazy(() => import('pages/Leaderboard'));
 const pages = {
   resetAccount: {
@@ -11,7 +74,7 @@ const pages = {
     exact: true,
     navigation: false,
     name: '',
-    meta: null,
+    meta: defaultMetadata,
     enabled: features.fantasy.enabled
   },
   restrictedCountry: {
@@ -20,7 +83,7 @@ const pages = {
     exact: true,
     navigation: false,
     name: '',
-    meta: null,
+    meta: defaultMetadata,
     enabled: false
   },
   whitelist: {
@@ -29,7 +92,7 @@ const pages = {
     exact: true,
     navigation: false,
     name: '',
-    meta: null,
+    meta: defaultMetadata,
     enabled: false
   },
   profile: {
@@ -38,7 +101,7 @@ const pages = {
     exact: false,
     navigation: false,
     name: '',
-    meta: null,
+    meta: defaultMetadata,
     enabled: true
   },
   club: {
@@ -56,7 +119,7 @@ const pages = {
     exact: true,
     navigation: true,
     name: 'Clubs',
-    meta: null,
+    meta: metadataByPage.clubs,
     enabled: ui.clubs.enabled
   },
   tournamentLeaderboard: {
@@ -83,11 +146,7 @@ const pages = {
     exact: true,
     navigation: true,
     name: 'Tournaments',
-    meta: {
-      title: 'Tournaments - Polkamarkets',
-      description: '',
-      image: `${process.env.PUBLIC_URL}/metadata-homepage.png`
-    },
+    meta: metadataByPage.tournaments,
     enabled: ui.tournaments.enabled
   },
   leaderboard: {
@@ -96,7 +155,7 @@ const pages = {
     exact: false,
     navigation: true,
     name: 'Leaderboard',
-    meta: null,
+    meta: metadataByPage.leaderboard,
     enabled: !ui.tournaments.enabled
   },
   achievements: {
@@ -105,7 +164,7 @@ const pages = {
     exact: false,
     navigation: true,
     name: 'Achievements',
-    meta: null,
+    meta: metadataByPage.achievements,
     enabled: ui.achievements.enabled
   },
   portfolio: {
@@ -114,7 +173,7 @@ const pages = {
     exact: false,
     navigation: true,
     name: 'Portfolio',
-    meta: null,
+    meta: metadataByPage.portfolio,
     enabled: true
   },
   home: {
@@ -124,7 +183,7 @@ const pages = {
     exact: false,
     navigation: true,
     name: 'Markets',
-    meta: null,
+    meta: defaultMetadata,
     enabled: true,
     pages: {
       create: {
@@ -133,7 +192,7 @@ const pages = {
         exact: false,
         navigation: false,
         name: '',
-        meta: null,
+        meta: defaultMetadata,
         enabled: true
       },
       market: {
@@ -150,3 +209,4 @@ const pages = {
 } as const;
 
 export default pages;
+export { defaultMetadata, metadataByPage };
