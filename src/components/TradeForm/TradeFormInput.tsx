@@ -158,9 +158,9 @@ function TradeFormInput() {
 
   const amountInputButtons = useMemo((): number[] => {
     switch (true) {
-      case balance < 1:
+      case balance <= 1:
         return [];
-      case balance < 10:
+      case balance > 1 && balance < 10:
         return [0.5, 1];
       case balance >= 10 && balance < 100:
         return [1, 5, 10];
