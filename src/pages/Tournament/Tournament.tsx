@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { ui } from 'config';
+import { defaultMetadata, metadataByPage } from 'config/pages';
 import dayjs from 'dayjs';
 import {
   useGetLeaderboardByTimeframeQuery,
@@ -10,7 +11,7 @@ import {
 } from 'services/Polkamarkets';
 import { Container, useRect, useTheme } from 'ui';
 
-import { MarketList } from 'components';
+import { MarketList, SEO } from 'components';
 
 import { useNetwork } from 'hooks';
 
@@ -68,6 +69,15 @@ export default function Tournament() {
 
   return (
     <div className="max-width-screen-xl">
+      {data && (
+        <SEO
+          title={`${data.title} - ${defaultMetadata.title}`}
+          description={
+            metadataByPage.tournaments.description ||
+            defaultMetadata.description
+          }
+        />
+      )}
       {ui.hero.enabled && (
         <TournamentHero
           groupName={data?.group?.title}
