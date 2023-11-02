@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 
-import { ui } from 'config';
+import cn from 'classnames';
+import { features, ui } from 'config';
 import { setTokenTicker } from 'redux/ducks/market';
 import {
   setTradeAmount,
@@ -54,9 +55,11 @@ function TradeFormInput() {
   const isWrongNetwork =
     !ui.socialLogin.enabled && network.id !== `${marketNetworkId}`;
 
+  const preventBankruptcy = features.fantasy.enabled && ui.socialLogin.enabled;
+
   // buy and sell have different maxes
 
-  const [amount, setAmount] = useState<number | undefined>(0);
+  const [amount, setAmount] = useState<number | string | undefined>(0);
   const [stepAmount, setStepAmount] = useState<number>(0);
 
   const portfolio = useAppSelector(state => state.polkamarkets.portfolio);
@@ -115,12 +118,23 @@ function TradeFormInput() {
     setStepAmount(100 * ((newAmount || 0) / max()));
   }
 
+  const handleFocus = useCallback(() => {
+    if (amount === 0) {
+      setAmount('');
+    }
+  }, [amount]);
+
   function handleSetMaxAmount() {
     const newMax = max();
 
     setAmount(newMax);
     dispatch(setTradeAmount(newMax));
     setStepAmount(100);
+  }
+
+  function handleSetAmount(newAmount: number) {
+    setAmount(newAmount);
+    dispatch(setTradeAmount(newAmount));
   }
 
   function handleChangeSlider(value: number) {
@@ -141,6 +155,25 @@ function TradeFormInput() {
       })
     );
   }, [dispatch, token.symbol, wrapped]);
+
+  const amountInputButtons = useMemo((): number[] => {
+    switch (true) {
+      case balance <= 1:
+        return [];
+      case balance > 1 && balance < 10:
+        return [0.5, 1];
+      case balance >= 10 && balance < 100:
+        return [1, 5, 10];
+      case balance >= 100 && balance < 200:
+        return [5, 10, 25, 50];
+      case balance >= 200 && balance < 500:
+        return [10, 20, 50, 100];
+      case balance >= 500:
+        return [10, 50, 100, 200];
+      default:
+        return [];
+    }
+  }, [balance]);
 
   return (
     <form className="pm-c-amount-input">
@@ -180,19 +213,22 @@ function TradeFormInput() {
           min={0}
           max={max()}
           onChange={event => handleChangeAmount(event)}
+          onFocus={() => handleFocus()}
           onWheel={event => event.currentTarget.blur()}
           disabled={isWrongNetwork || isLoadingBalance}
         />
         <div className="pm-c-amount-input__actions">
-          <button
-            type="button"
-            onClick={handleSetMaxAmount}
-            disabled={isWrongNetwork || isLoadingBalance}
-          >
-            <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
-              Max
-            </Text>
-          </button>
+          {!preventBankruptcy ? (
+            <button
+              type="button"
+              onClick={handleSetMaxAmount}
+              disabled={isWrongNetwork || isLoadingBalance}
+            >
+              <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
+                Max
+              </Text>
+            </button>
+          ) : null}
           {type === 'buy' ? (
             <div className="pm-c-amount-input__logo">
               <figure aria-label={name}>
@@ -216,11 +252,33 @@ function TradeFormInput() {
           ) : null}
         </div>
       </div>
-      <StepSlider
-        currentValue={stepAmount}
-        onChange={value => handleChangeSlider(value)}
-        disabled={isWrongNetwork || isLoadingBalance}
-      />
+      {!preventBankruptcy ? (
+        <StepSlider
+          currentValue={stepAmount}
+          onChange={value => handleChangeSlider(value)}
+          disabled={isWrongNetwork || isLoadingBalance}
+        />
+      ) : (
+        <ul
+          className={cn(
+            'pm-c-amount-input__actions',
+            TradeFormClasses.inputActions
+          )}
+        >
+          {amountInputButtons.map(button => (
+            <button
+              key={button}
+              type="button"
+              onClick={() => handleSetAmount(button)}
+              disabled={isWrongNetwork || isLoadingBalance}
+            >
+              <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
+                {`${button} ${ticker}`}
+              </Text>
+            </button>
+          ))}
+        </ul>
+      )}
       {!isWrongNetwork && tokenWrapped ? (
         <div className={TradeFormClasses.wrappedToggle}>
           <Text

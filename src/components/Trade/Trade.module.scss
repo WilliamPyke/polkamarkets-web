@@ -15,6 +15,12 @@
   }
 
   &Modal {
+    min-width: 100%;
+
+    @media (min-width: 1024px) {
+      min-width: 435px;
+    }
+
     padding: 40px;
     background: linear-gradient(
         0deg,
