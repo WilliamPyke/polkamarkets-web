@@ -120,8 +120,12 @@ const initialState: MarketInitialState = {
       bestAnswer:
         '0x0000000000000000000000000000000000000000000000000000000000000000',
       isFinalized: false,
+      arbitrator: '0x0000000000000000000000000000000000000000',
+      isPendingArbitration: false,
       isClaimed: false,
-      finalizeTs: 0
+      finalizeTs: 0,
+      isPendingArbitrationRequest: false,
+      disputeId: null
     },
     news: [],
     users: 0,

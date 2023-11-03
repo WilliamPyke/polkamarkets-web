@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { ui } from 'config';
+import environment from 'config/environment';
 import { useField, useFormikContext } from 'formik';
 import { roundNumber } from 'helpers/math';
 import has from 'lodash/has';
@@ -28,6 +29,7 @@ import Feature from '../Feature';
 import Link from '../Link';
 import Toast from '../Toast';
 import ToastNotification from '../ToastNotification';
+import ReportFormArbitration from './ReportFormArbitration';
 
 type ReportFormActionsProps = {
   marketQuestionFinalized: boolean;
@@ -69,18 +71,24 @@ function ReportFormActions({
 
   const marketSlug = useAppSelector(state => state.market.market.slug);
 
-  const { id, questionId, networkId } = useAppSelector(
-    state => state.market.market
-  );
+  const {
+    id,
+    questionId,
+    networkId,
+    network: marketNetwork
+  } = useAppSelector(state => state.market.market);
   const { bestAnswer } = useAppSelector(state => state.market.market.question);
   const questionBond = useAppSelector(
     state => state.market.market.question.bond
   );
 
   // Derivated state
+  const marketNetworkEnv = environment.NETWORKS[marketNetwork.id];
+  const arbitrationNetworkId = marketNetworkEnv?.ARBITRATION_NETWORK_ID;
   const isMarketPage = location.pathname === `/markets/${marketSlug}`;
   const isWrongNetwork =
     !ui.socialLogin.enabled && network.id !== `${networkId}`;
+  const isArbitrationNetwork = network.id === arbitrationNetworkId;
   const resolvedOutcomeId = PolkamarketsService.bytes32ToInt(bestAnswer);
 
   const isWinningOutcome = outcomeId =>
@@ -170,6 +178,7 @@ function ReportFormActions({
       {isWrongNetwork ? (
         <div className="pm-c-report-form-details__actions-group--column">
           <NetworkSwitch />
+          {isArbitrationNetwork ? <ReportFormArbitration /> : null}
         </div>
       ) : (
         <div className="pm-c-report-form-details__actions-group--column">
@@ -257,28 +266,33 @@ function ReportFormActions({
                 Resolve
               </ButtonLoading>
             ) : (
-              <ApproveToken
-                fullwidth
-                address={networkConfig.ERC20_CONTRACT_ADDRESS}
-                spenderAddress={networkConfig.REALITIO_ERC20_CONTRACT_ADDRESS}
-                ticker="POLK"
-              >
-                <ButtonLoading
-                  type="submit"
-                  color={showCurrentOutcomeBondWarning ? 'warning' : 'primary'}
+              <div className="flex-column gap-5 width-full">
+                <ApproveToken
                   fullwidth
-                  onClick={handleBond}
-                  disabled={
-                    !walletConnected ||
-                    bond.value === 0 ||
-                    isBonding ||
-                    has(errors, 'bond')
-                  }
-                  loading={isBonding}
+                  address={networkConfig.ERC20_CONTRACT_ADDRESS}
+                  spenderAddress={networkConfig.REALITIO_ERC20_CONTRACT_ADDRESS}
+                  ticker="POLK"
                 >
-                  Bond
-                </ButtonLoading>
-              </ApproveToken>
+                  <ButtonLoading
+                    type="submit"
+                    color={
+                      showCurrentOutcomeBondWarning ? 'warning' : 'primary'
+                    }
+                    fullwidth
+                    onClick={handleBond}
+                    disabled={
+                      !walletConnected ||
+                      bond.value === 0 ||
+                      isBonding ||
+                      has(errors, 'bond')
+                    }
+                    loading={isBonding}
+                  >
+                    Bond
+                  </ButtonLoading>
+                </ApproveToken>
+                <ReportFormArbitration />
+              </div>
             )}
             {/* TODO: Create notifications by type (ex: Transaction completed) */}
             {bondTransactionSuccess && bondTransactionSuccessHash ? (

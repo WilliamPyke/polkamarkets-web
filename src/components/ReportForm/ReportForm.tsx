@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { useAppSelector } from 'hooks';
 
 import ReportFormActions from './ReportFormActions';
+import ReportFormArbitration from './ReportFormArbitration';
 import ReportFormDetails from './ReportFormDetails';
 import ReportFormInput from './ReportFormInput';
 import ReportFormOutcomeSelect from './ReportFormOutcomeSelect';
@@ -18,7 +19,8 @@ function ReportForm() {
   // Selectors
   const { isLoading } = useAppSelector(state => state.market);
   const marketId = useAppSelector(state => state.market.market.id);
-  const marketBond = useAppSelector(state => state.market.market.question.bond);
+  const { bond, isPendingArbitration, isPendingArbitrationRequest } =
+    useAppSelector(state => state.market.market.question);
   const selectedOutcomeId = useAppSelector(
     state => state.trade.selectedOutcomeId
   );
@@ -28,7 +30,7 @@ function ReportForm() {
   );
 
   // Derivated state
-  const minimumBond = marketBond * 2;
+  const minimumBond = bond * 2;
 
   const initialData: ReportFormData = {
     market: marketId,
@@ -71,15 +73,21 @@ function ReportForm() {
           <ReportFormOutcomeSelect />
         </div>
         <div className="pm-c-trade-form__actions">
-          {!isMarketQuestionFinalized ? (
+          {!isMarketQuestionFinalized &&
+          !isPendingArbitration &&
+          !isPendingArbitrationRequest ? (
             <>
               <ReportFormInput />
               <ReportFormDetails />
             </>
           ) : null}
-          <ReportFormActions
-            marketQuestionFinalized={isMarketQuestionFinalized}
-          />
+          {!isPendingArbitration && !isPendingArbitrationRequest ? (
+            <ReportFormActions
+              marketQuestionFinalized={isMarketQuestionFinalized}
+            />
+          ) : (
+            <ReportFormArbitration />
+          )}
         </div>
       </Form>
     </Formik>

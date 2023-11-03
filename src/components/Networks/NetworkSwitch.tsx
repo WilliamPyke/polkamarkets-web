@@ -17,9 +17,10 @@ function getNetworkById(id: string) {
 
 type NetworkSwitchProps = {
   targetNetworkId?: string;
+  beforeChange?: (networkId: string) => void;
 };
 
-function NetworkSwitch({ targetNetworkId }: NetworkSwitchProps) {
+function NetworkSwitch({ targetNetworkId, beforeChange }: NetworkSwitchProps) {
   const { changeToNetwork, isChangingNetwork } = useNetworks();
 
   const marketNetworkId = useAppSelector(
@@ -31,6 +32,7 @@ function NetworkSwitch({ targetNetworkId }: NetworkSwitchProps) {
   const marketNetwork = getNetworkById(networkId);
 
   async function handleChangeNetwork() {
+    beforeChange?.(marketNetwork.id);
     await changeToNetwork(marketNetwork);
   }
 

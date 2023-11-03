@@ -19764,7 +19764,7 @@ polished@^4.2.2:
 
 "polkamarkets-js@https://github.com/Polkamarkets/polkamarkets-js":
   version "1.2.1"
-  resolved "https://github.com/Polkamarkets/polkamarkets-js#45584a2c7a19b69df84d7b054110017f4195a535"
+  resolved "https://github.com/Polkamarkets/polkamarkets-js#7300ed9d67a92f11aba82849e6256bee987dd20a"
   dependencies:
     "@biconomy/smart-account" "^2.0.0"
     "@metamask/safe-event-emitter" "^2.0.0"

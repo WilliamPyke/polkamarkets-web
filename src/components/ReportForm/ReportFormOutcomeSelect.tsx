@@ -22,7 +22,7 @@ function OutcomeHeader() {
       variant="information"
       description={
         <>
-          Earn POLK by reporting the correct outcome.
+          {'Earn POLK by reporting the correct outcome. '}
           <Link
             title="Learn more"
             href="https://help.polkamarkets.com/en/articles/5610525-how-market-resolution-works"
@@ -52,19 +52,20 @@ function ReportFormOutcomeSelect() {
   const resolvedOutcomeId = PolkamarketsService.bytes32ToInt(
     market.question.bestAnswer
   );
+  const isFinalized =
+    market.question.isFinalized ||
+    market.question.isPendingArbitration ||
+    market.question.isPendingArbitrationRequest;
   const checkOutcomeState = useCallback(
     outcome => {
-      if (
-        market.question.isFinalized &&
-        `${resolvedOutcomeId}` === `${outcome.id}`
-      )
+      if (isFinalized && `${resolvedOutcomeId}` === `${outcome.id}`)
         return 'won';
-      if (market.question.isFinalized) return 'default';
+      if (isFinalized) return 'default';
       if (field.value && `${field.value}` === `${outcome.id}`)
         return 'selected';
       return 'default';
     },
-    [field.value, market.question.isFinalized, resolvedOutcomeId]
+    [field.value, isFinalized, resolvedOutcomeId]
   );
   const getOutcomeBond = useCallback(
     outcomeId => {
@@ -80,26 +81,28 @@ function ReportFormOutcomeSelect() {
 
   const OutcomeFooter = useCallback(
     () => (
-      <Outcome
-        id="-1"
-        title="Invalid"
-        helpText="A market is invalid when no outcome is correct"
-        color="warning"
-        state={checkOutcomeState({ id: '-1' })}
-        bond={getOutcomeBond(-1)}
-        resolvedOutcomeId={resolvedOutcomeId}
-        marketQuestionFinalized={market.question.isFinalized}
-        onSelect={handleOutcomeSelect}
-        isStarted={isStarted}
-      />
+      <>
+        <Outcome
+          id="-1"
+          title="Invalid"
+          helpText="A market is invalid when no outcome is correct"
+          color="warning"
+          state={checkOutcomeState({ id: '-1' })}
+          bond={getOutcomeBond(-1)}
+          resolvedOutcomeId={resolvedOutcomeId}
+          marketQuestionFinalized={isFinalized}
+          onSelect={handleOutcomeSelect}
+          isStarted={isStarted}
+        />
+      </>
     ),
     [
       checkOutcomeState,
       getOutcomeBond,
+      resolvedOutcomeId,
+      isFinalized,
       handleOutcomeSelect,
-      market.question.isFinalized,
-      isStarted,
-      resolvedOutcomeId
+      isStarted
     ]
   );
 
@@ -126,7 +129,7 @@ function ReportFormOutcomeSelect() {
                 color={colorByOutcomeId(outcome.id)}
                 state={checkOutcomeState(outcome)}
                 resolvedOutcomeId={resolvedOutcomeId}
-                marketQuestionFinalized={market.question.isFinalized}
+                marketQuestionFinalized={isFinalized}
                 onSelect={handleOutcomeSelect}
                 isStarted={isStarted}
               />
@@ -153,7 +156,7 @@ function ReportFormOutcomeSelect() {
                   color={colorByOutcomeId(outcome.id)}
                   state={checkOutcomeState(outcome)}
                   resolvedOutcomeId={resolvedOutcomeId}
-                  marketQuestionFinalized={market.question.isFinalized}
+                  marketQuestionFinalized={isFinalized}
                   onSelect={handleOutcomeSelect}
                   isStarted={isStarted}
                 />

@@ -27,6 +27,10 @@ export default class PolkamarketsService {
 
   public votingContractAddress: string | undefined;
 
+  public arbitrationContractAddress: string | undefined;
+
+  public arbitrationProxyContractAddress: string | undefined;
+
   // util functions
   static bytes32ToInt(bytes32Str: string): number {
     return Number(realitioLib.bytes32ToString(bytes32Str, { type: 'int' }));
@@ -43,6 +47,8 @@ export default class PolkamarketsService {
       REALITIO_ERC20_CONTRACT_ADDRESS,
       ACHIEVEMENTS_CONTRACT_ADDRESS,
       VOTING_CONTRACT_ADDRESS,
+      ARBITRATION_CONTRACT_ADDRESS,
+      ARBITRATION_PROXY_CONTRACT_ADDRESS,
       WEB3_PROVIDER,
       WEB3_EVENTS_PROVIDER
     }: NetworkConfig = environment.NETWORKS[environment.NETWORK_ID || 42]
@@ -52,6 +58,8 @@ export default class PolkamarketsService {
     this.realitioErc20ContractAddress = REALITIO_ERC20_CONTRACT_ADDRESS;
     this.achievementsContractAddress = ACHIEVEMENTS_CONTRACT_ADDRESS;
     this.votingContractAddress = VOTING_CONTRACT_ADDRESS;
+    this.arbitrationContractAddress = ARBITRATION_CONTRACT_ADDRESS;
+    this.arbitrationProxyContractAddress = ARBITRATION_PROXY_CONTRACT_ADDRESS;
 
     this.polkamarkets = new polkamarketsjs.Application({
       web3Provider: WEB3_PROVIDER,
@@ -95,6 +103,8 @@ export default class PolkamarketsService {
     this.getERC20Contract();
     this.getAchievementsContract();
     this.getVotingContract();
+    this.getArbitrationContract();
+    this.getArbitrationProxyContract();
   }
 
   public getPredictionMarketContract() {
@@ -125,6 +135,19 @@ export default class PolkamarketsService {
     this.contracts.voting = this.polkamarkets.getVotingContract({
       contractAddress: this.votingContractAddress
     });
+  }
+
+  public getArbitrationContract() {
+    this.contracts.arbitration = this.polkamarkets.getArbitrationContract({
+      contractAddress: this.arbitrationContractAddress
+    });
+  }
+
+  public getArbitrationProxyContract() {
+    this.contracts.arbitrationProxy =
+      this.polkamarkets.getArbitrationProxyContract({
+        contractAddress: this.arbitrationProxyContractAddress
+      });
   }
 
   public logoutSocialLogin() {
@@ -252,7 +275,7 @@ export default class PolkamarketsService {
       outcomes,
       category,
       value,
-      oracleAddress: this.address,
+      oracleAddress: this.arbitrationProxyContractAddress || this.address,
       odds,
       fee: (fee * 1e16).toString(),
       treasuryFee: (treasuryFee * 1e16).toString(),
@@ -716,6 +739,8 @@ export default class PolkamarketsService {
     questionId: string,
     user: string | null = null
   ) {
+    if (!this.contracts.realitio.getContract()._address) return {};
+
     const bonds = await this.contracts.realitio.getQuestionBondsByAnswer({
       questionId,
       user
@@ -777,7 +802,8 @@ export default class PolkamarketsService {
   public async getBondActions(): Promise<Object> {
     // ensuring user has wallet connected
     await this.login();
-    if (!this.address) return [];
+    if (!this.address || !this.contracts.realitio.getContract()._address)
+      return [];
 
     const response = await this.contracts.realitio.getMyActions();
 
@@ -787,6 +813,8 @@ export default class PolkamarketsService {
   public async getBondMarketIds(): Promise<string[]> {
     // ensuring user has wallet connected
     if (!this.address) return [];
+
+    if (!this.contracts.realitio.getContract()._address) return [];
 
     const questions = await this.contracts.realitio.getMyQuestions();
 
@@ -900,6 +928,59 @@ export default class PolkamarketsService {
     if (!this.address) return false;
 
     const response = await this.contracts.voting.removeDownvoteItem({ itemId });
+
+    return response;
+  }
+
+  // Arbitration contract functions
+
+  public async getDisputeFee(questionId: string): Promise<number> {
+    const response = await this.contracts.arbitration.getDisputeFee({
+      questionId
+    });
+
+    return response;
+  }
+
+  public async requestArbitration(
+    questionId: string,
+    bond: number
+  ): Promise<any> {
+    await this.login();
+
+    const response = await this.contracts.arbitration.requestArbitration({
+      questionId,
+      bond
+    });
+
+    return response;
+  }
+
+  public async getArbitrationRequests(questionId: string): Promise<any> {
+    const response = await this.contracts.arbitration.getArbitrationRequests({
+      questionId
+    });
+
+    return response;
+  }
+
+  public async getArbitrationDisputeId(
+    questionId: string
+  ): Promise<number | null> {
+    const response = await this.contracts.arbitration.getArbitrationDisputeId({
+      questionId
+    });
+
+    return response;
+  }
+
+  public async getArbitrationRequestsRejected(
+    questionId: string
+  ): Promise<any> {
+    const response =
+      await this.contracts.arbitrationProxy.getArbitrationRequestsRejected({
+        questionId
+      });
 
     return response;
   }
