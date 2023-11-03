@@ -46,7 +46,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           <span className="pm-c-divider--circle" />
         </Feature>
       )}
-      {!!users && (
+      {!!users && features.fantasy.enabled && (
         <>
           <Text
             as="span"
