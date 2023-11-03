@@ -294,7 +294,14 @@ function ReportFormArbitration() {
                   Your are contesting the following market
                 </p>
                 <div className={styles.market}>
-                  <Avatar $radius="lg" $size="md" alt="Market" src={imageUrl} />
+                  {imageUrl && (
+                    <Avatar
+                      $radius="lg"
+                      $size="md"
+                      alt="Market"
+                      src={imageUrl}
+                    />
+                  )}
                   <p className={styles.marketTitle}>{title}</p>
                 </div>
               </div>
