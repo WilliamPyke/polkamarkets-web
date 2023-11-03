@@ -39,10 +39,11 @@ function MarketPreview({ token }: MarketPreviewProps) {
         <div className={MarketPreviewClasses.bodyHeader}>
           {image.isUploaded ? (
             <Avatar
-              $radius="lg"
+              $radius="sm"
               $size="md"
               alt="Market"
               src={`https://polkamarkets.infura-ipfs.io/ipfs/${image.hash}`}
+              className={MarketPreviewClasses.bodyHeaderImage}
             />
           ) : null}
           <div className="pm-c-market__body-details">

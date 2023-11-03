@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { features } from 'config';
 import dayjs from 'dayjs';
 import { colorByOutcomeId } from 'helpers/color';
 import { fromTimestampToDate, toUTC } from 'helpers/date';
@@ -40,7 +39,7 @@ function generateMarketChartRandomData(size: number) {
 
 type ItemAlign = 'left' | 'center' | 'right';
 
-type Column = {
+export type Column = {
   title: string;
   key: string;
   align: ItemAlign;
@@ -58,24 +57,14 @@ type Row = {
 };
 
 function formatMarketPositions<A, O>(
+  columns: Column[],
   actions: A[],
   bondActions: A[],
   outcomes: O,
   ticker: string,
-  network
+  network,
+  rowsToOmit: string[] = []
 ) {
-  const columns: Column[] = [
-    { title: 'Outcome', key: 'outcome', align: 'left' },
-    { title: 'Date', key: 'date', align: 'right' },
-    { title: 'Price', key: 'price', align: 'right' },
-    { title: 'Shares', key: 'shares', align: 'right' },
-    { title: 'Total Value', key: 'value', align: 'right' },
-    { title: 'Trade Type', key: 'tradeType', align: 'center' },
-    { title: 'TX', key: 'transactionHash', align: 'right' }
-  ].filter(column =>
-    features.fantasy.enabled ? column.key !== 'transactionHash' : true
-  ) as Column[];
-
   const actionColorReducer = action => {
     switch (action) {
       case 'Buy':
@@ -156,6 +145,7 @@ function formatMarketPositions<A, O>(
                 scale="caption"
                 fontWeight="semibold"
                 style={{ display: 'flex', flexDirection: 'column' }}
+                className="notranslate"
               >
                 {date}
                 <strong>{utcTime}</strong>
@@ -165,7 +155,12 @@ function formatMarketPositions<A, O>(
           },
           price: {
             value: (
-              <Text as="span" scale="caption" fontWeight="semibold">
+              <Text
+                as="span"
+                scale="caption"
+                fontWeight="semibold"
+                className="notranslate"
+              >
                 {price}
                 {price ? <strong>{` ${ticker}`}</strong> : null}
               </Text>
@@ -178,7 +173,12 @@ function formatMarketPositions<A, O>(
           },
           value: {
             value: (
-              <Text as="span" scale="caption" fontWeight="semibold">
+              <Text
+                as="span"
+                scale="caption"
+                fontWeight="semibold"
+                className="notranslate"
+              >
                 {value}{' '}
                 <strong>{action.action === 'Bond' ? 'POLK' : ticker}</strong>
               </Text>
@@ -206,7 +206,7 @@ function formatMarketPositions<A, O>(
             align: 'right'
           }
         },
-        features.fantasy.enabled ? ['transactionHash'] : []
+        rowsToOmit
       ) as Row;
     });
 

@@ -1,68 +1,147 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import cn from 'classnames';
 import isEmpty from 'lodash/isEmpty';
-import { useGetTournamentsQuery } from 'services/Polkamarkets';
+import omit from 'lodash/omit';
+import orderBy from 'lodash/orderBy';
+import uniqBy from 'lodash/uniqBy';
+import {
+  useGetMarketsByIdsQuery,
+  useGetTournamentsQuery
+} from 'services/Polkamarkets';
+import type { TournamentGroup as TournamentGroupType } from 'types/tournament';
 
-import { AlertMini } from 'components';
+import { AlertMini, Tabs } from 'components';
 
+import TournamentGroup from './TournamentGroup';
 import styles from './TournamentsList.module.scss';
+import TournamentsUpcomingMarkets from './TournamentsUpcomingMarkets';
 
 function TournamentsList() {
   const { data: tournaments, isFetching, isLoading } = useGetTournamentsQuery();
+  const isLoadingGetTournamentsQuery = isFetching || isLoading;
+  const isEmptyTournaments = !tournaments || isEmpty(tournaments);
 
-  if (isFetching || isLoading)
+  const [currentTab, setCurrentTab] = useState('all');
+
+  const groups = useMemo(() => {
+    if (isLoadingGetTournamentsQuery || isEmptyTournaments) return [];
+
+    return orderBy(
+      uniqBy(
+        tournaments
+          .map(tournament => tournament.group)
+          .filter(group => group !== null) as TournamentGroupType[],
+        'id'
+      ).map(group => {
+        const tournamentsInGroup = orderBy(
+          tournaments
+            .filter(tournament => tournament.group?.id === group.id)
+            .map(tournament => omit(tournament, 'group'))
+        );
+
+        return {
+          ...group,
+          tournaments: tournamentsInGroup
+        };
+      }),
+      'position'
+    );
+  }, [isEmptyTournaments, isLoadingGetTournamentsQuery, tournaments]);
+
+  const marketsIds = useMemo(() => {
+    if (isLoadingGetTournamentsQuery || isEmptyTournaments) return [];
+
+    return uniqBy(
+      tournaments.map(tournament => tournament.markets || []).flat(),
+      'slug'
+    ).map(market => market.id);
+  }, [isEmptyTournaments, isLoadingGetTournamentsQuery, tournaments]);
+
+  const {
+    data: markets,
+    isLoading: isLoadingMarkets,
+    isFetching: isFetchingMarkets
+  } = useGetMarketsByIdsQuery(
+    {
+      ids: marketsIds,
+      networkId: `${tournaments?.[0]?.networkId}`
+    },
+    {
+      skip: isEmpty(marketsIds)
+    }
+  );
+
+  const isLoadingGetMarketsByIdsQuery = isLoadingMarkets || isFetchingMarkets;
+
+  if (isLoadingGetTournamentsQuery || isLoadingGetMarketsByIdsQuery)
     return (
       <div className="flex-row justify-center align-center width-full padding-y-5 padding-x-4">
         <span className="spinner--primary" />
       </div>
     );
 
-  if (isEmpty(tournaments))
+  if (isEmpty(groups))
     return (
-      <AlertMini
-        style={{ border: 'none' }}
-        styles="outline"
-        variant="information"
-        description="No tournaments available at the moment."
-      />
+      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-small">
+        <AlertMini
+          style={{ border: 'none' }}
+          styles="outline"
+          variant="information"
+          description="No tournaments available at the moment."
+        />
+      </div>
     );
 
   return (
-    <ul className="flex-column">
-      {tournaments?.map((tournament, index) => (
-        <li key={tournament.slug}>
-          <Link
-            to={`/tournaments/${tournament.slug}`}
-            className={cn(styles.item, {
-              'bg-3': index % 2 === 0
-            })}
+    <>
+      {markets ? (
+        <div className={styles.upcoming}>
+          <div className={styles.upcomingHeader}>
+            <h2 className={styles.upcomingTitle}>Upcoming</h2>
+            <Link
+              to="/markets"
+              className="pm-c-button-subtle--primary pm-c-button--xs"
+            >
+              See All
+            </Link>
+          </div>
+          <TournamentsUpcomingMarkets markets={markets} />
+        </div>
+      ) : null}
+      <Tabs
+        direction="row"
+        fullwidth
+        value={currentTab}
+        onChange={tab => setCurrentTab(tab)}
+        className={{
+          root: styles.tabsRoot,
+          header: styles.tabsHeader,
+          item: styles.tabsItem
+        }}
+      >
+        <Tabs.TabPane id="all" tab="All">
+          <ul className={styles.root}>
+            {groups.map(group => (
+              <li key={group.id}>
+                <TournamentGroup group={group} />
+              </li>
+            ))}
+          </ul>
+        </Tabs.TabPane>
+        {groups.map(group => (
+          <Tabs.TabPane
+            key={group.id}
+            id={group.id.toString()}
+            tab={group.title}
           >
-            <div className={styles.itemAvatar}>
-              {tournament.imageUrl ? (
-                <img
-                  src={tournament.imageUrl}
-                  alt="Tournament Avatar"
-                  className={styles.itemAmage}
-                />
-              ) : (
-                <p className={cn('body text-3 bold', styles.itemInitials)}>
-                  {tournament.title.match(/\w/)}
-                </p>
-              )}
-            </div>
-            <div>
-              <span className="body semibold text-2 text-1-on-hover">
-                {tournament.title}
-              </span>
-              <p className={cn(styles.itemDescription, 'tiny semibold text-3')}>
-                {tournament.description}
-              </p>
-            </div>
-          </Link>
-        </li>
-      ))}
-    </ul>
+            <ul className={styles.root}>
+              <TournamentGroup group={group} />
+            </ul>
+          </Tabs.TabPane>
+        ))}
+      </Tabs>
+    </>
   );
 }
 

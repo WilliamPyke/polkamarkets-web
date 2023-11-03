@@ -1,9 +1,37 @@
 import { lazy } from 'react';
 
+import features from './features';
 import ui from './ui';
 
 const Leaderboard = lazy(() => import('pages/Leaderboard'));
 const pages = {
+  resetAccount: {
+    pathname: '/reset',
+    Component: lazy(() => import('pages/ResetAccount')),
+    exact: true,
+    navigation: false,
+    name: '',
+    meta: null,
+    enabled: features.fantasy.enabled
+  },
+  restrictedCountry: {
+    pathname: '/blocked',
+    Component: lazy(() => import('pages/RestrictedCountry')),
+    exact: true,
+    navigation: false,
+    name: '',
+    meta: null,
+    enabled: false
+  },
+  whitelist: {
+    pathname: '/whitelist',
+    Component: lazy(() => import('pages/Whitelist')),
+    exact: true,
+    navigation: false,
+    name: '',
+    meta: null,
+    enabled: false
+  },
   profile: {
     pathname: '/user/:address',
     Component: lazy(() => import('pages/Profile')),
@@ -28,17 +56,21 @@ const pages = {
     exact: true,
     navigation: true,
     name: 'Clubs',
-    meta: {
-      title: 'Clubs - Polkamarkets',
-      description:
-        "Build your own Club, league and leaderboard with your friends, against colleagues or around communities. Wear your own logo, tease your clubmates and let all fight to climb the Club's leaderboard.",
-      image: `${process.env.PUBLIC_URL}/metadata-homepage.png`
-    },
+    meta: null,
     enabled: ui.clubs.enabled
+  },
+  tournamentLeaderboard: {
+    pathname: `/tournaments/:slug${features.fantasy.enabled && '/leaderboard'}`,
+    Component: Leaderboard,
+    exact: false,
+    navigation: false,
+    name: '',
+    meta: null,
+    enabled: ui.tournaments.enabled
   },
   tournament: {
     pathname: '/tournaments/:slug',
-    Component: Leaderboard,
+    Component: lazy(() => import('pages/Tournament')),
     exact: false,
     navigation: false,
     name: '',
@@ -64,13 +96,8 @@ const pages = {
     exact: false,
     navigation: true,
     name: 'Leaderboard',
-    meta: {
-      title: 'Leaderboard - Polkamarkets',
-      description:
-        'Rank up higher on the leaderboard and be the #1 forecaster of Polkamarkets.',
-      image: `${process.env.PUBLIC_URL}/metadata-leaderboard.png`
-    },
-    enabled: true
+    meta: null,
+    enabled: !ui.tournaments.enabled
   },
   achievements: {
     pathname: '/achievements',
@@ -78,12 +105,7 @@ const pages = {
     exact: false,
     navigation: true,
     name: 'Achievements',
-    meta: {
-      title: 'Achievements - Polkamarkets',
-      description:
-        'Place predictions in the Polkamarkets app and grab your exclusive NFT Achievements.',
-      image: `${process.env.PUBLIC_URL}/metadata-homepage.png`
-    },
+    meta: null,
     enabled: ui.achievements.enabled
   },
   portfolio: {
@@ -92,26 +114,17 @@ const pages = {
     exact: false,
     navigation: true,
     name: 'Portfolio',
-    meta: {
-      title: 'Portfolio - Polkamarkets',
-      description:
-        'Participate in the Polkamarkets app and compete with your friends, coworkers or other community members.',
-      image: `${process.env.PUBLIC_URL}/metadata-portfolio.png`
-    },
+    meta: null,
     enabled: true
   },
   home: {
-    pathname: '/',
+    pathname:
+      features.fantasy.enabled && ui.tournaments.enabled ? '/markets' : '/',
     Component: lazy(() => import('pages/Home')),
     exact: false,
     navigation: true,
     name: 'Markets',
-    meta: {
-      title: 'Polkamarkets - Autonomous Prediction Markets',
-      description:
-        'Polkamarkets is a DeFi-Powered Prediction Market built for cross-chain information exchange.',
-      image: `${process.env.PUBLIC_URL}/polkamarkets_meta.jpg`
-    },
+    meta: null,
     enabled: true,
     pages: {
       create: {

@@ -1,5 +1,5 @@
 import { Currency, Token } from 'types/currency';
-import { News } from 'types/market';
+import { News, Comment } from 'types/market';
 import { Network } from 'types/network';
 
 export interface PriceChartPoint {
@@ -53,7 +53,7 @@ export interface Market {
   category: string;
   subcategory: string;
   resolutionSource?: string | null;
-  imageUrl: string;
+  imageUrl: string | null;
   bannerUrl: string;
   title: string;
   description: string;
@@ -82,4 +82,6 @@ export interface Market {
   currency: Currency;
   votes: Votes;
   token: Token;
+  users: number;
+  comments: Comment[];
 }

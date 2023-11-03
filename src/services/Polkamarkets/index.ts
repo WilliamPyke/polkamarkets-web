@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { environment } from 'config';
-import { camelizeKeys } from 'humps';
+import { camelizeKeys, decamelizeKeys } from 'humps';
 import identity from 'lodash/identity';
 import pickBy from 'lodash/pickBy';
 import uniq from 'lodash/uniq';
@@ -9,8 +9,7 @@ import {
   getAchievementsTransformResponse,
   getLeaderboardByAddressTransformResponse,
   getLeaderboardByTimeframeTransformResponse,
-  getPortfolioByAddressTransformResponse,
-  getPortfolioFeedByAddressTransformResponse
+  getPortfolioByAddressTransformResponse
 } from './functions';
 import {
   GetMarketBySlugArgs,
@@ -47,7 +46,13 @@ import {
   JoinLeaderboardGroupParams,
   GetTournamentsData,
   GetTournamentBySlugData,
-  GetTournamentBySlugArgs
+  GetTournamentBySlugArgs,
+  GetWhitelistStatusData,
+  GetWhitelistStatusArgs,
+  AddCommentData,
+  AddCommentParams,
+  GetMarketFeedBySlugArgs,
+  GetMarketFeedBySlugData
 } from './types';
 
 function camelize<T extends object>(response: T): T {
@@ -229,7 +234,35 @@ const polkamarketsApi = createApi({
       query: ({ address, networkId }) =>
         `/portfolios/${address}/feed?network_id=${networkId}`,
       transformResponse: (response: GetPortfolioFeedByAddressData) =>
-        getPortfolioFeedByAddressTransformResponse(camelize(response))
+        camelize(response)
+    }),
+    getWhitelistStatus: builder.query<
+      GetWhitelistStatusData,
+      GetWhitelistStatusArgs
+    >({
+      query: ({ email }) => `/whitelist?item=${email.replace(/\+/g, '%2B')}`,
+      transformResponse: (response: GetWhitelistStatusData) =>
+        camelize(response)
+    }),
+    addComment: builder.mutation<AddCommentData, AddCommentParams>({
+      query: ({ user, comment }) => ({
+        url: `/comments`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.authenticationToken}`
+        },
+        body: {
+          comment: decamelizeKeys(comment)
+        }
+      })
+    }),
+    getMarketFeedBySlug: builder.query<
+      GetMarketFeedBySlugData,
+      GetMarketFeedBySlugArgs
+    >({
+      query: ({ slug }) => `/markets/${slug}/feed`,
+      transformResponse: (response: GetMarketFeedBySlugData) =>
+        camelize(response)
     })
   })
 });
@@ -254,5 +287,8 @@ export const {
   useGetLeaderboardGroupsByUserQuery,
   useGetTournamentsQuery,
   useGetTournamentBySlugQuery,
-  useGetPortfolioFeedByAddressQuery
+  useGetPortfolioFeedByAddressQuery,
+  useGetWhitelistStatusQuery,
+  useAddCommentMutation,
+  useGetMarketFeedBySlugQuery
 } = polkamarketsApi;

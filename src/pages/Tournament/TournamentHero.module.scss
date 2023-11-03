@@ -1,0 +1,36 @@
+.header {
+  margin-top: var(--size-24);
+
+  &Hero {
+    padding: 40px 12px 12px 12px;
+    aspect-ratio: unset;
+
+    @media (min-width: 768px) {
+      padding: 12px 12px 12px 40px;
+    }
+
+    &Content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--size-24);
+      width: 100%;
+
+      @media (min-width: 768px) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--size-32);
+      }
+
+      &Pill {
+        padding: 4px 10px !important;
+        background-color: #4d3df7 !important;
+
+        &Text {
+          text-transform: uppercase;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}

@@ -13,6 +13,8 @@ import { toHexadecimal } from 'helpers/string';
 import { fetchAditionalData, login } from 'redux/ducks/polkamarkets';
 import { PolkamarketsService } from 'services';
 
+import { useWhitelist } from 'contexts/whitelist';
+
 import useAppDispatch from '../useAppDispatch';
 import useAppSelector from '../useAppSelector';
 import useLocalStorage from '../useLocalStorage';
@@ -32,6 +34,13 @@ const DEFAULT_NETWORK_CONFIG = environment.NETWORKS[DEFAULT_NETWORK.id];
 const UNKNOWN_NETWORK = networks['0x270f'];
 
 function getNetwork(networkId) {
+  if (ui.socialLogin.enabled) {
+    return (
+      networks[toHexadecimal(ui.socialLogin.networkId as string)] ||
+      UNKNOWN_NETWORK
+    );
+  }
+
   return networks[networkId] || UNKNOWN_NETWORK;
 }
 
@@ -44,6 +53,8 @@ function NetworkProvider({ children }: NetworkProviderProps) {
   const history = useHistory();
   const query = useQuery();
   const dispatch = useAppDispatch();
+
+  const { isEnabled, isWhitelisted } = useWhitelist();
 
   const walletIsConnected = useAppSelector(
     state => state.polkamarkets.isLoggedIn
@@ -111,12 +122,11 @@ function NetworkProvider({ children }: NetworkProviderProps) {
   );
 
   useEffect(() => {
-    dispatch(login(polkamarketService));
-  }, [dispatch, polkamarketService]);
+    dispatch(login(polkamarketService, !isEnabled || isWhitelisted));
+  }, [dispatch, isEnabled, isWhitelisted, polkamarketService]);
 
   useEffect(() => {
     async function fetchUserData() {
-      dispatch(login(polkamarketService));
       dispatch(fetchAditionalData(polkamarketService));
     }
 

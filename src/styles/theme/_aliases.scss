@@ -72,6 +72,7 @@
   --color-number-input-button-background--disabled: #eff1f4;
   --color-number-input-button-border--error: #e12d39;
 
+  --color-tournament-avatar-background: rgb(0 0 0 / 0.1);
   --color-trade-market-title: #313a4c;
   --color-trade-prediction-title: #313a4c;
   --color-trade-prediction-price: #67768e;
@@ -91,9 +92,23 @@
   --color-trade-predictions-show-more-text: rgb(130, 133, 233);
   --color-trade-predictions-show-more-text--hover: rgb(109, 113, 225);
 
+  --color-trade-predictions-arrow-button: #949698;
+  --color-trade-predictions-arrow: #ffffff;
+
   --color-market-shares-description: #8682fd;
   --color-market-shares-description--bold: #313a4c;
   --color-tournament-avatar-background: rgb(0 0 0 / 0.1);
+
+  --color-input-background-color: rgba(227, 231, 240, 0.3);
+  --color-input-background-focus-color: var(--color-bg-4);
+  --color-input-border-default-color: #e0e2e7;
+  --color-input-border-default-focus-color: #7069fa;
+  --color-image-input-icon-border-color: #8193ae;
+
+  --color-tournament-background: #fbfcfe;
+  --color-tournament-group-description: #313a4c;
+
+  --color-tabs-item: #7a7a94;
 
   // Reference: https://spectrum.adobe.com/page/color-for-data-visualization/#Categorical
 
@@ -151,6 +166,7 @@
     --color-number-input-button-background: rgba(35, 42, 54, 0.3);
     --color-number-input-button-background--disabled: #292d32;
 
+    --color-tournament-avatar-background: rgb(255 255 255 / 0.1);
     --color-trade-market-title: #f9fafb;
     --color-trade-prediction-title: #f9fafb;
     --color-trade-prediction-price: #a5bee4;
@@ -170,9 +186,21 @@
     --color-trade-predictions-show-more-text: rgb(162, 165, 252);
     --color-trade-predictions-show-more-text--hover: rgb(184, 186, 245);
 
+    --color-trade-predictions-arrow-button: #f1eeee;
+    --color-trade-predictions-arrow: #000000;
+
     --color-market-shares-description: #c4c6ff;
     --color-market-shares-description--bold: #ffffff;
     --color-tournament-avatar-background: rgb(255 255 255 / 0.1);
+
+    --color-input-background-color: rgba(35, 42, 54, 0.3);
+    --color-input-border-default-color: #252c3b;
+    --color-image-input-icon-border-color: #637084;
+
+    --color-tournament-background: #202939;
+    --color-tournament-group-description: #a8b0bd;
+
+    --color-tabs-item: #e6e6ff;
   }
 
   --grid-margin: var(--size-12);

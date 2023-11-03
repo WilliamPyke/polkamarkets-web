@@ -120,12 +120,9 @@
 
     &__tabs {
       grid-area: tabs;
-      display: none;
 
-      @include breakpoint-to('md') {
-        @include flex-column;
-        width: 100%;
-      }
+      @include flex-column;
+      width: 100%;
     }
   }
 }

@@ -113,15 +113,25 @@ function Virtuoso({ data }: VirtuosoProps) {
 
 type MarketListProps = {
   filtersVisible: boolean;
+  fetchByIds?: {
+    ids: string[];
+    networkId: number;
+  };
 };
 
-export default function MarketList({ filtersVisible }: MarketListProps) {
-  const markets = useMarkets();
+export default function MarketList({
+  filtersVisible,
+  fetchByIds
+}: MarketListProps) {
+  const { data, fetch, state } = useMarkets(fetchByIds);
+
+  const fetchMarkets = useCallback(async () => {
+    await fetch();
+  }, [fetch]);
 
   useEffect(() => {
-    markets.fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchMarkets();
+  }, [fetchMarkets]);
 
   return (
     <div
@@ -152,7 +162,7 @@ export default function MarketList({ filtersVisible }: MarketListProps) {
                 </Text>
               </div>
               <div className="pm-c-market-list__error__actions">
-                <Button color="primary" size="sm" onClick={markets.fetch}>
+                <Button color="primary" size="sm" onClick={fetchMarkets}>
                   Try again
                 </Button>
               </div>
@@ -173,8 +183,8 @@ export default function MarketList({ filtersVisible }: MarketListProps) {
               </div>
             </div>
           ),
-          success: <Virtuoso data={markets.data} />
-        }[markets.state]
+          success: <Virtuoso data={data} />
+        }[state]
       }
     </div>
   );

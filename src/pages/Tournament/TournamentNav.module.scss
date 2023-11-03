@@ -1,0 +1,25 @@
+.root {
+  display: flex;
+
+  @media (min-width: 1440px) {
+    padding: 0 var(--size-24);
+  }
+}
+
+.nav {
+  top: 0px;
+  z-index: 1;
+  position: sticky;
+  display: flex;
+  align-items: center;
+  gap: var(--size-12);
+  height: 64px;
+
+  &Action {
+    height: 44px !important;
+  }
+
+  @media (min-width: 1024px) {
+    height: 88px;
+  }
+}

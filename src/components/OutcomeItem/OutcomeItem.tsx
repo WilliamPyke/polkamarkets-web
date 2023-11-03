@@ -1,4 +1,6 @@
 import cn from 'classnames';
+import { features } from 'config';
+import { roundNumber } from 'helpers/math';
 import { kebabCase, uniqueId } from 'lodash';
 import { Line } from 'rc-progress';
 import { Avatar, useTheme } from 'ui';
@@ -103,14 +105,20 @@ export default function OutcomeItem({
             as="p"
             scale="tiny"
             fontWeight="semibold"
-            className={`pm-c-market-outcomes__item-odd ${outcomeItemClasses.secondary}`}
+            className={`pm-c-market-outcomes__item-odd ${outcomeItemClasses.secondary} notranslate`}
           >
             {secondary.text || (
               <>
-                <strong className={outcomeItemClasses.primary}>
-                  {secondary.price}
-                </strong>{' '}
-                {secondary.ticker}
+                {features.fantasy.enabled ? (
+                  `${roundNumber(+secondary.price * 100, 3)}%`
+                ) : (
+                  <>
+                    <strong className={outcomeItemClasses.primary}>
+                      {secondary.price}
+                    </strong>{' '}
+                    {secondary.ticker}
+                  </>
+                )}
                 <Text
                   as="span"
                   scale="tiny"
@@ -166,7 +174,7 @@ export default function OutcomeItem({
           rows={[
             {
               key: 'invested',
-              title: 'Invested',
+              title: 'Your Shares',
               value: invested || 0
             }
           ]}

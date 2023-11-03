@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import { environment } from 'config';
+import { environment, features } from 'config';
 import useMedia from 'ui/useMedia';
 import useUpdateEffect from 'ui/useUpdateEffect';
 
@@ -85,6 +85,7 @@ export default function ThemeProvider(props: ThemeProviderProps) {
     () => ({
       device: {
         mode: (() => {
+          if (features.fantasy.enabled) return 'dark';
           if (mode === THEME_MODES.system) {
             if (isDark) return 'dark';
             return 'light';
@@ -113,6 +114,9 @@ export default function ThemeProvider(props: ThemeProviderProps) {
 
     return () => window.clearTimeout(timer);
   }, [value.device.mode]);
+
+  if (features.fantasy.enabled && typeof window !== 'undefined')
+    window.localStorage.removeItem(THEME_MODE_KEY);
 
   return <ThemeContext.Provider value={value} {...props} />;
 }

@@ -19,9 +19,11 @@ import ChartGrowthIcon from './ChartGrowthIcon';
 import CheckIcon from './CheckIcon';
 import CloseIcon from './CloseIcon';
 import CrownIcon from './CrownIcon';
+import DamatTweenLogo from './DamatTweenLogo';
 import EthereumIcon from './EthereumIcon';
 import ExploreIcon from './ExploreIcon';
 import FavoriteIcon from './FavoriteIcon';
+import ForelandLogo from './ForelandLogo';
 import GamingConsoleIcon from './GamingConsoleIcon';
 import GitHubIcon from './GitHubIcon';
 import HamburguerMenuIcon from './HamburguerMenuIcon';
@@ -37,6 +39,7 @@ import MoonbeamIcon from './MoonbeamIcon';
 import MoonIcon from './MoonIcon';
 import MoonriverIcon from './MoonriverIcon';
 import NetworkCommunicationIcon from './NetworkCommunicationIcon';
+import PCLLogo from './PCLLogo';
 import PolkadotIcon from './PolkadotIcon';
 import PolkamarketsIcon from './PolkamarketsIcon';
 import PolkamarketsIconCircle from './PolkamarketsIconCircle';
@@ -88,9 +91,11 @@ export {
   CheckIcon,
   CloseIcon,
   CrownIcon,
+  DamatTweenLogo,
   EthereumIcon,
   ExploreIcon,
   FavoriteIcon,
+  ForelandLogo,
   GamingConsoleIcon,
   GitHubIcon,
   InfoIcon,
@@ -106,6 +111,7 @@ export {
   MoonriverIcon,
   MoonIcon,
   NetworkCommunicationIcon,
+  PCLLogo,
   PolkadotIcon,
   PolkamarketsIcon,
   PolkamarketsIconCircle,

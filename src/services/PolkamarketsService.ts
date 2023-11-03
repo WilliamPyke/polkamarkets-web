@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import * as realitioLib from '@reality.eth/reality-eth-lib/formatters/question';
-import { features } from 'config';
+import { features, ui } from 'config';
 import environment, { NetworkConfig } from 'config/environment';
 import * as polkamarketsjs from 'polkamarkets-js';
 
@@ -36,8 +36,8 @@ export default class PolkamarketsService {
     return Number(realitioLib.bytes32ToString(bytes32Str, { type: 'int' }));
   }
 
-  static intToBytes32(int: string): number {
-    return realitioLib.answerToBytes32(int, { type: 'int' });
+  static intToBytes32(int: string): string {
+    return realitioLib.answerToBytes32(Number(int), { type: 'int' });
   }
 
   constructor(
@@ -63,7 +63,33 @@ export default class PolkamarketsService {
 
     this.polkamarkets = new polkamarketsjs.Application({
       web3Provider: WEB3_PROVIDER,
-      web3EventsProvider: WEB3_EVENTS_PROVIDER
+      web3EventsProvider: WEB3_EVENTS_PROVIDER,
+      isSocialLogin: ui.socialLogin.enabled,
+      socialLoginParams: {
+        useCustomModal: true,
+        isTestnet: ui.socialLogin.isTestnet,
+        urls: [],
+        networkConfig: {
+          chainId: Number(
+            process.env.REACT_APP_FEATURE_SOCIAL_LOGIN_NETWORK_ID
+          ),
+          dappAPIKey: process.env.REACT_APP_FEATURE_SOCIAL_LOGIN_DAPP
+        },
+        web3AuthConfig: {
+          clientId: process.env.REACT_APP_WEB3AUTH_CLIENT_ID,
+          discord: {
+            customVerifier:
+              process.env.REACT_APP_WEB3AUTH_DISCORD_CUSTOM_VERIFIER,
+            clientId: process.env.REACT_APP_WEB3AUTH_DISCORD_CLIENT_ID
+          }
+        },
+        whiteLabelData: {
+          logo:
+            process.env.REACT_APP_SOCIAL_LOGIN_LOGO_URL ||
+            'https://www.polkamarkets.com/favicon.ico',
+          name: process.env.REACT_APP_SOCIAL_LOGIN_NAME || 'Polkamarkets'
+        }
+      }
     });
 
     this.polkamarkets.start();
@@ -122,6 +148,44 @@ export default class PolkamarketsService {
       this.polkamarkets.getArbitrationProxyContract({
         contractAddress: this.arbitrationProxyContractAddress
       });
+  }
+
+  public logoutSocialLogin() {
+    this.polkamarkets.socialLoginLogout();
+    this.loggedIn = false;
+    this.address = '';
+  }
+
+  public async socialLoginGoogle() {
+    return this.polkamarkets.socialLoginGoogle();
+  }
+
+  public async socialLoginFacebook() {
+    return this.polkamarkets.socialLoginFacebook();
+  }
+
+  public async socialLoginTwitter() {
+    return this.polkamarkets.socialLoginTwitter();
+  }
+
+  public async socialLoginGithub() {
+    return this.polkamarkets.socialLoginGithub();
+  }
+
+  public async socialLoginDiscord() {
+    return this.polkamarkets.socialLoginDiscord();
+  }
+
+  public async socialLoginEmail(email) {
+    return this.polkamarkets.socialLoginEmail(email);
+  }
+
+  public async socialLoginMetamask() {
+    return this.polkamarkets.socialLoginMetamask();
+  }
+
+  public async getSocialLoginUserInfo() {
+    return this.polkamarkets.getSocialLoginUserInfo();
   }
 
   // returns wether wallet is connected to service or not
@@ -306,6 +370,38 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async checkPortfolioAndClaimWinnings() {
+    // ensuring user has wallet connected
+    await this.login();
+
+    const portfolio = await this.getPortfolio();
+    let hasClaimed = false;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const marketId of Object.keys(portfolio)) {
+      const position = portfolio[marketId];
+      if (
+        position.claimStatus.winningsToClaim &&
+        !position.claimStatus.winningsClaimed
+      ) {
+        hasClaimed = true;
+        // eslint-disable-next-line no-await-in-loop
+        await this.claimWinnings(marketId);
+      }
+
+      if (
+        position.claimStatus.liquidityToClaim &&
+        !position.claimStatus.liquidityClaimed
+      ) {
+        hasClaimed = true;
+        // eslint-disable-next-line no-await-in-loop
+        await this.claimLiquidity(marketId);
+      }
+    }
+
+    return hasClaimed;
+  }
+
   public async claimWinnings(marketId: string | number) {
     // ensuring user has wallet connected
     await this.login();
@@ -433,7 +529,10 @@ export default class PolkamarketsService {
     // ensuring user has wallet connected
     await this.login();
 
-    if (!this.address) return 0;
+    // console.trace();
+    if (!this.address) {
+      return 0;
+    }
 
     const contract = this.polkamarkets.getFantasyERC20Contract({
       contractAddress: erc20ContractAddress
@@ -452,7 +551,7 @@ export default class PolkamarketsService {
   public async isPolkClaimed(): Promise<boolean> {
     if (!this.address) return false;
 
-    if (features.regular.enabled) return false;
+    if (features.regular.enabled) return true;
 
     let claimed;
 
@@ -473,6 +572,8 @@ export default class PolkamarketsService {
   }
 
   public async claimPolk(): Promise<boolean> {
+    if (features.regular.enabled) return true;
+
     // ensuring user has wallet connected
     await this.login();
 
@@ -483,6 +584,38 @@ export default class PolkamarketsService {
     await this.contracts.erc20.claimAndApproveTokens();
 
     return true;
+  }
+
+  public async resetBalance(): Promise<boolean> {
+    if (features.regular.enabled) return true;
+
+    // ensuring user has wallet connected
+    await this.login();
+
+    // TODO improve this: ensuring erc20 contract is initialized
+    // eslint-disable-next-line no-underscore-dangle
+    await this.contracts.erc20.__init__();
+
+    const response = await this.contracts.erc20.resetBalance();
+
+    return response;
+  }
+
+  public async hasUserResetBalance(timestamp: number = 0): Promise<boolean> {
+    if (features.regular.enabled) return false;
+
+    // ensuring user has wallet connected
+    await this.login();
+
+    // TODO improve this: ensuring erc20 contract is initialized
+    // eslint-disable-next-line no-underscore-dangle
+    await this.contracts.erc20.__init__();
+
+    const events = await this.contracts.erc20.burnEvents({
+      address: this.address
+    });
+
+    return events.filter(event => event.timestamp > timestamp).length > 0;
   }
 
   public async getERC20TokenInfo(erc20ContractAddress: string): Promise<any> {

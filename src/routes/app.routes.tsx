@@ -1,56 +1,59 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import { pages, ui } from 'config';
-import { getUserCountry } from 'helpers/location';
+import { pages, ui, features } from 'config';
 import { Spinner } from 'ui';
-
-import RestrictedCountry from 'pages/RestrictedCountry';
 
 import { Layout } from 'components';
 
-const restrictedCountries =
-  process.env.REACT_APP_RESTRICTED_COUNTRIES?.split(',');
+import { useWhitelist } from 'contexts/whitelist';
 
 export default function AppRoutes() {
-  const [isLoading, setLoading] = useState(true);
-  const [isRestricted, setRestricted] = useState(false);
-
-  useEffect(() => {
-    (async function handleCountry() {
-      try {
-        const userCountry = await getUserCountry();
-
-        setRestricted(!!restrictedCountries?.includes(userCountry.countryCode));
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  if (isLoading) return <Spinner />;
-
-  if (isRestricted) return <RestrictedCountry />;
+  const { isEnabled } = useWhitelist();
 
   return (
-    <Layout>
-      <Suspense fallback={<Spinner />}>
-        <Switch>
-          {Object.values(pages)
-            .filter(page => page.enabled)
-            .map(page => (
-              <Route
-                key={page.name}
-                exact={page.exact}
-                path={page.pathname}
-                component={page.Component}
-              />
-            ))}
-          {ui.clubs.enabled && (
-            <Redirect from="/leaderboard/:slug" to="/clubs/:slug" />
+    <Suspense fallback={<Spinner />}>
+      <Switch>
+        {isEnabled ? (
+          <Route
+            exact={pages.whitelist.exact}
+            path={pages.whitelist.pathname}
+            component={pages.whitelist.Component}
+          />
+        ) : null}
+        <Route
+          exact={pages.restrictedCountry.exact}
+          path={pages.restrictedCountry.pathname}
+          component={pages.restrictedCountry.Component}
+        />
+        {features.fantasy.enabled && pages.tournaments.enabled && (
+          <Route exact path="/">
+            <Redirect to="/tournaments" />
+          </Route>
+        )}
+        <Route
+          path="/"
+          render={() => (
+            <Layout>
+              <Switch>
+                {Object.values(pages)
+                  .filter(page => page.enabled)
+                  .map(page => (
+                    <Route
+                      key={page.name}
+                      exact={page.exact}
+                      path={page.pathname}
+                      component={page.Component}
+                    />
+                  ))}
+                {ui.clubs.enabled && (
+                  <Redirect from="/leaderboard/:slug" to="/clubs/:slug" />
+                )}
+              </Switch>
+            </Layout>
           )}
-        </Switch>
-      </Suspense>
-    </Layout>
+        />
+      </Switch>
+    </Suspense>
   );
 }

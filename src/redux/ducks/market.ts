@@ -50,7 +50,7 @@ const initialState: MarketInitialState = {
     category: '',
     subcategory: '',
     resolutionSource: null,
-    imageUrl: '',
+    imageUrl: null,
     bannerUrl: '',
     title: '',
     description: '',
@@ -127,7 +127,9 @@ const initialState: MarketInitialState = {
       isPendingArbitrationRequest: false,
       disputeId: null
     },
-    news: []
+    news: [],
+    users: 0,
+    comments: []
   },
   chartViews: chartViewsEnum,
   chartViewType: 'marketOverview',

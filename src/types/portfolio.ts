@@ -4,7 +4,9 @@ export type FeedAction =
   | 'add_liquidity'
   | 'remove_liquidity'
   | 'claim_winnings'
-  | 'create_market';
+  | 'create_market'
+  | 'upvote'
+  | 'downvote';
 
 export type FeedActionAccentColor = 'success' | 'danger' | 'primary';
 
@@ -20,4 +22,5 @@ export type FeedActivity = {
   shares: number;
   value: number;
   timestamp: number;
+  ticker: string;
 };

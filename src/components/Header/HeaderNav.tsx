@@ -2,11 +2,12 @@ import { useCallback, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import type ReactRouterDom from 'react-router-dom';
 
-import { pages, socials, ui } from 'config';
+import { pages, community, ui } from 'config';
 import { shiftSlash } from 'helpers/string';
+import isEmpty from 'lodash/isEmpty';
 import { useTheme } from 'ui';
 
-import { PolkamarketsLogo } from 'assets/icons';
+import * as Logos from 'assets/icons';
 import { ReactComponent as V2Badge } from 'assets/icons/svgs/v2-badge.svg';
 
 import { Button } from 'components/Button';
@@ -19,6 +20,8 @@ import Text from 'components/Text';
 
 import headerNavClasses from './HeaderNav.module.scss';
 
+const LogoComponent = ui.logo ? Logos[ui.logo] : null;
+
 function HeaderNavModal({
   children
 }: {
@@ -30,7 +33,7 @@ function HeaderNavModal({
   return (
     <>
       <Button size="xs" variant="ghost" onClick={() => setShow(true)}>
-        <Icon name="Menu" size="lg" />
+        <Icon name="Menu" size="lg" title="Open Menu" />
       </Button>
       <Modal
         show={show}
@@ -47,39 +50,43 @@ function HeaderNavModal({
             onClick={handleHide}
             className={headerNavClasses.hide}
           >
-            <Icon name="Cross" size="lg" />
+            <Icon name="Cross" size="lg" title="Close Menu" />
           </Button>
         </header>
         {typeof children === 'function' ? children(handleHide) : children}
         <footer className={headerNavClasses.footer}>
-          <Text
-            color="gray"
-            scale="tiny-uppercase"
-            fontWeight="bold"
-            className={headerNavClasses.title}
-          >
-            Join our community
-          </Text>
-          <ul className={headerNavClasses.socials}>
-            {Object.values(socials).map(social => (
-              <li key={social.name}>
-                <Text
-                  // @ts-ignore
-                  as="a"
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={headerNavClasses.social}
-                >
-                  <Icon
-                    title={social.name}
-                    name={social.name}
-                    className={headerNavClasses.icon}
-                  />
-                </Text>
-              </li>
-            ))}
-          </ul>
+          {ui.layout.header.communityUrls.enabled && !isEmpty(community) ? (
+            <>
+              <Text
+                color="gray"
+                scale="tiny-uppercase"
+                fontWeight="bold"
+                className={headerNavClasses.title}
+              >
+                Join our community
+              </Text>
+              <ul className={headerNavClasses.socials}>
+                {community.map(social => (
+                  <li key={social.name}>
+                    <Text
+                      // @ts-ignore
+                      as="a"
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={headerNavClasses.social}
+                    >
+                      <Icon
+                        title={social.name}
+                        name={social.name}
+                        className={headerNavClasses.icon}
+                      />
+                    </Text>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : null}
           <Feature name="regular">
             <CreateMarket
               fullwidth
@@ -154,8 +161,14 @@ export default function HeaderNav() {
     <nav className={headerNavClasses.root}>
       {theme.device.isDesktop && !theme.device.isTv && <HeaderNavMenuModal />}
       <Link to="/" aria-label="Homepage" className={headerNavClasses.logos}>
-        <PolkamarketsLogo />
-        <V2Badge className={headerNavClasses.logosBadge} />
+        {LogoComponent ? (
+          <LogoComponent />
+        ) : (
+          <>
+            <Logos.PolkamarketsLogo />
+            <V2Badge className={headerNavClasses.logosBadge} />
+          </>
+        )}
       </Link>
       {theme.device.isTv ? (
         <HeaderNavMenu />

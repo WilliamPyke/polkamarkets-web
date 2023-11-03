@@ -11,7 +11,9 @@ import FavoriteMarketsProvider from 'contexts/favoriteMarkets';
 import { FiltersProvider } from 'contexts/filters';
 import { NetworksProvider } from 'contexts/networks';
 import { VoteProvider } from 'contexts/vote';
+import { WhitelistProvider } from 'contexts/whitelist';
 
+import { LanguageProvider } from 'hooks/useLanguage';
 import { NetworkProvider } from 'hooks/useNetwork';
 import { PolkamarketsServiceProvider } from 'hooks/usePolkamarketsService';
 
@@ -21,19 +23,23 @@ export default function App() {
       <Provider store={store}>
         <Router>
           <MuiPickersUtilsProvider utils={DayjsUtils}>
-            <NetworkProvider>
-              <PolkamarketsServiceProvider>
-                <NetworksProvider>
-                  <FiltersProvider>
-                    <FavoriteMarketsProvider>
-                      <VoteProvider>
-                        <Routes />
-                      </VoteProvider>
-                    </FavoriteMarketsProvider>
-                  </FiltersProvider>
-                </NetworksProvider>
-              </PolkamarketsServiceProvider>
-            </NetworkProvider>
+            <WhitelistProvider>
+              <LanguageProvider>
+                <NetworkProvider>
+                  <PolkamarketsServiceProvider>
+                    <NetworksProvider>
+                      <FiltersProvider>
+                        <FavoriteMarketsProvider>
+                          <VoteProvider>
+                            <Routes />
+                          </VoteProvider>
+                        </FavoriteMarketsProvider>
+                      </FiltersProvider>
+                    </NetworksProvider>
+                  </PolkamarketsServiceProvider>
+                </NetworkProvider>
+              </LanguageProvider>
+            </WhitelistProvider>
           </MuiPickersUtilsProvider>
         </Router>
       </Provider>

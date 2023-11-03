@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 
+import { features } from 'config';
+import { roundNumber } from 'helpers/math';
 import sortOutcomes from 'helpers/sortOutcomes';
 import { useTheme } from 'ui';
 
@@ -30,25 +32,42 @@ function MarketOverview() {
     <>
       <div className="market-chart__header">
         <div>
-          <Text scale="tiny-uppercase" color="gray" fontWeight="semibold">
-            {highOutcome.title}
-          </Text>
           <Text
-            as="h3"
-            scale="heading-large"
+            scale="body"
             fontWeight="semibold"
             className="market-chart__view-title"
           >
-            {highOutcome.price} {ticker}
+            {highOutcome.title.toUpperCase()}
+          </Text>
+          <Text
+            color="light-gray"
+            scale="heading"
+            fontWeight="semibold"
+            className="notranslate"
+          >
+            {features.fantasy.enabled ? (
+              <>{roundNumber(highOutcome.price * 100, 3)}%</>
+            ) : (
+              <>
+                {highOutcome.price} {ticker}
+              </>
+            )}
           </Text>
           <Text
             as="span"
             scale="tiny-uppercase"
             color={highOutcome.isPriceUp ? 'success' : 'danger'}
             fontWeight="semibold"
+            className="notranslate"
           >
-            {highOutcome.pricesDiff.value} {ticker} (
-            {highOutcome.pricesDiff.pct})
+            {features.fantasy.enabled ? (
+              <>{highOutcome.pricesDiff.pct}</>
+            ) : (
+              <>
+                {highOutcome.pricesDiff.value} {ticker} (
+                {highOutcome.pricesDiff.pct})
+              </>
+            )}
           </Text>{' '}
           <Text as="span" scale="tiny" color="gray" fontWeight="semibold">
             Since Market Creation

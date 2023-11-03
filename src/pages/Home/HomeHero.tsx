@@ -1,21 +1,30 @@
-import { ui } from 'config';
+import { features, ui } from 'config';
 import { Container, Hero } from 'ui';
 
-import { Button, Text } from 'components';
+import { Button, ProfileSignin, Text } from 'components';
+
+import useAppSelector from 'hooks/useAppSelector';
 
 import HomeClasses from './Home.module.scss';
 
 export default function HomeHero() {
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const hasCta = ui.hero.action.title && ui.hero.action.url;
+
   return (
     <Container className={HomeClasses.header}>
       <Hero
         $backdrop="main"
         $rounded
         $image={ui.hero.image}
-        $as={ui.hero.image_url ? 'a' : 'div'}
-        href={ui.hero.image_url}
-        target={ui.hero.image_url ? '_blank' : undefined}
         className={`pm-p-home__hero ${HomeClasses.headerHero}`}
+        {...(ui.hero.image_url && {
+          $as: 'a',
+          href: ui.hero.image_url,
+          target: '_blank',
+          rel: 'noopener',
+          'aria-label': ui.hero.action.title || 'Learn More'
+        })}
       >
         <div className="pm-p-home__hero__content">
           <div className="pm-p-home__hero__breadcrumb">
@@ -41,14 +50,21 @@ export default function HomeHero() {
               {ui.hero.title}
             </Text>
           ) : null}
-          {ui.hero.action.title && ui.hero.action.url ? (
+          {hasCta && (
             <Button
-              className="pm-c-button-normal--primary pm-c-button--sm"
+              variant="normal"
+              color="primary"
+              size="sm"
               onClick={() => window.open(ui.hero.action.url, '_blank')}
             >
               {ui.hero.action.title}
             </Button>
-          ) : null}
+          )}
+          {!hasCta && features.fantasy.enabled && !isLoggedIn && (
+            <ProfileSignin variant="normal" color="primary">
+              Login
+            </ProfileSignin>
+          )}
         </div>
       </Hero>
     </Container>

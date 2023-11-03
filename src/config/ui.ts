@@ -1,3 +1,4 @@
+import capitalize from 'helpers/capitalize';
 import isTrue from 'helpers/isTrue';
 import intersection from 'lodash/intersection';
 
@@ -8,12 +9,43 @@ import {
 
 import environment from './environment';
 import features from './features';
+import { parseFiltersFromEnv } from './ui.utils';
+
+const providers = [
+  'Google',
+  'Facebook',
+  'Discord',
+  'MetaMask',
+  'Twitter',
+  'Email'
+] as const;
+
+const categories = [
+  'Society',
+  'Economy/Finance',
+  'Politics',
+  'Entertainment/Arts',
+  'Sports',
+  'Other'
+];
+
+export type Providers = typeof providers[number];
 
 const ui = {
   layout: {
     header: {
       networkSelector: {
         enabled: features.regular.enabled
+      },
+      helpUrl: environment.UI_HELP_URL,
+      communityUrls: {
+        enabled: isTrue(environment.UI_COMMUNITY_URLS),
+        twitter: environment.UI_COMMUNITY_TWITTER_URL,
+        medium: environment.UI_COMMUNITY_MEDIUM_URL,
+        telegram: environment.UI_COMMUNITY_TELEGRAM_URL,
+        youtube: environment.UI_COMMUNITY_YOUTUBE_URL,
+        linkedin: environment.UI_COMMUNITY_LINKEDIN_URL,
+        github: environment.UI_COMMUNITY_GITHUB_URL
       }
     },
     disclaimer: {
@@ -21,6 +53,9 @@ const ui = {
     },
     alert: {
       enabled: isTrue(environment.FEATURE_ALERT)
+    },
+    footer: {
+      text: environment.UI_FOOTER_TEXT
     }
   },
   hero: {
@@ -34,9 +69,31 @@ const ui = {
       url: environment.UI_HERO_ACTION_URL
     }
   },
+  logo: environment.UI_LOGO,
   filters: {
-    categories: environment.UI_FILTERS_CATEGORIES?.split(','),
-    tokens: ['USDT', 'USDC', 'DAI', 'MATIC', 'GLMR', 'MOVR']
+    favorites: {
+      enabled: !isTrue(environment.UI_FILTERS_FAVORITES_DISABLED)
+    },
+    states: {
+      enabled: !isTrue(environment.UI_FILTERS_STATE_DISABLED)
+    },
+    volume: {
+      enabled: !isTrue(environment.UI_FILTERS_VOLUME_DISABLED)
+    },
+    endDate: {
+      enabled: !isTrue(environment.UI_FILTERS_END_DATE_DISABLED)
+    },
+    categories: {
+      enabled: !isTrue(environment.UI_FILTERS_CATEGORIES_DISABLED),
+      options: environment.UI_FILTERS_CATEGORIES?.split(',') || categories
+    },
+    tokens: ['USDT', 'USDC', 'DAI', 'MATIC', 'GLMR', 'MOVR'],
+    tournaments: {
+      enabled: isTrue(environment.FEATURE_TOURNAMENTS)
+    },
+    extra: {
+      filters: parseFiltersFromEnv(environment.UI_FILTERS_EXTRA_FILTERS)
+    }
   },
   selectTokenModal: {
     blacklist: environment.UI_TOKEN_BLACKLIST?.split(',')
@@ -55,7 +112,10 @@ const ui = {
         defaultLeaderboardColumns,
       leaderboardColumns
     ),
-    default_column: environment.UI_LEADERBOARD_DEFAULT_COLUMN
+    default_column: environment.UI_LEADERBOARD_DEFAULT_COLUMN,
+    wallet: {
+      suspiciousActivityUrl: environment.UI_SUSPICIOUS_ACTIVITY_URL
+    }
   },
   clubs: {
     enabled: isTrue(environment.FEATURE_CLUBS)
@@ -98,6 +158,17 @@ const ui = {
     voting: {
       enabled: isTrue(environment.FEATURE_VOTING)
     }
+  },
+  socialLogin: {
+    enabled: isTrue(environment.FEATURE_SOCIAL_LOGIN),
+    networkId: environment.FEATURE_SOCIAL_LOGIN_NETWORK_ID,
+    isTestnet: isTrue(environment.FEATURE_SOCIAL_LOGIN_IS_TESTNET),
+    providers:
+      (
+        environment.FEATURE_SOCIAL_LOGIN_PROVIDERS?.split(
+          ','
+        ) as Array<Providers>
+      )?.map(capitalize) || providers
   }
 } as const;
 

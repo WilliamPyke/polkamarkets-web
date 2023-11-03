@@ -6,7 +6,7 @@ import {
   LeaderboardTimeframe,
   UserLeaderboard
 } from 'types/leaderboard';
-import { MarketState } from 'types/market';
+import { MarketState, Comment, MarketActivity } from 'types/market';
 import { FeedActivity } from 'types/portfolio';
 import { Tournament } from 'types/tournament';
 
@@ -75,10 +75,12 @@ export type GetLeaderboardBaseData = {
   user: string;
   ens?: any;
   marketsCreated: number;
+  malicious?: boolean;
   volumeEur: number;
   tvlVolumeEur: number;
   liquidityEur: number;
   tvlLiquidityEur: number;
+  earningsEur: number;
   claimWinningsCount: number;
   transactions: number;
   erc20Balance: number;
@@ -101,6 +103,7 @@ export type GetLeaderboardByAddressData = GetLeaderboardBaseData & {
     volumeEur: number;
     tvlVolumeEur: number;
     tvlLiquidityEur: number;
+    earningsEur: number;
     claimWinningsCount: number;
   };
 };
@@ -161,4 +164,32 @@ export type GetPortfolioFeedByAddressData = FeedActivity[];
 export type GetPortfolioFeedByAddressArgs = {
   address: string;
   networkId: string;
+};
+
+// getWhitelistStatus
+export type GetWhitelistStatusData = {
+  isWhitelisted: boolean;
+};
+export type GetWhitelistStatusArgs = {
+  email: string;
+};
+
+// addComment
+export type AddCommentData = Comment;
+export type AddCommentParams = {
+  user: {
+    authenticationToken: string;
+  };
+  comment: {
+    body: string;
+    marketSlug: string;
+  };
+};
+
+// getMarketFeedBySlug
+
+export type GetMarketFeedBySlugData = MarketActivity[];
+
+export type GetMarketFeedBySlugArgs = {
+  slug: string;
 };

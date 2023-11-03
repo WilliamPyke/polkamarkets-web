@@ -6,6 +6,7 @@ import {
   UseFormSetValue
 } from 'react-hook-form';
 
+import { ui } from 'config';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Adornment,
@@ -27,8 +28,7 @@ import {
   DropdownMultipleState,
   ToggleState,
   Toggles,
-  Dropdowns,
-  filtersInitialState
+  Dropdowns
 } from 'contexts/filters';
 import type { UpdateDropdownPayload } from 'contexts/filters/filters.type';
 
@@ -180,14 +180,16 @@ function ListItemNested({
 export default function HomeFilter({
   onFilterHide,
   rect,
-  show
+  show,
+  resetStatesDropdown = false
 }: {
   onFilterHide(): void;
   rect: DOMRect;
   show: boolean;
+  resetStatesDropdown?: boolean;
 }) {
   const theme = useTheme();
-  const { filters, controls } = useFilters();
+  const { filters, state, controls } = useFilters();
   const { updateToggle, updateDropdown } = controls;
 
   const ModalFilterRoot = theme.device.isDesktop
@@ -196,10 +198,22 @@ export default function HomeFilter({
 
   const { register, watch, setValue } = useForm<FormFields>({
     defaultValues: {
-      ...filtersInitialState.toggles,
-      ...filtersInitialState.dropdowns
+      ...state.toggles,
+      ...state.dropdowns
     }
   });
+
+  useEffect(() => {
+    if (resetStatesDropdown) {
+      controls.updateDropdown({
+        dropdown: Dropdowns.STATES,
+        state: []
+      });
+
+      setValue('states', []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resetStatesDropdown]);
 
   useEffect(() => {
     const subscription = watch((value, { name }) => {
@@ -208,7 +222,7 @@ export default function HomeFilter({
           toggle: name as Toggles,
           state: value[`${name}`]
         });
-      } else if (Object.values(Dropdowns).includes(name as Dropdowns)) {
+      } else {
         updateDropdown({
           dropdown: name as Dropdowns,
           state: value[`${name}`]
@@ -245,12 +259,14 @@ export default function HomeFilter({
               </Adornment>
             </ListItem>
           )}
-          <ListItem>
-            <ListItemText>{filters.toggles.favorites.title}</ListItemText>
-            <Adornment $edge="end">
-              <ToggleSwitch id="favorites" {...register('favorites')} />
-            </Adornment>
-          </ListItem>
+          {ui.filters.favorites.enabled ? (
+            <ListItem>
+              <ListItemText>{filters.toggles.favorites.title}</ListItemText>
+              <Adornment $edge="end">
+                <ToggleSwitch id="favorites" {...register('favorites')} />
+              </Adornment>
+            </ListItem>
+          ) : null}
           {Object.keys(filters.dropdowns).map(dropdrown => (
             <Fragment key={dropdrown}>
               <Divider />

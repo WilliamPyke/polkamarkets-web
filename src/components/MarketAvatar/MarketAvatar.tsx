@@ -1,34 +1,32 @@
-import { forwardRef } from 'react';
-
 import type { Market } from 'models/market';
-import { Avatar, AvatarProps } from 'ui';
+import { Image } from 'ui';
+import type { ImageProps } from 'ui';
 
 import { VerifiedIcon } from 'assets/icons';
 
+import Logos from 'components/Logos';
+
 import marketAvatarClasses from './MarketAvatar.module.scss';
 
-type MarketAvatarProps = Pick<Market, 'imageUrl' | 'verified'> &
-  Pick<AvatarProps, '$size'>;
+type MarketAvatarProps = Pick<Market, 'verified'> &
+  Pick<ImageProps, '$size' | '$radius'> &
+  Record<'imageUrl', string>;
 
-const MarketAvatar = forwardRef<HTMLImageElement, MarketAvatarProps>(
-  function MarketAvatar({ imageUrl, $size, verified }, ref) {
-    return (
-      <div className={marketAvatarClasses.root}>
-        <Avatar
-          ref={ref}
-          $size={$size}
-          $radius="lg"
-          alt="Market"
-          src={imageUrl}
-        />
-        {verified && (
-          <div className={marketAvatarClasses.verified}>
-            <VerifiedIcon size="sm" />
-          </div>
-        )}
-      </div>
-    );
-  }
-);
-
-export default MarketAvatar;
+export default function MarketAvatar({
+  imageUrl,
+  verified,
+  ...props
+}: MarketAvatarProps) {
+  return (
+    <div className={marketAvatarClasses.root}>
+      <Image alt="Market" src={imageUrl} {...props}>
+        <Logos size="md" standard="mono" />
+      </Image>
+      {verified && (
+        <div className={marketAvatarClasses.verified}>
+          <VerifiedIcon size="sm" />
+        </div>
+      )}
+    </div>
+  );
+}

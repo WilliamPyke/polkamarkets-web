@@ -1,38 +1,48 @@
-.item {
+.root {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--size-8);
+  flex-direction: column;
+  gap: var(--size-32);
 
-  padding: var(--size-16);
+  width: 100%;
+}
 
-  &Avatar {
+.upcoming {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-24);
+
+  margin-bottom: var(--size-32);
+
+  &Header {
     display: flex;
-    flex-shrink: 0;
-    overflow: hidden;
-
-    width: 40px;
-    height: 40px;
-    background-color: var(--color-tournament-avatar-background);
-    border-radius: 20px;
+    flex-direction: row;
+    gap: var(--size-12);
+    align-items: center;
+    padding: 0 var(--size-16);
   }
 
-  &Image {
-    width: 100%;
-    height: auto;
+  &Title {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: var(--color-text-1);
+  }
+}
+
+.tabs {
+  &Header {
+    justify-content: flex-start !important;
+
+    padding-left: var(--size-24);
+    padding-right: var(--size-24);
   }
 
-  &Initials {
-    margin: auto;
+  &Root {
+    gap: var(--size-24) !important;
   }
 
-  &Description {
-    display: -webkit-box;
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    word-break: break-all;
+  &Item {
+    button {
+      color: var(--color-tabs-item) !important;
+    }
   }
 }

@@ -1,11 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { environment, ui } from 'config';
+import { environment, features, ui } from 'config';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { toStartEnd } from 'helpers/date';
 import { toMinMax } from 'helpers/string';
+import difference from 'lodash/difference';
 import inRange from 'lodash/inRange';
 import isEmpty from 'lodash/isEmpty';
+import isUndefined from 'lodash/isUndefined';
+import omit from 'lodash/omit';
 import omitBy from 'lodash/omitBy';
 import orderBy from 'lodash/orderBy';
 import some from 'lodash/some';
@@ -16,6 +19,7 @@ import * as marketService from 'services/Polkamarkets/market';
 import { MarketState } from 'types/market';
 
 import type { FavoriteMarketsByNetwork } from 'contexts/favoriteMarkets';
+import { sanitizeFilterKey } from 'contexts/filters/filters.util';
 
 import { getCurrencyByTicker, getNetworkById } from './market';
 
@@ -23,8 +27,32 @@ dayjs.extend(isBetween);
 
 const AVAILABLE_NETWORKS_IDS = Object.keys(environment.NETWORKS);
 
+const fantasyTokenTicker =
+  features.fantasy.enabled && environment.FEATURE_FANTASY_TOKEN_TICKER
+    ? environment.FEATURE_FANTASY_TOKEN_TICKER
+    : undefined;
+
+const isMarketTokenFantasy = (market: Market) => {
+  return !fantasyTokenTicker || market.token.symbol === fantasyTokenTicker;
+};
+
 const isMarketFromAvailableNetwork = (market: Market) =>
   AVAILABLE_NETWORKS_IDS.includes(`${market.networkId}`);
+
+const parseTournament = (tournament: string) => {
+  const parts = tournament.split(',');
+  if (parts.length >= 2) {
+    const networkId = parts[1];
+    const markets = parts.slice(2);
+
+    return {
+      networkId,
+      markets: markets.length > 0 ? markets : []
+    };
+  }
+
+  return null;
+};
 
 export interface MarketsIntialState {
   markets: Market[];
@@ -33,6 +61,7 @@ export interface MarketsIntialState {
     closed: boolean;
     resolved: boolean;
     favorites: boolean;
+    byIds: boolean;
   };
   error: {
     open: any;
@@ -55,7 +84,8 @@ const initialState: MarketsIntialState = {
     open: false,
     closed: false,
     resolved: false,
-    favorites: false
+    favorites: false,
+    byIds: false
   },
   error: {
     open: null,
@@ -109,23 +139,26 @@ const marketsSlice = createSlice({
         return {
           payload: {
             type,
-            data: data.filter(isMarketFromAvailableNetwork).map(market => {
-              const network = getNetworkById(market.networkId);
-              const currencyByTokenSymbol = getCurrencyByTicker(
-                market.token.symbol
-              );
+            data: data
+              .filter(isMarketFromAvailableNetwork)
+              .filter(isMarketTokenFantasy)
+              .map(market => {
+                const network = getNetworkById(market.networkId);
+                const currencyByTokenSymbol = getCurrencyByTicker(
+                  market.token.symbol
+                );
 
-              return {
-                ...market,
-                network,
-                currency: network.currency,
-                token: {
-                  ...market.token,
-                  ticker: market.token.symbol,
-                  iconName: currencyByTokenSymbol.iconName
-                }
-              } as Market;
-            })
+                return {
+                  ...market,
+                  network,
+                  currency: network.currency,
+                  token: {
+                    ...market.token,
+                    ticker: market.token.symbol,
+                    iconName: currencyByTokenSymbol.iconName
+                  }
+                } as Market;
+              })
           },
           type
         };
@@ -138,7 +171,8 @@ const marketsSlice = createSlice({
         open: false,
         closed: false,
         resolved: false,
-        favorites: false
+        favorites: false,
+        byIds: false
       },
       error: {
         ...state.error,
@@ -245,28 +279,71 @@ export {
 type MarketsSelectorArgs = {
   state: MarketsIntialState;
   filters: {
-    favorites: {
+    favorites?: {
       checked: boolean;
       marketsByNetwork: FavoriteMarketsByNetwork;
     };
-    states: string[];
+    states?: string[];
     networks: string[];
     tokens: string[];
-    volume: string;
+    volume?: string;
     liquidity: string;
-    endDate: string;
-    categories: string[];
-  };
+    endDate?: string;
+    categories?: string[];
+    tournaments?: string[];
+  } & Record<string, any>;
 };
 
 export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
   const regExpFromSearchQuery = new RegExp(state.searchQuery, 'i');
 
-  const filterByFavorite = (id, networkId) =>
-    filters.favorites.checked
+  const extraFilters = omit(
+    filters,
+    difference(
+      Object.keys(filters),
+      ui.filters.extra.filters.map(filter => sanitizeFilterKey(filter.name))
+    )
+  ) as Record<string, string | string[] | undefined>;
+
+  const filterMarketsByExtraFilters = (
+    title: string,
+    category: string,
+    subcategory: string
+  ) => {
+    if (isEmpty(extraFilters)) return true;
+
+    const validExtraFilters = Object.values(extraFilters).filter(
+      f => !isUndefined(f) && !isEmpty(f)
+    ) as (string | string[])[];
+
+    if (isEmpty(validExtraFilters)) return true;
+
+    return validExtraFilters.every(filter => {
+      if (Array.isArray(filter)) {
+        return filter.some(f => {
+          const regExp = new RegExp(f, 'i');
+          return (
+            regExp.test(title) ||
+            regExp.test(category) ||
+            regExp.test(subcategory)
+          );
+        });
+      }
+      const regExp = new RegExp(filter, 'i');
+      return (
+        regExp.test(title) || regExp.test(category) || regExp.test(subcategory)
+      );
+    });
+  };
+
+  const filterByFavorite = (id, networkId) => {
+    if (!filters.favorites) return true;
+
+    return filters.favorites.checked
       ? filters.favorites.marketsByNetwork[`${networkId}`] &&
-        filters.favorites.marketsByNetwork[`${networkId}`].includes(id)
+          filters.favorites.marketsByNetwork[`${networkId}`].includes(id)
       : true;
+  };
 
   const filterByNetworkId = networkId =>
     !isEmpty(filters.networks)
@@ -295,8 +372,13 @@ export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
     return false;
   };
 
-  const filterByState = marketState =>
-    !isEmpty(filters.states) ? filters.states.includes(marketState) : true;
+  const filterByState = marketState => {
+    if (!filters.states) return true;
+
+    return !isEmpty(filters.states)
+      ? filters.states.includes(marketState)
+      : true;
+  };
 
   const filterByRange = (value: number, range: string) => {
     const { min, max } = toMinMax(range);
@@ -309,6 +391,8 @@ export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
   };
 
   const filterByVolume = (volume: number) => {
+    if (!filters.volume) return true;
+
     if (filters.volume !== 'any') {
       return filterByRange(volume, filters.volume);
     }
@@ -317,6 +401,8 @@ export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
   };
 
   const filterByLiquidity = (liquidity: number) => {
+    if (!filters.liquidity) return true;
+
     if (filters.liquidity !== 'any') {
       return filterByRange(liquidity, filters.liquidity);
     }
@@ -325,6 +411,8 @@ export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
   };
 
   const filterByEndDate = (expiresAt: string) => {
+    if (!filters.endDate) return true;
+
     if (filters.endDate === 'custom') {
       return true;
     }
@@ -341,15 +429,41 @@ export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
     return true;
   };
 
-  const filterByCategory = (category: string) =>
-    !isEmpty(filters.categories)
+  const filterByCategory = (category: string) => {
+    if (!filters.categories) return true;
+
+    return !isEmpty(filters.categories)
       ? filters.categories
           .map(c => c.toLowerCase())
           .includes(category.toLowerCase())
       : true;
+  };
 
   // const filterByisEndingSoon = expiresAt =>
   //   inRange(dayjs().diff(dayjs(expiresAt), 'hours'), -24, 1);
+
+  const filterByTournament = (networkId: string, marketId: string): boolean => {
+    if (!filters.tournaments) return true;
+
+    if (isEmpty(filters.tournaments)) {
+      return true;
+    }
+
+    const marketInTournament = filters.tournaments.some(tournament => {
+      const parsedTournament = parseTournament(tournament);
+
+      if (parsedTournament) {
+        return (
+          parsedTournament.networkId === networkId.toString() &&
+          parsedTournament.markets.includes(marketId.toString())
+        );
+      }
+
+      return false;
+    });
+
+    return marketInTournament;
+  };
 
   function sorted(markets: Market[]) {
     if (state.sorter.sortBy) {
@@ -382,7 +496,13 @@ export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
         filterByVolume(market.volumeEur) &&
         filterByLiquidity(market.liquidityEur) &&
         filterByEndDate(market.expiresAt) &&
-        filterByCategory(market.category)
+        filterByCategory(market.category) &&
+        filterByTournament(market.networkId, market.id) &&
+        filterMarketsByExtraFilters(
+          market.title,
+          market.category,
+          market.subcategory
+        )
     )
   );
 };
@@ -425,5 +545,21 @@ export function getFavoriteMarkets(favoriteMarkets: FavoriteMarketsByNetwork) {
         )
       )
     );
+  };
+}
+
+export function getMarketsByIds(ids: string[], networkId: number) {
+  return async dispatch => {
+    dispatch(request('byIds'));
+    try {
+      const response = await marketService.getMarketsByIds({
+        ids,
+        networkId: networkId.toString()
+      });
+      const { data } = response;
+      dispatch(success('byIds', data));
+    } catch (err) {
+      dispatch(error({ type: 'byIds', error: err }));
+    }
   };
 }

@@ -1,12 +1,14 @@
+/* eslint-disable no-nested-ternary */
 import { useCallback, useMemo } from 'react';
 
 import { roundNumber } from 'helpers/math';
 import isEmpty from 'lodash/isEmpty';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
+import { Image } from 'ui';
 
 import { Button } from 'components';
 
-import { useAppDispatch, useAppSelector, useNetwork } from 'hooks';
+import { useAppDispatch, useAppSelector, useLanguage, useNetwork } from 'hooks';
 
 import { calculateTradeDetails } from '../../components/TradeForm/utils';
 import styles from './MarketShares.module.scss';
@@ -27,6 +29,8 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
   const { portfolio: isLoadingPortfolio } = useAppSelector(
     state => state.polkamarkets.isLoading
   );
+
+  const language = useLanguage();
 
   const handleSell = useCallback(
     (outcomeId: string) => {
@@ -56,6 +60,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
       return {
         id: outcome.id.toString(),
         title: outcome.title,
+        imageUrl: outcome.imageUrl,
         shares: outcomeShares ? outcomeShares.shares : 0,
         value:
           outcomeShares && outcomeShares.shares > 0
@@ -80,13 +85,72 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
     <ul className={styles.root}>
       {outcomesWithShares.map(outcome => (
         <li key={outcome.id} className={styles.rootItem}>
-          <p className={styles.rootItemDescription}>
-            You currently hold{' '}
-            <strong>{`${roundNumber(outcome.shares, 3)}`} Shares</strong> of{' '}
-            <strong>{outcome.title}</strong> worth{' '}
-            <strong>
-              {outcome.value.toFixed(3)} {token.symbol}
-            </strong>
+          <p className={`${styles.rootItemDescription} notranslate`}>
+            {language === 'tr' ? (
+              <>
+                Şu anda <strong>{`${roundNumber(outcome.shares, 3)}`}</strong>{' '}
+                adet
+                <div className={styles.rootItemTitleGroup}>
+                  {outcome.imageUrl ? (
+                    <Image
+                      className={styles.rootItemTitleGroupImage}
+                      $radius="lg"
+                      alt={outcome.title}
+                      $size="x2s"
+                      src={outcome.imageUrl}
+                    />
+                  ) : null}
+                  <strong>{outcome.title}</strong>
+                </div>
+                hissesine sahipsiniz ve bunun değeri{' '}
+                <strong>
+                  {outcome.value.toFixed(3)} {token.symbol}
+                </strong>{' '}
+                denk geliyor
+              </>
+            ) : language === 'pt' ? (
+              <>
+                Tens actualmente{' '}
+                <strong>{`${roundNumber(outcome.shares, 3)}`} ações</strong> de
+                <div className={styles.rootItemTitleGroup}>
+                  {outcome.imageUrl ? (
+                    <Image
+                      className={styles.rootItemTitleGroupImage}
+                      $radius="xs"
+                      alt={outcome.title}
+                      $size="x2s"
+                      src={outcome.imageUrl}
+                    />
+                  ) : null}
+                  <strong>{outcome.title}</strong>
+                </div>
+                no valor de{' '}
+                <strong>
+                  {outcome.value.toFixed(3)} {token.symbol}
+                </strong>
+              </>
+            ) : (
+              <>
+                You currently hold{' '}
+                <strong>{`${roundNumber(outcome.shares, 3)}`} Shares</strong> of
+                <div className={styles.rootItemTitleGroup}>
+                  {outcome.imageUrl ? (
+                    <Image
+                      className={styles.rootItemTitleGroupImage}
+                      $radius="xs"
+                      alt={outcome.title}
+                      $size="x2s"
+                      src={outcome.imageUrl}
+                    />
+                  ) : null}
+                  <strong>{outcome.title}</strong>
+                </div>
+                worth{' '}
+                <strong>
+                  {outcome.value.toFixed(3)} {token.symbol}
+                </strong>
+              </>
+            )}
           </p>
           <Button size="sm" onClick={() => handleSell(outcome.id)}>
             Sell Shares

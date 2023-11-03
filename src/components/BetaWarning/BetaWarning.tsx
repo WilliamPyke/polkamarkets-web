@@ -84,7 +84,7 @@ export default function BetaWarning() {
         <ModalFooter className="pm-c-beta-warning__footer">
           <Button
             variant="normal"
-            color="warning"
+            color="primary"
             fullwidth
             disabled={!agreed}
             onClick={handleProceed}
@@ -93,6 +93,7 @@ export default function BetaWarning() {
           </Button>
           <Text as="p" color="gray">
             <Link
+              variant="information"
               title="Terms & Conditions"
               scale="caption"
               fontWeight="medium"
@@ -101,6 +102,7 @@ export default function BetaWarning() {
             />
             {' • '}
             <Link
+              variant="information"
               title="Risk Disclosure"
               scale="caption"
               fontWeight="medium"

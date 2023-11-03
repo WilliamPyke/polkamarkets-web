@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import * as realitioLib from '@reality.eth/reality-eth-lib/formatters/question';
 import { features } from 'config';
-import { Formik, Form } from 'formik';
+import { Formik, Form, getIn } from 'formik';
 import { fetchAditionalData, login } from 'redux/ducks/polkamarkets';
 import * as marketService from 'services/Polkamarkets/market';
 import { Token } from 'types/token';
@@ -71,7 +72,12 @@ function CreateMarketForm() {
       wrapped = true;
     }
 
+    const hashes = values.outcomes.map(
+      outcome => outcome.image && outcome.image.hash
+    );
+
     const outcomes = values.outcomes.map(outcome => outcome.name);
+    const images = hashes.some(hash => !hash) ? [] : hashes;
     const odds = values.outcomes.map(outcome => outcome.probability);
 
     // data format: "category;subcategory;resolutionSource"
@@ -79,10 +85,15 @@ function CreateMarketForm() {
       features.regular.enabled ? values.resolutionSource : ''
     }`;
 
+    // images format: "market image hash␟outcome image hash,outcome image hash,..."
+    const image = `${values.image.hash}${
+      images.length > 0 ? `${realitioLib.delimiter()}${images.join(',')}` : ''
+    }`;
+
     const response = await polkamarketsService.createMarket(
       values.question,
       values.description,
-      values.image.hash,
+      image,
       closingDate,
       outcomes,
       data,
@@ -113,6 +124,19 @@ function CreateMarketForm() {
   }
 
   const currentValidationSchema = validationSchema[currentStep];
+
+  const isRequiredField = useCallback(
+    name => {
+      const schemaDescription = currentValidationSchema.describe();
+      const accessor = name.split('.').join('.fields.');
+      const field = getIn(schemaDescription.fields, accessor);
+
+      if (!field) return false;
+
+      return !field.optional;
+    },
+    [currentValidationSchema]
+  );
 
   return (
     <>
@@ -154,6 +178,7 @@ function CreateMarketForm() {
             <Steps
               current={currentStep}
               currentStepFields={Object.keys(currentValidationSchema.fields)}
+              isRequiredField={isRequiredField}
               steps={[
                 {
                   id: 'details',
