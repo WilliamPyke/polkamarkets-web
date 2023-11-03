@@ -1,5 +1,6 @@
-import { memo } from 'react';
+import { ReactNode, memo } from 'react';
 
+import cn from 'classnames';
 import every from 'lodash/every';
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
@@ -16,6 +17,8 @@ type LeaderboardStatsProps = {
   row: TableMiniRow;
   isLoading: boolean;
   emptyDataDescription?: string;
+  action?: ReactNode;
+  className?: Record<'root', string>;
 };
 
 function LeaderboardStats({
@@ -23,7 +26,9 @@ function LeaderboardStats({
   columns,
   row,
   isLoading,
-  emptyDataDescription = 'No data to show.'
+  emptyDataDescription = 'No data to show.',
+  action,
+  className
 }: LeaderboardStatsProps) {
   const isEmptyData =
     isEmpty(row) ||
@@ -33,7 +38,16 @@ function LeaderboardStats({
     );
 
   return (
-    <div className="pm-c-leaderboard-stats bg-3 border-radius-medium border-solid border-1">
+    <div
+      className={cn(
+        'pm-c-leaderboard-stats',
+        'bg-3',
+        'border-radius-medium',
+        'border-solid',
+        'border-1',
+        className?.root
+      )}
+    >
       <h2 className="body semibold text-1">{title}</h2>
       {isLoading ? (
         <div className="flex-row justify-center align-center width-full padding-y-5 padding-x-4">
@@ -51,6 +65,7 @@ function LeaderboardStats({
       {!isLoading && !isEmptyData ? (
         <TableMini columns={columns} row={row} />
       ) : null}
+      {action || null}
     </div>
   );
 }

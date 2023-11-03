@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable import-helpers/order-imports */
 require('dotenv').config();
 const express = require('express');
@@ -5,6 +6,20 @@ const helmet = require('helmet');
 
 const app = express();
 app.use(helmet.frameguard({ action: 'deny' }));
+
+app.use((request, response, next) => {
+  if (
+    request.headers['x-forwarded-proto'] !== 'https' &&
+    process.env.NODE_ENV !== 'development' &&
+    !request.secure
+  ) {
+    return response.redirect(
+      `https://${request.headers.host}${request.originalUrl}`
+    );
+  }
+
+  next();
+});
 
 const port = process.env.PORT || 5000;
 const isClubsEnabled =
@@ -135,6 +150,12 @@ app.get('/', (request, response) => {
   fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
     if (error) {
       return response.status(404).end();
+    }
+
+    if (isFantasyEnabled && isTournamentsEnabled) {
+      return response.send(
+        metadataByPageTemplate('tournaments', request, htmlData)
+      );
     }
 
     return response.send(defaultMetadataTemplate(request, htmlData));
@@ -316,6 +337,44 @@ app.get('/tournaments/:slug', async (request, response, next) => {
   });
 });
 
+app.get('/tournaments/:slug/leaderboard', async (request, response, next) => {
+  if (!isFantasyEnabled || !isTournamentsEnabled) {
+    next();
+    return;
+  }
+
+  fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
+    if (error) {
+      return response.status(404).end();
+    }
+
+    const tournamentSlug = request.params.slug;
+
+    try {
+      const tournament = await getTournamentBySlug(tournamentSlug);
+      const { title } = tournament.data;
+
+      return response.send(
+        replaceToMetadataTemplate({
+          htmlData,
+          url: `${request.headers['x-forwarded-proto'] || 'http'}://${
+            request.headers.host
+          }/tournaments/${request.params.slug}`,
+          title: `${title} - ${defaultMetadata.title}`,
+          description:
+            metadataByPage.tournaments.description ||
+            defaultMetadata.description,
+          image: `${request.headers['x-forwarded-proto'] || 'http'}://${
+            request.headers.host
+          }${defaultMetadata.image}`
+        })
+      );
+    } catch (e) {
+      return response.send(defaultMetadataTemplate(request, htmlData));
+    }
+  });
+});
+
 app.get('/leaderboard', (request, response) => {
   fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
     if (error) {
@@ -337,6 +396,21 @@ app.get('/leaderboard/:slug', async (request, response, next) => {
 });
 
 app.get('/user/:address', (request, response) => {
+  fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
+    if (error) {
+      return response.status(404).end();
+    }
+
+    return response.send(defaultMetadataTemplate(request, htmlData));
+  });
+});
+
+app.get('/markets', (request, response) => {
+  if (!isFantasyEnabled || !isTournamentsEnabled) {
+    next();
+    return;
+  }
+
   fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
     if (error) {
       return response.status(404).end();

@@ -59,9 +59,18 @@ const pages = {
     meta: null,
     enabled: ui.clubs.enabled
   },
+  tournamentLeaderboard: {
+    pathname: `/tournaments/:slug${features.fantasy.enabled && '/leaderboard'}`,
+    Component: Leaderboard,
+    exact: false,
+    navigation: false,
+    name: '',
+    meta: null,
+    enabled: ui.tournaments.enabled
+  },
   tournament: {
     pathname: '/tournaments/:slug',
-    Component: Leaderboard,
+    Component: lazy(() => import('pages/Tournament')),
     exact: false,
     navigation: false,
     name: '',
@@ -88,7 +97,7 @@ const pages = {
     navigation: true,
     name: 'Leaderboard',
     meta: null,
-    enabled: true
+    enabled: !ui.tournaments.enabled
   },
   achievements: {
     pathname: '/achievements',
@@ -109,7 +118,8 @@ const pages = {
     enabled: true
   },
   home: {
-    pathname: '/',
+    pathname:
+      features.fantasy.enabled && ui.tournaments.enabled ? '/markets' : '/',
     Component: lazy(() => import('pages/Home')),
     exact: false,
     navigation: true,

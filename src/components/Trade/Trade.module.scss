@@ -15,6 +15,12 @@
   }
 
   &Modal {
+    min-width: 100%;
+
+    @media (min-width: 1024px) {
+      min-width: 435px;
+    }
+
     padding: 40px;
     background: linear-gradient(
         0deg,
@@ -76,7 +82,7 @@
     line-height: 1.35;
     font-weight: 700;
     letter-spacing: -0.01em;
-    word-break: break-all;
+    word-break: break-word;
     color: var(--color-trade-market-title);
 
     @media (max-width: 1024px) {
@@ -86,7 +92,7 @@
 
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
-      word-break: break-all;
+      word-break: break-word;
     }
   }
 }
@@ -232,7 +238,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-    word-break: break-all;
+    word-break: break-word;
   }
 
   &Price {
@@ -399,7 +405,7 @@
       display: -webkit-box;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
-      word-break: break-all;
+      word-break: break-word;
     }
 
     &Price {
@@ -431,7 +437,7 @@
   font-size: 1.4rem;
   line-height: 1.5;
   font-size: 500;
-  word-break: break-all;
+  word-break: break-word;
   color: #59749b;
 
   a {

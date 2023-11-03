@@ -1,18 +1,48 @@
-.item {
+.root {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--size-16);
+  flex-direction: column;
+  gap: var(--size-32);
 
-  padding: var(--size-16);
+  width: 100%;
+}
 
-  &Description {
-    display: -webkit-box;
-    overflow: hidden;
+.upcoming {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-24);
 
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    word-break: break-all;
+  margin-bottom: var(--size-32);
+
+  &Header {
+    display: flex;
+    flex-direction: row;
+    gap: var(--size-12);
+    align-items: center;
+    padding: 0 var(--size-16);
+  }
+
+  &Title {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: var(--color-text-1);
+  }
+}
+
+.tabs {
+  &Header {
+    justify-content: flex-start !important;
+
+    padding-left: var(--size-24);
+    padding-right: var(--size-24);
+  }
+
+  &Root {
+    gap: var(--size-24) !important;
+  }
+
+  &Item {
+    button {
+      color: var(--color-tabs-item) !important;
+    }
   }
 }

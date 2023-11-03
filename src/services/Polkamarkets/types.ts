@@ -6,7 +6,7 @@ import {
   LeaderboardTimeframe,
   UserLeaderboard
 } from 'types/leaderboard';
-import { MarketState } from 'types/market';
+import { MarketState, Comment, MarketActivity } from 'types/market';
 import { FeedActivity } from 'types/portfolio';
 import { Tournament } from 'types/tournament';
 
@@ -172,4 +172,24 @@ export type GetWhitelistStatusData = {
 };
 export type GetWhitelistStatusArgs = {
   email: string;
+};
+
+// addComment
+export type AddCommentData = Comment;
+export type AddCommentParams = {
+  user: {
+    authenticationToken: string;
+  };
+  comment: {
+    body: string;
+    marketSlug: string;
+  };
+};
+
+// getMarketFeedBySlug
+
+export type GetMarketFeedBySlugData = MarketActivity[];
+
+export type GetMarketFeedBySlugArgs = {
+  slug: string;
 };

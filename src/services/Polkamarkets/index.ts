@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { environment } from 'config';
-import { camelizeKeys } from 'humps';
+import { camelizeKeys, decamelizeKeys } from 'humps';
 import identity from 'lodash/identity';
 import pickBy from 'lodash/pickBy';
 import uniq from 'lodash/uniq';
@@ -48,7 +48,11 @@ import {
   GetTournamentBySlugData,
   GetTournamentBySlugArgs,
   GetWhitelistStatusData,
-  GetWhitelistStatusArgs
+  GetWhitelistStatusArgs,
+  AddCommentData,
+  AddCommentParams,
+  GetMarketFeedBySlugArgs,
+  GetMarketFeedBySlugData
 } from './types';
 
 function camelize<T extends object>(response: T): T {
@@ -239,6 +243,26 @@ const polkamarketsApi = createApi({
       query: ({ email }) => `/whitelist?item=${email.replace(/\+/g, '%2B')}`,
       transformResponse: (response: GetWhitelistStatusData) =>
         camelize(response)
+    }),
+    addComment: builder.mutation<AddCommentData, AddCommentParams>({
+      query: ({ user, comment }) => ({
+        url: `/comments`,
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.authenticationToken}`
+        },
+        body: {
+          comment: decamelizeKeys(comment)
+        }
+      })
+    }),
+    getMarketFeedBySlug: builder.query<
+      GetMarketFeedBySlugData,
+      GetMarketFeedBySlugArgs
+    >({
+      query: ({ slug }) => `/markets/${slug}/feed`,
+      transformResponse: (response: GetMarketFeedBySlugData) =>
+        camelize(response)
     })
   })
 });
@@ -264,5 +288,7 @@ export const {
   useGetTournamentsQuery,
   useGetTournamentBySlugQuery,
   useGetPortfolioFeedByAddressQuery,
-  useGetWhitelistStatusQuery
+  useGetWhitelistStatusQuery,
+  useAddCommentMutation,
+  useGetMarketFeedBySlugQuery
 } = polkamarketsApi;

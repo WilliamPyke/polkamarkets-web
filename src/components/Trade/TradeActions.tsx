@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ui } from 'config';
+import { features, ui } from 'config';
 import { changeOutcomeData, changeData } from 'redux/ducks/market';
 import { changeMarketOutcomeData, changeMarketData } from 'redux/ducks/markets';
 import { login, fetchAditionalData } from 'redux/ducks/polkamarkets';
@@ -8,10 +8,13 @@ import { PolkamarketsService, PolkamarketsApiService } from 'services';
 
 import TWarningIcon from 'assets/icons/TWarningIcon';
 
+import { AlertMinimal } from 'components/Alert';
+
 import {
   useAppDispatch,
   useAppSelector,
   useERC20Balance,
+  useFantasyTokenTicker,
   useNetwork,
   usePolkamarketsService
 } from 'hooks';
@@ -35,6 +38,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const { network, networkConfig } = useNetwork();
   const polkamarketsService = usePolkamarketsService();
   const { show, close } = useToastNotification();
+  const fantasyTokenTicker = useFantasyTokenTicker();
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
@@ -52,6 +56,11 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const ethAddress = useAppSelector(state => state.polkamarkets.ethAddress);
   const token = useAppSelector(state => state.market.market.token);
   const { wrapped: tokenWrapped, address } = token;
+
+  const { balance: erc20Balance } = useERC20Balance(address);
+  const ethBalance = useAppSelector(state => state.polkamarkets.ethBalance);
+
+  const balance = wrapped || !tokenWrapped ? erc20Balance : ethBalance;
 
   // Derivated state
   const isWrongNetwork =
@@ -185,7 +194,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       );
 
       // will refresh form if there's a slippage > 2%
-      if (Math.abs(sharesToSell - minShares) / sharesToSell > 0.02) {
+      if (Math.abs(sharesToSell - minShares) / sharesToSell > 0.01) {
         setIsLoading(false);
         setNeedsPricesRefresh(true);
 
@@ -231,6 +240,10 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   const isValidAmount = amount > 0 && amount <= maxAmount;
 
+  const preventBankruptcy = features.fantasy.enabled && ui.socialLogin.enabled;
+
+  const amountOverHalfBalance = amount >= balance / 2;
+
   return (
     <div className="pm-c-trade-form-actions__group--column">
       <div className="pm-c-trade-form-actions">
@@ -269,22 +282,30 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           </div>
         ) : null}
         {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
-          <ApproveToken
-            fullwidth
-            address={token.address}
-            ticker={token.ticker}
-            wrapped={token.wrapped && !wrapped}
-          >
-            <ButtonLoading
-              color="primary"
+          <div className="flex-column gap-6 width-full">
+            {isValidAmount && preventBankruptcy && amountOverHalfBalance ? (
+              <AlertMinimal
+                variant="warning"
+                description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}
+              />
+            ) : null}
+            <ApproveToken
               fullwidth
-              onClick={handleBuy}
-              disabled={!isValidAmount || isLoading}
-              loading={isLoading}
+              address={token.address}
+              ticker={token.ticker}
+              wrapped={token.wrapped && !wrapped}
             >
-              Predict
-            </ButtonLoading>
-          </ApproveToken>
+              <ButtonLoading
+                color="primary"
+                fullwidth
+                onClick={handleBuy}
+                disabled={!isValidAmount || isLoading}
+                loading={isLoading}
+              >
+                Predict
+              </ButtonLoading>
+            </ApproveToken>
+          </div>
         ) : null}
         {type === 'sell' && !needsPricesRefresh && !isWrongNetwork ? (
           <ButtonLoading

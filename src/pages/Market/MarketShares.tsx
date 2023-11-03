@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useCallback, useMemo } from 'react';
 
 import { roundNumber } from 'helpers/math';
@@ -106,6 +107,27 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
                   {outcome.value.toFixed(3)} {token.symbol}
                 </strong>{' '}
                 denk geliyor
+              </>
+            ) : language === 'pt' ? (
+              <>
+                Tens actualmente{' '}
+                <strong>{`${roundNumber(outcome.shares, 3)}`} ações</strong> de
+                <div className={styles.rootItemTitleGroup}>
+                  {outcome.imageUrl ? (
+                    <Image
+                      className={styles.rootItemTitleGroupImage}
+                      $radius="xs"
+                      alt={outcome.title}
+                      $size="x2s"
+                      src={outcome.imageUrl}
+                    />
+                  ) : null}
+                  <strong>{outcome.title}</strong>
+                </div>
+                no valor de{' '}
+                <strong>
+                  {outcome.value.toFixed(3)} {token.symbol}
+                </strong>
               </>
             ) : (
               <>

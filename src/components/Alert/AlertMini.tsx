@@ -40,6 +40,10 @@ type AlertMiniProps = {
    * Additional content of Alert
    */
   description: ReactNode;
+  /**
+   * Additional classes for description
+   */
+  descriptionClasses?: string;
 };
 
 /**
@@ -50,7 +54,8 @@ function AlertMini({
   variant = 'default',
   styles = 'subtle',
   style,
-  description
+  description,
+  descriptionClasses = ''
 }: AlertMiniProps) {
   return (
     <div
@@ -63,7 +68,7 @@ function AlertMini({
         as="p"
         scale="tiny"
         fontWeight="semibold"
-        className="pm-c-alert-mini__description"
+        className={`pm-c-alert-mini__description ${descriptionClasses}`}
       >
         {description}
       </Text>

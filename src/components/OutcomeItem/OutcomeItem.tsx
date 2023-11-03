@@ -1,4 +1,6 @@
 import cn from 'classnames';
+import { features } from 'config';
+import { roundNumber } from 'helpers/math';
 import { kebabCase, uniqueId } from 'lodash';
 import { Line } from 'rc-progress';
 import { Avatar, useTheme } from 'ui';
@@ -107,10 +109,16 @@ export default function OutcomeItem({
           >
             {secondary.text || (
               <>
-                <strong className={outcomeItemClasses.primary}>
-                  {secondary.price}
-                </strong>{' '}
-                {secondary.ticker}
+                {features.fantasy.enabled ? (
+                  `${roundNumber(+secondary.price * 100, 3)}%`
+                ) : (
+                  <>
+                    <strong className={outcomeItemClasses.primary}>
+                      {secondary.price}
+                    </strong>{' '}
+                    {secondary.ticker}
+                  </>
+                )}
                 <Text
                   as="span"
                   scale="tiny"

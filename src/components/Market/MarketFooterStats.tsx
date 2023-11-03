@@ -20,6 +20,7 @@ type MarketFooterStatsProps = {
 
 export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
   const {
+    users,
     volume,
     volumeEur,
     liquidity,
@@ -29,7 +30,9 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
     token,
     network
   } = market;
-  const expiresAt = dayjs(market.expiresAt).utc(true).format('MMM D, YYYY');
+  const expiresAt = dayjs(market.expiresAt)
+    .utc(true)
+    .format('MMM D, YYYY H:mm');
   const theme = useTheme();
   const fantasyTokenTicker = useFantasyTokenTicker();
 
@@ -43,6 +46,37 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           <span className="pm-c-divider--circle" />
         </Feature>
       )}
+      {!!users && features.fantasy.enabled && (
+        <>
+          <Text
+            as="span"
+            scale="tiny-uppercase"
+            fontWeight="semibold"
+            className={`${marketClasses.footerStatsText} notranslate`}
+          >
+            <Tooltip
+              className={marketClasses.footerStatsTooltip}
+              text={`Users: ${users}`}
+              disabled={features.fantasy.enabled}
+            >
+              <Icon
+                name="User"
+                title="Users"
+                className={marketClasses.footerStatsIcon}
+              />
+              <Text
+                as="strong"
+                scale="tiny-uppercase"
+                fontWeight="semibold"
+                className={marketClasses.footerStatsText}
+              >
+                {users}
+              </Text>
+            </Tooltip>
+          </Text>
+          {theme.device.isDesktop && <span className="pm-c-divider--circle" />}
+        </>
+      )}
       {!!volume && (
         <>
           <Text
@@ -53,7 +87,10 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           >
             <Tooltip
               className={marketClasses.footerStatsTooltip}
-              text={`Volume: ${roundNumber(volumeEur, 3)} EUR`}
+              text={`Volume: ${roundNumber(
+                volumeEur,
+                features.fantasy.enabled ? 0 : 3
+              )} EUR`}
               disabled={features.fantasy.enabled}
             >
               <Icon
@@ -67,7 +104,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
                 fontWeight="semibold"
                 className={marketClasses.footerStatsText}
               >
-                {`${roundNumber(volume, 3)} `}
+                {`${roundNumber(volume, features.fantasy.enabled ? 0 : 3)} `}
               </Text>
               <Text
                 as="strong"
@@ -79,7 +116,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
               </Text>
             </Tooltip>
           </Text>
-          <span className="pm-c-divider--circle" />
+          {theme.device.isDesktop && <span className="pm-c-divider--circle" />}
         </>
       )}
       {!!liquidity && (

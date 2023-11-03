@@ -292,7 +292,7 @@ export type PrepareLeaderboardTableRowsArgs = {
   rows?: GetLeaderboardByTimeframeData;
   ticker: string;
   fantasyTokenTicker?: string;
-  sortBy: string;
+  sortBy?: string;
   loggedInUser?: string;
 };
 
@@ -303,7 +303,7 @@ function prepareLeaderboardTableRows({
   sortBy,
   loggedInUser
 }: PrepareLeaderboardTableRowsArgs): LeaderboardTableRow[] {
-  const sortedRows = orderBy(rows, sortBy, 'desc');
+  const sortedRows = sortBy ? orderBy(rows, sortBy, 'desc') : rows;
 
   return sortedRows.map((row, index) => {
     const isLoggedInUser = loggedInUser === row.user;
@@ -491,18 +491,16 @@ function topWalletRowRender({ place }: topWalletRowRenderArgs) {
 
 type PrepareLeaderboardTopWalletsRowArgs = {
   rows?: GetLeaderboardByTimeframeData;
-  sortBy: string;
+  sortBy?: string;
 };
 
 function prepareLeaderboardTopWalletsRow({
-  rows,
+  rows = [],
   sortBy
 }: PrepareLeaderboardTopWalletsRowArgs) {
-  const sortedRows = orderBy(
-    rows,
-    sortBy,
-    'desc'
-  ) as GetLeaderboardByTimeframeData;
+  const sortedRows = sortBy
+    ? (orderBy(rows, sortBy, 'desc') as GetLeaderboardByTimeframeData)
+    : rows;
 
   const firstPlace = sortedRows[0];
   const secondPlace = sortedRows[1];
