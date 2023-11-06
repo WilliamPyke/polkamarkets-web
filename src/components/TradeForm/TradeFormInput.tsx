@@ -27,6 +27,8 @@ import ToggleSwitch from '../ToggleSwitch';
 import TradeFormClasses from './TradeForm.module.scss';
 import { calculateTradeDetails } from './utils';
 
+const SELL_STEPS = [10, 25, 50, 100];
+
 function TradeFormInput() {
   const dispatch = useAppDispatch();
   const { network } = useNetwork();
@@ -265,18 +267,36 @@ function TradeFormInput() {
             TradeFormClasses.inputActions
           )}
         >
-          {amountInputButtons.map(button => (
-            <button
-              key={button}
-              type="button"
-              onClick={() => handleSetAmount(button)}
-              disabled={isWrongNetwork || isLoadingBalance}
-            >
-              <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
-                {`${button} ${ticker}`}
-              </Text>
-            </button>
-          ))}
+          {type === 'buy'
+            ? amountInputButtons.map(button => (
+                <button
+                  key={button}
+                  type="button"
+                  onClick={() => handleSetAmount(button)}
+                  disabled={isWrongNetwork || isLoadingBalance}
+                >
+                  <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
+                    {`${button} ${ticker}`}
+                  </Text>
+                </button>
+              ))
+            : null}
+          {type === 'sell'
+            ? SELL_STEPS.map(button => (
+                <button
+                  key={button}
+                  type="button"
+                  onClick={() =>
+                    handleSetAmount(roundDown(max() * (button / 100)))
+                  }
+                  disabled={isWrongNetwork}
+                >
+                  <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
+                    {`${button}%`}
+                  </Text>
+                </button>
+              ))
+            : null}
         </ul>
       )}
       {!isWrongNetwork && tokenWrapped ? (
