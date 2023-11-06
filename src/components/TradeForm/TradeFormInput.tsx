@@ -282,17 +282,17 @@ function TradeFormInput() {
               ))
             : null}
           {type === 'sell'
-            ? SELL_STEPS.map(button => (
+            ? SELL_STEPS.map(step => (
                 <button
-                  key={button}
+                  key={step}
                   type="button"
                   onClick={() =>
-                    handleSetAmount(roundDown(max() * (button / 100)))
+                    handleSetAmount(roundDown(max() * (step / 100)))
                   }
                   disabled={isWrongNetwork}
                 >
                   <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
-                    {`${button}%`}
+                    {`${step}%`}
                   </Text>
                 </button>
               ))
