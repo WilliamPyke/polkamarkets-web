@@ -8,6 +8,7 @@ import { changeSocialLoginInfo } from 'redux/ducks/polkamarkets';
 import { useGetLeaderboardByAddressQuery } from 'services/Polkamarkets';
 import { Avatar, Skeleton } from 'ui';
 
+import BankruptBadge from 'components/BankruptBadge';
 import { Button } from 'components/Button';
 import Icon from 'components/Icon';
 import Text from 'components/Text';
@@ -31,6 +32,7 @@ export default function ProfileSignout() {
   const isPolkLoading = useAppSelector(
     state => state.polkamarkets.isLoading.polk
   );
+  const bankrupt = useAppSelector(state => state.polkamarkets.bankrupt);
   const network = useNetwork();
   const leaderboard = useGetLeaderboardByAddressQuery({
     address,
@@ -133,13 +135,17 @@ export default function ProfileSignout() {
           {isPolkLoading ? (
             <Skeleton style={{ height: 16, width: 52 }} />
           ) : (
-            <Text
-              scale="tiny-uppercase"
-              fontWeight="semibold"
-              className="pm-c-wallet-info__profile__ticker"
-            >
-              {formatNumberToString(polkBalance)} {fantasyTokenTicker || 'POLK'}
-            </Text>
+            <div className="flex-row gap-3 align-center">
+              <Text
+                scale="tiny-uppercase"
+                fontWeight="semibold"
+                className="pm-c-wallet-info__profile__ticker"
+              >
+                {formatNumberToString(polkBalance)}{' '}
+                {fantasyTokenTicker || 'POLK'}
+              </Text>
+              <BankruptBadge bankrupt={bankrupt} />
+            </div>
           )}
         </div>
       </div>

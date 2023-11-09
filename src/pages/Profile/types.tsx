@@ -45,7 +45,11 @@ export type ProfileSummaryProps = {
   isLoading: boolean;
   data?: GetPortfolioByAddressData;
   network: Network;
-} & Partial<Record<'username' | 'avatar', string | null>>;
+} & {
+  username?: string | null;
+  avatar?: string | null;
+  bankrupt?: boolean | null;
+};
 
 export type ProfileStatsProps = {
   isLoading: boolean;

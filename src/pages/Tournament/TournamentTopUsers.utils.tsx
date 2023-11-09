@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 
 import type { GetLeaderboardByTimeframeData } from 'services/Polkamarkets/types';
 
+import { BankruptBadge } from 'components';
+
 const USER_PLACES = {
   1: {
     textColor: 'warning'
@@ -20,25 +22,29 @@ const USER_PLACES = {
 type TopUserRenderArgs = {
   address: string;
   place: number;
+  bankrupt?: boolean | null;
 };
 
-function topUserColumnRender({ address, place }: TopUserRenderArgs) {
+function topUserColumnRender({ address, place, bankrupt }: TopUserRenderArgs) {
   const walletPlace = USER_PLACES[place] || {
     textColor: '1'
   };
 
   return (
     <div className="pm-c-leaderboard-top-wallets__wallet notranslate">
-      <Link
-        className={`caption semibold text-${walletPlace.textColor}`}
-        to={`/user/${address}`}
-      >
-        {address.startsWith('0x')
-          ? `${address.substring(0, 6)}...${address.substring(
-              address.length - 4
-            )}`
-          : address}
-      </Link>
+      <div className="flex-row gap-3 align-center">
+        <Link
+          className={`caption semibold text-${walletPlace.textColor}`}
+          to={`/user/${address}`}
+        >
+          {address.startsWith('0x')
+            ? `${address.substring(0, 6)}...${address.substring(
+                address.length - 4
+              )}`
+            : address}
+        </Link>
+        <BankruptBadge bankrupt={bankrupt} />
+      </div>
     </div>
   );
 }
@@ -77,7 +83,8 @@ function prepareTournamentTopUsersRow({
         ? {
             address: firstPlace.username || firstPlace.user,
             place: 1,
-            change: 'stable'
+            change: 'stable',
+            bankrupt: firstPlace.bankrupt
           }
         : null,
       render: topUserRowRender
@@ -87,7 +94,8 @@ function prepareTournamentTopUsersRow({
         ? {
             address: secondPlace.username || secondPlace.user,
             place: 2,
-            change: 'stable'
+            change: 'stable',
+            bankrupt: secondPlace.bankrupt
           }
         : null,
       render: topUserRowRender
@@ -97,7 +105,8 @@ function prepareTournamentTopUsersRow({
         ? {
             address: thirdPlace.username || thirdPlace.user,
             place: 3,
-            change: 'stable'
+            change: 'stable',
+            bankrupt: thirdPlace.bankrupt
           }
         : null,
       render: topUserRowRender
@@ -107,7 +116,8 @@ function prepareTournamentTopUsersRow({
         ? {
             address: fourthPlace.username || fourthPlace.user,
             place: 4,
-            change: 'stable'
+            change: 'stable',
+            bankrupt: fourthPlace.bankrupt
           }
         : null,
       render: topUserRowRender

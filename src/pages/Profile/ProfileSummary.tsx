@@ -5,7 +5,7 @@ import { Avatar, Skeleton } from 'ui';
 
 import { ShareIcon } from 'assets/icons';
 
-import { AlertMini, Tooltip, Feature } from 'components';
+import { AlertMini, Tooltip, Feature, BankruptBadge } from 'components';
 import { Text } from 'components/new';
 
 import profileClasses from './Profile.module.scss';
@@ -27,7 +27,8 @@ export default function ProfileSummary({
   data,
   network,
   username,
-  avatar
+  avatar,
+  bankrupt
 }: ProfileSummaryProps) {
   const ProfileSummaryGroupComponent = avatar ? ProfileSummaryGroup : Fragment;
   const ProfileSummaryInfoComponent = avatar ? ProfileSummaryInfo : Fragment;
@@ -65,26 +66,29 @@ export default function ProfileSummary({
               />
             )}
             <ProfileSummaryInfoComponent>
-              <Text
-                className="pm-p-profile-summary__address"
-                as="h2"
-                fontSize="heading-2"
-                fontWeight="bold"
-                color="1"
-              >
-                {username || address}
-                <Feature name="regular">
-                  <Tooltip position="bottom-start" text="View on Explorer">
-                    <a
-                      target="_blank"
-                      href={`${network.explorerURL}/address/${address}`}
-                      rel="noreferrer"
-                    >
-                      <ShareIcon className="pm-p-profile-summary__explorer-icon" />
-                    </a>
-                  </Tooltip>
-                </Feature>
-              </Text>
+              <div className="flex-row gap-3 align-center">
+                <Text
+                  className="pm-p-profile-summary__address"
+                  as="h2"
+                  fontSize="heading-2"
+                  fontWeight="bold"
+                  color="1"
+                >
+                  {username || address}
+                  <Feature name="regular">
+                    <Tooltip position="bottom-start" text="View on Explorer">
+                      <a
+                        target="_blank"
+                        href={`${network.explorerURL}/address/${address}`}
+                        rel="noreferrer"
+                      >
+                        <ShareIcon className="pm-p-profile-summary__explorer-icon" />
+                      </a>
+                    </Tooltip>
+                  </Feature>
+                </Text>
+                <BankruptBadge bankrupt={bankrupt} />
+              </div>
               <Text
                 fontSize="body-4"
                 fontWeight="semibold"
