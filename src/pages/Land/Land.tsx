@@ -8,9 +8,10 @@ import { Container } from 'ui';
 
 import TournamentsUpcomingMarkets from '../Tournaments/TournamentsUpcomingMarkets';
 import mock from './Land.mock';
+import LandHero from './LandHero';
 
 function Land() {
-  const { tournaments } = mock;
+  const { title, description, imageUrl, bannerUrl, tournaments } = mock;
 
   const marketsIds = useMemo(() => {
     return uniqBy(
@@ -44,6 +45,7 @@ function Land() {
 
   return (
     <Container className={classNames('max-width-screen-xl')}>
+      <LandHero {...{ title, description, imageUrl, bannerUrl }} />
       <div className="width-full">
         <TournamentsUpcomingMarkets markets={markets || []} />
       </div>
