@@ -11,6 +11,7 @@ app.use((request, response, next) => {
   if (
     request.headers['x-forwarded-proto'] !== 'https' &&
     process.env.NODE_ENV !== 'development' &&
+    request.hostname !== 'localhost' &&
     !request.secure
   ) {
     return response.redirect(
@@ -21,22 +22,9 @@ app.use((request, response, next) => {
   next();
 });
 
-const port = process.env.PORT || 5000;
-const isClubsEnabled =
-  process.env.REACT_APP_FEATURE_CLUBS?.toLowerCase() === 'true';
-const isTournamentsEnabled =
-  process.env.REACT_APP_FEATURE_TOURNAMENTS?.toLowerCase() === 'true';
-const isAchievementsEnabled =
-  process.env.REACT_APP_FEATURE_ACHIEVEMENTS?.toLowerCase() === 'true';
-
-const isFantasyEnabled =
-  process.env.REACT_APP_FEATURE_FANTASY?.toLowerCase() === 'true';
-
-const isFantasyWhitelistEnabled =
-  process.env.REACT_APP_FEATURE_FANTASY_WHITELIST?.toLowerCase() === 'true';
-
 const fs = require('fs');
 const path = require('path');
+const { isTrue } = require('./helpers/boolean');
 
 const { getMarket } = require('./api/market');
 const { getLeaderboardGroupBySlug } = require('./api/group_leaderboards');
@@ -45,6 +33,18 @@ const {
   formatMarketMetadata,
   replaceToMetadataTemplate
 } = require('./helpers/string');
+
+const port = process.env.PORT || 5000;
+
+const isFantasyEnabled = isTrue(process.env.REACT_APP_FEATURE_FANTASY);
+const isFantasyWhitelistEnabled = isTrue(
+  process.env.REACT_APP_FEATURE_FANTASY_WHITELIST
+);
+const isAchievementsEnabled = isTrue(
+  process.env.REACT_APP_FEATURE_ACHIEVEMENTS
+);
+const isTournamentsEnabled = isTrue(process.env.REACT_APP_FEATURE_TOURNAMENTS);
+const isClubsEnabled = isTrue(process.env.REACT_APP_FEATURE_CLUBS);
 
 const indexPath = path.resolve(__dirname, '..', 'build', 'index.html');
 

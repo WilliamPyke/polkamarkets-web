@@ -8,6 +8,7 @@ import {
 
 import cn from 'classnames';
 import { ui, pages, features } from 'config';
+import { defaultMetadata, metadataByPage } from 'config/pages';
 import { isNull } from 'lodash';
 import {
   useGetLeaderboardByTimeframeQuery,
@@ -17,7 +18,7 @@ import {
 } from 'services/Polkamarkets';
 import { Container, Image, useTheme } from 'ui';
 
-import { CreateLeaderboardGroup, Link, Tabs } from 'components';
+import { CreateLeaderboardGroup, Link, SEO, Tabs } from 'components';
 import { ButtonLoading } from 'components/Button';
 import { Dropdown } from 'components/new';
 
@@ -380,6 +381,15 @@ function Leaderboard() {
 
   return (
     <Container className="pm-p-leaderboard max-width-screen-xl">
+      <SEO
+        title={`${leaderboardTitle} - ${defaultMetadata.title}`}
+        description={
+          currentLeaderboardType
+            ? metadataByPage[`${currentLeaderboardType}s`].description ||
+              defaultMetadata.description
+            : defaultMetadata.description
+        }
+      />
       <div className="pm-p-leaderboard__header">
         <div className="flex-row gap-5 align-start">
           {!isNull(leaderboardImageUrl) && (
