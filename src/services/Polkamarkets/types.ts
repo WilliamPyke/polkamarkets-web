@@ -1,5 +1,6 @@
 import { Market } from 'models/market';
 import { Achievement } from 'types/achievement';
+import { Land } from 'types/land';
 import {
   LeaderboardAchievement,
   LeaderboardGroup,
@@ -192,5 +193,12 @@ export type AddCommentParams = {
 export type GetMarketFeedBySlugData = MarketActivity[];
 
 export type GetMarketFeedBySlugArgs = {
+  slug: string;
+};
+
+// getLandBySlug
+export type GetLandBySlugData = Land[];
+
+export type GetLandBySlugArgs = {
   slug: string;
 };
