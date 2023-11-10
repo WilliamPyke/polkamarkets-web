@@ -197,7 +197,7 @@ export type GetMarketFeedBySlugArgs = {
 };
 
 // getLandBySlug
-export type GetLandBySlugData = Land[];
+export type GetLandBySlugData = Land;
 
 export type GetLandBySlugArgs = {
   slug: string;
