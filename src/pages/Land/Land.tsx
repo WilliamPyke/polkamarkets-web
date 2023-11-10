@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
@@ -13,6 +13,7 @@ import { Container } from 'ui';
 import { AlertMini } from 'components';
 
 import TournamentsUpcomingMarkets from '../Tournaments/TournamentsUpcomingMarkets';
+import styles from './Land.module.scss';
 import LandHero from './LandHero';
 
 function Land() {
@@ -77,7 +78,18 @@ function Land() {
     <Container className={classNames('max-width-screen-xl')}>
       <LandHero {...{ title, description, imageUrl, bannerUrl }} />
       <div className="width-full">
-        <TournamentsUpcomingMarkets markets={markets || []} />
+        <div className={styles.upcoming}>
+          <div className={styles.upcomingHeader}>
+            <h2 className={styles.upcomingTitle}>Upcoming</h2>
+            <Link
+              to="/markets"
+              className="pm-c-button-subtle--primary pm-c-button--xs"
+            >
+              See All
+            </Link>
+          </div>
+          <TournamentsUpcomingMarkets markets={markets || []} />
+        </div>
       </div>
     </Container>
   );
