@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import type { Tournament as TournamentType } from 'types/tournament';
 
 import Tournament from './Tournament';
@@ -13,7 +15,9 @@ function TournamentGroup({ group }: TournamentGroupProps) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h3 className={styles.title}>{group.title}</h3>
+        <Link to={`/lands/${group.slug}`} className={styles.title}>
+          {group.title}
+        </Link>
         <p className={styles.description}>{group.description}</p>
       </div>
       <ul className={styles.list}>
