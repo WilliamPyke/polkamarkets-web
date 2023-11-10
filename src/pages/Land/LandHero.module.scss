@@ -1,0 +1,19 @@
+.root {
+  padding: 40px 90px 40px 40px;
+}
+
+.meta {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--size-24);
+
+  &Avatar {
+    flex-shrink: 0;
+  }
+
+  &Details {
+    display: flex;
+    flex-direction: column;
+  }
+}
