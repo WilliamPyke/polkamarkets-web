@@ -11,6 +11,7 @@ app.use((request, response, next) => {
   if (
     request.headers['x-forwarded-proto'] !== 'https' &&
     process.env.NODE_ENV !== 'development' &&
+    request.hostname !== 'localhost' &&
     !request.secure
   ) {
     return response.redirect(
