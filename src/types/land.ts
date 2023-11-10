@@ -5,6 +5,7 @@ export type Land = {
   slug: string;
   title: string;
   description: string;
+  imageUrl: string | null;
   bannerUrl: string | null;
   tournaments: Omit<Tournament, 'group'>[];
 };
