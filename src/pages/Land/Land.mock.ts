@@ -6,7 +6,10 @@ const mock: Land = {
   title: 'UEFA Champions League',
   description:
     'Predictions for the UCL Group Stage matches of the 23/24 season.',
-  bannerUrl: null,
+  imageUrl:
+    'https://polkamarkets.infura-ipfs.io/ipfs/QmTon53zjpyzhmdkZiJ9dRCE7tCrwnFLtfP3TYo54A6Keb',
+  bannerUrl:
+    'https://polkamarkets.infura-ipfs.io/ipfs/QmeHKULhR2YAZ4zHxpW4D42quzhmcLWVevRxupWuGAJKQK',
   tournaments: [
     {
       id: 6,
