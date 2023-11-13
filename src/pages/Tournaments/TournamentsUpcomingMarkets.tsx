@@ -116,7 +116,7 @@ function TournamentsUpcomingMarkets({
           style={{ border: 'none' }}
           styles="outline"
           variant="information"
-          description="There are no available markets at the moment"
+          description="There are no available markets at the moment."
         />
       </div>
     );
