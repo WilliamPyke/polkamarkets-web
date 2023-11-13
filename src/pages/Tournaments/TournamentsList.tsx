@@ -84,7 +84,7 @@ function TournamentsList() {
 
   if (isEmpty(groups))
     return (
-      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-small">
+      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-medium">
         <AlertMini
           style={{ border: 'none' }}
           styles="outline"
