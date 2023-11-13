@@ -6,8 +6,8 @@ import Tournament from './Tournament';
 import styles from './TournamentGroup.module.scss';
 
 type TournamentGroupProps = {
-  group: TournamentType['group'] & {
-    tournaments: Omit<TournamentType, 'group'>[];
+  group: TournamentType['land'] & {
+    tournaments: Omit<TournamentType, 'land'>[];
   };
 };
 

@@ -11,7 +11,7 @@ import { Pill } from 'components';
 import styles from './Tournament.module.scss';
 
 type TournamentProps = {
-  tournament: Omit<TournamentType, 'group'>;
+  tournament: Omit<TournamentType, 'land'>;
 };
 
 function Tournament({ tournament }: TournamentProps) {

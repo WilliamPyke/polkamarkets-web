@@ -25,24 +25,24 @@ function TournamentsList() {
 
   const [currentTab, setCurrentTab] = useState('all');
 
-  const groups = useMemo(() => {
+  const lands = useMemo(() => {
     if (isLoadingGetTournamentsQuery || isEmptyTournaments) return [];
 
     return orderBy(
       uniqBy(
         tournaments
-          .map(tournament => tournament.group)
-          .filter(group => group !== null) as TournamentGroupType[],
+          .map(tournament => tournament.land)
+          .filter(land => land !== null) as TournamentGroupType[],
         'id'
-      ).map(group => {
+      ).map(land => {
         const tournamentsInGroup = orderBy(
           tournaments
-            .filter(tournament => tournament.group?.id === group.id)
-            .map(tournament => omit(tournament, 'group'))
+            .filter(tournament => tournament.land?.id === land.id)
+            .map(tournament => omit(tournament, 'land'))
         );
 
         return {
-          ...group,
+          ...land,
           tournaments: tournamentsInGroup
         };
       }),
@@ -82,7 +82,7 @@ function TournamentsList() {
       </div>
     );
 
-  if (isEmpty(groups))
+  if (isEmpty(lands))
     return (
       <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-medium">
         <AlertMini
@@ -124,30 +124,30 @@ function TournamentsList() {
         >
           <Tabs.TabPane id="all" tab="All">
             <ul className={styles.root}>
-              {groups.map(group => (
-                <li key={group.id}>
-                  <TournamentGroup group={group} />
+              {lands.map(land => (
+                <li key={land.id}>
+                  <TournamentGroup group={land} />
                 </li>
               ))}
             </ul>
           </Tabs.TabPane>
-          {groups.map(group => (
+          {lands.map(land => (
             <Tabs.TabPane
-              key={group.id}
-              id={group.id.toString()}
-              tab={group.title}
+              key={land.id}
+              id={land.id.toString()}
+              tab={land.title}
             >
               <ul className={styles.root}>
-                <TournamentGroup group={group} />
+                <TournamentGroup group={land} />
               </ul>
             </Tabs.TabPane>
           ))}
         </Tabs>
       ) : (
         <ul className={styles.root}>
-          {groups.map(group => (
-            <li key={group.id}>
-              <TournamentGroup group={group} />
+          {lands.map(land => (
+            <li key={land.id}>
+              <TournamentGroup group={land} />
             </li>
           ))}
         </ul>

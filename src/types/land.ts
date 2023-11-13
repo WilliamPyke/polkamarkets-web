@@ -8,5 +8,5 @@ export type Land = {
   imageUrl: string | null;
   bannerUrl: string | null;
   position: number;
-  tournaments: Omit<Tournament, 'group'>[];
+  tournaments: Omit<Tournament, 'land'>[];
 };
