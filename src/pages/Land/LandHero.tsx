@@ -32,7 +32,6 @@ export default function LandHero({
               <Avatar
                 src={imageUrl}
                 alt={title}
-                $size="lg"
                 $radius="md"
                 className={styles.metaAvatar}
               />
@@ -43,11 +42,19 @@ export default function LandHero({
                 fontWeight="bold"
                 scale="heading-large"
                 color="light"
-                className="pm-p-home__hero__heading"
+                className={classNames(
+                  'pm-p-home__hero__heading',
+                  styles.metaDetailsTitle
+                )}
               >
                 {title}
               </Text>
-              <Text as="span" fontWeight="medium" color="light">
+              <Text
+                as="span"
+                fontWeight="medium"
+                color="light"
+                className={styles.metaDetailsDescription}
+              >
                 {description}
               </Text>
             </div>
