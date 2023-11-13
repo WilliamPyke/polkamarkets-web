@@ -15,6 +15,7 @@ import { AlertMini } from 'components';
 import TournamentsUpcomingMarkets from '../Tournaments/TournamentsUpcomingMarkets';
 import styles from './Land.module.scss';
 import LandHero from './LandHero';
+import LandTournamentList from './LandTournamentList';
 
 function Land() {
   const { slug } = useParams<{ slug: string }>();
@@ -72,10 +73,10 @@ function Land() {
       </div>
     );
 
-  const { title, description, imageUrl, bannerUrl } = land;
+  const { title, description, imageUrl, bannerUrl, tournaments } = land;
 
   return (
-    <Container className={classNames('max-width-screen-xl')}>
+    <Container className={classNames('max-width-screen-xl', styles.root)}>
       <LandHero {...{ title, description, imageUrl, bannerUrl }} />
       <div className="width-full">
         <div className={styles.upcoming}>
@@ -90,6 +91,7 @@ function Land() {
           </div>
           <TournamentsUpcomingMarkets markets={markets || []} />
         </div>
+        <LandTournamentList tournaments={tournaments} />
       </div>
     </Container>
   );
