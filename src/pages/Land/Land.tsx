@@ -10,7 +10,7 @@ import {
 } from 'services/Polkamarkets';
 import { Container } from 'ui';
 
-import { AlertMini } from 'components';
+import { AlertMini, SEO } from 'components';
 
 import TournamentsUpcomingMarkets from '../Tournaments/TournamentsUpcomingMarkets';
 import styles from './Land.module.scss';
@@ -77,6 +77,12 @@ function Land() {
 
   return (
     <Container className={classNames('max-width-screen-xl', styles.root)}>
+      {land && (
+        <SEO
+          title={`${land.title} | Foreland Alpha`}
+          description={`${land.description}\nStart now with $ALPHA`}
+        />
+      )}
       <LandHero {...{ title, description, imageUrl, bannerUrl }} />
       <div className="width-full">
         <div className={styles.upcoming}>
