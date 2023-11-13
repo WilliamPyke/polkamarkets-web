@@ -19,12 +19,12 @@ export default function LandHero({
   bannerUrl
 }: LandHeroProps) {
   return (
-    <Container>
+    <Container className={styles.header}>
       <Hero
         $backdrop="main"
         $rounded
         $image={bannerUrl || ui.hero.image}
-        className={classNames('pm-p-home__hero', styles.root)}
+        className={classNames('pm-p-home__hero', styles.headerHero)}
       >
         <div className="pm-p-home__hero__content">
           <div className={styles.meta}>
