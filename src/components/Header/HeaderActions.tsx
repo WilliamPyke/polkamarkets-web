@@ -2,8 +2,10 @@ import { Fragment, useEffect } from 'react';
 
 import cn from 'classnames';
 import { features, ui } from 'config';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Container, Skeleton, useTheme } from 'ui';
 
+import HelpButton from 'components/HelpButton';
 import NetworkSelector from 'components/NetworkSelector';
 import Profile from 'components/Profile';
 import ThemeSelector from 'components/ThemeSelector';
@@ -11,7 +13,6 @@ import Wallet from 'components/Wallet';
 
 import { useAppSelector, usePortal } from 'hooks';
 
-import Icon from '../Icon';
 import headerClasses from './Header.module.scss';
 import headerActionsClasses from './HeaderActions.module.scss';
 
@@ -98,53 +99,55 @@ export default function HeaderActions() {
 
   return (
     <Root>
-      <Wrapper
-        className={cn(
-          headerActionsClasses.root,
-          headerActionsClasses.gutterActions,
-          {
-            [headerClasses.container]: !theme.device.isDesktop,
-            [headerActionsClasses.reverse]: features.fantasy.enabled
-          }
-        )}
-      >
-        <HeaderActionsGroupComponent>
-          {ui.layout.header.networkSelector.enabled &&
-            theme.device.isDesktop && (
-              <NetworkSelector
-                size="sm"
-                responsive
-                className={headerActionsClasses.network}
-              />
-            )}
-          {isLoading ? (
-            <ActionLoadingComponent />
-          ) : (
-            <HeaderActionComponent isLoggedIn={isLoggedIn} />
-          )}
-        </HeaderActionsGroupComponent>
-        {!features.fantasy.enabled && <ThemeSelector />}
-        {ui.layout.header.helpUrl && (
-          <a
-            role="button"
-            href={ui.layout.header.helpUrl}
-            target="_blank"
-            rel="noreferrer"
-            className={cn(
-              [headerActionsClasses.help],
-              'pm-c-button--sm',
-              'pm-c-button-ghost--default'
-            )}
+      <AnimatePresence>
+        {(theme.device.isTv || isLoggedIn) && (
+          <motion.div
+            initial={{
+              y: 60
+            }}
+            animate={{
+              y: 0
+            }}
+            exit={{
+              y: 60
+            }}
           >
-            <Icon
-              name="Question"
-              size="lg"
-              className={headerActionsClasses.helpIcon}
-            />
-            Help
-          </a>
+            <Wrapper
+              className={cn(
+                headerActionsClasses.root,
+                headerActionsClasses.gutterActions,
+                {
+                  [headerClasses.container]: !theme.device.isDesktop,
+                  [headerActionsClasses.reverse]: features.fantasy.enabled
+                }
+              )}
+            >
+              <HeaderActionsGroupComponent>
+                {ui.layout.header.networkSelector.enabled &&
+                  theme.device.isDesktop && (
+                    <NetworkSelector
+                      size="sm"
+                      responsive
+                      className={headerActionsClasses.network}
+                    />
+                  )}
+                {isLoading ? (
+                  <ActionLoadingComponent />
+                ) : (
+                  <HeaderActionComponent isLoggedIn={isLoggedIn} />
+                )}
+              </HeaderActionsGroupComponent>
+              {!features.fantasy.enabled && <ThemeSelector />}
+              {ui.layout.header.helpUrl && (
+                <HelpButton
+                  className={headerActionsClasses.help}
+                  href={ui.layout.header.helpUrl}
+                />
+              )}
+            </Wrapper>
+          </motion.div>
         )}
-      </Wrapper>
+      </AnimatePresence>
     </Root>
   );
 }
