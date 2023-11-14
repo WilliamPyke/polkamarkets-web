@@ -96,12 +96,15 @@ export default function HeaderActions() {
   const HeaderActionsGroupComponent = features.fantasy.enabled
     ? Fragment
     : HeaderActionsGroup;
+  const AnimateWrapperComponent = theme.device.isDesktop
+    ? Fragment
+    : motion.div;
 
   return (
     <Root>
       <AnimatePresence>
-        {(theme.device.isTv || isLoggedIn) && (
-          <motion.div
+        {(!features.fantasy.enabled || isLoggedIn) && (
+          <AnimateWrapperComponent
             initial={{
               y: 60
             }}
@@ -140,12 +143,14 @@ export default function HeaderActions() {
               {!features.fantasy.enabled && <ThemeSelector />}
               {ui.layout.header.helpUrl && (
                 <HelpButton
-                  className={headerActionsClasses.help}
+                  className={cn({
+                    [headerActionsClasses.help]: features.fantasy.enabled
+                  })}
                   href={ui.layout.header.helpUrl}
                 />
               )}
             </Wrapper>
-          </motion.div>
+          </AnimateWrapperComponent>
         )}
       </AnimatePresence>
     </Root>
