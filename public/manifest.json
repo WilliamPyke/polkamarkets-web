@@ -1,6 +1,6 @@
 {
-  "short_name": "Polkamarkets",
-  "name": "Polkamarkets",
+  "short_name": "%REACT_APP_MANIFEST_SHORT_NAME%",
+  "name": "%REACT_APP_MANIFEST_NAME%",
   "icons": [
     {
       "src": "favicon.ico",
