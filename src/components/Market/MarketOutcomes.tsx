@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { features } from 'config';
@@ -54,20 +54,37 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
       trade.selectedOutcomeId
     ]
   );
-  const handleOutcomeClick = useCallback(
-    async (event: React.MouseEvent<HTMLButtonElement>) => {
-      const { value } = event.currentTarget;
-      const isOutcomeActive = getOutcomeActive(value);
+  const setOutcome = useCallback(
+    async (outcomeId: string) => {
       const { marketSelected } = await import('redux/ducks/market');
       const { selectOutcome } = await import('redux/ducks/trade');
 
       dispatch(marketSelected(market));
-      dispatch(
-        selectOutcome(market.id, market.networkId, isOutcomeActive ? '' : value)
-      );
+      dispatch(selectOutcome(market.id, market.networkId, outcomeId));
+    },
+    [dispatch, market]
+  );
+  const handleOutcomeClick = useCallback(
+    async (event: React.MouseEvent<HTMLButtonElement>) => {
+      const { value } = event.currentTarget;
+      const isOutcomeActive = getOutcomeActive(value);
+
+      setOutcome(isOutcomeActive ? '' : value);
 
       if (features.fantasy.enabled) {
         setTradeVisible(true);
+
+        try {
+          const persistIds = {
+            market: market.id,
+            network: market.networkId,
+            outcome: value
+          };
+
+          localStorage.setItem('SELECTED_OUTCOME', JSON.stringify(persistIds));
+        } catch (error) {
+          // unsupported
+        }
       } else {
         if (market.state === 'closed') {
           const { openReportForm } = await import('redux/ducks/ui');
@@ -86,13 +103,47 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
         history.push(`/markets/${market.slug}`);
       }
     },
-    [dispatch, getOutcomeActive, history, market]
+    [dispatch, getOutcomeActive, setOutcome, history, market]
   );
 
-  const handleCloseTrade = useCallback(() => {
+  const handleCloseTrade = useCallback(async () => {
     dispatch(reset());
     setTradeVisible(false);
+
+    try {
+      if ('SELECTED_OUTCOME' in localStorage)
+        localStorage.removeItem('SELECTED_OUTCOME');
+    } catch (error) {
+      // unsupported
+    }
   }, [dispatch]);
+
+  useEffect(() => {
+    (async function getOutcomeSelected() {
+      try {
+        if ('SELECTED_OUTCOME' in localStorage && features.fantasy.enabled) {
+          const selectedOutcome =
+            localStorage.getItem('SELECTED_OUTCOME') || '{}';
+          const persistIds = JSON.parse(selectedOutcome) as Record<
+            'market' | 'network' | 'outcome',
+            string
+          >;
+          const isOutcomeActive = getOutcomeActive(persistIds.outcome);
+
+          if (
+            persistIds.market === market.id &&
+            persistIds.network === market.networkId
+          ) {
+            setOutcome(isOutcomeActive ? '' : persistIds.outcome);
+            setTradeVisible(true);
+          }
+        }
+      } catch (error) {
+        // unsupported
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ul className="pm-c-market-outcomes">
