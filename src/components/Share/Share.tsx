@@ -20,6 +20,8 @@ export default function Share({
   title = 'Share',
   link,
   iconOnly = true,
+  size = 'sm',
+  color = 'noborder',
   ...props
 }: ShareProps) {
   const { show } = useToastNotification();
@@ -57,7 +59,7 @@ export default function Share({
 
   return (
     <>
-      <Button onClick={handleClick} {...props}>
+      <Button size={size} color={color} onClick={handleClick} {...props}>
         <Icon name="Share" title="Share" />
         {!iconOnly && title}
       </Button>
