@@ -8,14 +8,16 @@ import { Pill, Text } from 'components';
 import styles from './TournamentHero.module.scss';
 
 type TournamentHeroProps = {
-  groupName?: string;
+  landName?: string;
+  landBannerUrl?: string | null;
   tournamentName?: string;
   tournamentDescription?: string;
   topUsers?: ReactNode;
 };
 
 export default function TournamentHero({
-  groupName,
+  landName,
+  landBannerUrl,
   tournamentName,
   tournamentDescription,
   topUsers
@@ -25,13 +27,13 @@ export default function TournamentHero({
       <Hero
         $backdrop="main"
         $rounded
-        $image={ui.hero.image}
+        $image={landBannerUrl || ui.hero.image}
         className={`pm-p-home__hero ${styles.headerHero}`}
       >
         <div className={styles.headerHeroContent}>
           <div>
             <div className="pm-p-home__hero__breadcrumb">
-              {groupName ? (
+              {landName ? (
                 <Pill
                   color="primary"
                   className={{
@@ -39,7 +41,7 @@ export default function TournamentHero({
                     text: styles.headerHeroContentPillText
                   }}
                 >
-                  {groupName}
+                  {landName}
                 </Pill>
               ) : null}
             </div>

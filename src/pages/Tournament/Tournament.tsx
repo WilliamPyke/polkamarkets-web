@@ -80,7 +80,8 @@ export default function Tournament() {
       )}
       {ui.hero.enabled && (
         <TournamentHero
-          groupName={data?.group?.title}
+          landName={data?.land?.title}
+          landBannerUrl={data?.land?.bannerUrl}
           tournamentName={data?.title}
           tournamentDescription={data?.description}
           topUsers={
