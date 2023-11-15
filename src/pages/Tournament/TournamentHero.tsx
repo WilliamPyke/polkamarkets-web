@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 import { ui } from 'config';
 import { Container, Hero } from 'ui';
@@ -9,6 +10,7 @@ import styles from './TournamentHero.module.scss';
 
 type TournamentHeroProps = {
   landName?: string;
+  landSlug?: string;
   landBannerUrl?: string | null;
   tournamentName?: string;
   tournamentDescription?: string;
@@ -17,6 +19,7 @@ type TournamentHeroProps = {
 
 export default function TournamentHero({
   landName,
+  landSlug,
   landBannerUrl,
   tournamentName,
   tournamentDescription,
@@ -33,16 +36,18 @@ export default function TournamentHero({
         <div className={styles.headerHeroContent}>
           <div>
             <div className="pm-p-home__hero__breadcrumb">
-              {landName ? (
-                <Pill
-                  color="primary"
-                  className={{
-                    root: styles.headerHeroContentPill,
-                    text: styles.headerHeroContentPillText
-                  }}
-                >
-                  {landName}
-                </Pill>
+              {landName && landSlug ? (
+                <Link to={`/lands/${landSlug}`}>
+                  <Pill
+                    color="primary"
+                    className={{
+                      root: styles.headerHeroContentPill,
+                      text: styles.headerHeroContentPillText
+                    }}
+                  >
+                    {landName}
+                  </Pill>
+                </Link>
               ) : null}
             </div>
             {tournamentName ? (

@@ -81,6 +81,7 @@ export default function Tournament() {
       {ui.hero.enabled && (
         <TournamentHero
           landName={data?.land?.title}
+          landSlug={data?.land?.slug}
           landBannerUrl={data?.land?.bannerUrl}
           tournamentName={data?.title}
           tournamentDescription={data?.description}
