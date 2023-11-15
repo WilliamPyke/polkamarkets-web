@@ -9,6 +9,7 @@ import { PolkamarketsService, PolkamarketsApiService } from 'services';
 import TWarningIcon from 'assets/icons/TWarningIcon';
 
 import { AlertMinimal } from 'components/Alert';
+import ProfileSignin from 'components/ProfileSignin';
 
 import {
   useAppDispatch,
@@ -42,6 +43,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
   const wrapped = useAppSelector(state => state.trade.wrapped);
   const marketId = useAppSelector(state => state.trade.selectedMarketId);
   const marketNetworkId = useAppSelector(
@@ -289,22 +291,28 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
                 description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}
               />
             ) : null}
-            <ApproveToken
-              fullwidth
-              address={token.address}
-              ticker={token.ticker}
-              wrapped={token.wrapped && !wrapped}
-            >
-              <ButtonLoading
-                color="primary"
+            {!features.fantasy.enabled || isLoggedIn ? (
+              <ApproveToken
                 fullwidth
-                onClick={handleBuy}
-                disabled={!isValidAmount || isLoading}
-                loading={isLoading}
+                address={token.address}
+                ticker={token.ticker}
+                wrapped={token.wrapped && !wrapped}
               >
-                Predict
-              </ButtonLoading>
-            </ApproveToken>
+                <ButtonLoading
+                  color="primary"
+                  fullwidth
+                  onClick={handleBuy}
+                  disabled={!isValidAmount || isLoading}
+                  loading={isLoading}
+                >
+                  Predict
+                </ButtonLoading>
+              </ApproveToken>
+            ) : (
+              <ProfileSignin fullwidth size="normal" color="primary">
+                Login to Predict
+              </ProfileSignin>
+            )}
           </div>
         ) : null}
         {type === 'sell' && !needsPricesRefresh && !isWrongNetwork ? (
