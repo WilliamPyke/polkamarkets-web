@@ -10,7 +10,7 @@ import {
   useGetMarketsByIdsQuery,
   useGetTournamentsQuery
 } from 'services/Polkamarkets';
-import type { TournamentGroup as TournamentGroupType } from 'types/tournament';
+import type { Land } from 'types/land';
 
 import { AlertMini, Tabs } from 'components';
 
@@ -32,7 +32,7 @@ function TournamentsList() {
       uniqBy(
         tournaments
           .map(tournament => tournament.land)
-          .filter(land => land !== null) as TournamentGroupType[],
+          .filter(land => land !== null) as Omit<Land, 'tournaments'>[],
         'id'
       ).map(land => {
         const tournamentsInGroup = orderBy(
