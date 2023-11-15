@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
 
-import Toast from 'components/Toast';
-import ToastNotification from 'components/ToastNotification';
-
 import useToastNotification from 'hooks/useToastNotification';
 
 import { Button, ButtonProps } from '../Button';
 import Icon from '../Icon';
+import Toast from '../Toast';
+import ToastNotification from '../ToastNotification';
 
 type ShareProps = ButtonProps & {
   title?: string;
