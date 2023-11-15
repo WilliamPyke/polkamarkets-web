@@ -83,6 +83,33 @@ function SkeletonProfile() {
     </div>
   );
 }
+function HeaderActionsAnimate({
+  children,
+  show
+}: React.PropsWithChildren<{ show: boolean }>) {
+  if (features.fantasy.enabled)
+    return (
+      <AnimatePresence>
+        {show && (
+          <motion.div
+            initial={{
+              y: 60
+            }}
+            animate={{
+              y: 0
+            }}
+            exit={{
+              y: 60
+            }}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+
+  return <>{children}</>;
+}
 export default function HeaderActions() {
   const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
   const isLoading = useAppSelector(state => state.polkamarkets.isLoading.login);
@@ -96,63 +123,46 @@ export default function HeaderActions() {
   const HeaderActionsGroupComponent = features.fantasy.enabled
     ? Fragment
     : HeaderActionsGroup;
-  const AnimateWrapperComponent = theme.device.isDesktop
-    ? Fragment
-    : motion.div;
 
   return (
     <Root>
-      <AnimatePresence>
-        {(!features.fantasy.enabled || isLoggedIn) && (
-          <AnimateWrapperComponent
-            initial={{
-              y: 60
-            }}
-            animate={{
-              y: 0
-            }}
-            exit={{
-              y: 60
-            }}
-          >
-            <Wrapper
-              className={cn(
-                headerActionsClasses.root,
-                headerActionsClasses.gutterActions,
-                {
-                  [headerClasses.container]: !theme.device.isDesktop,
-                  [headerActionsClasses.reverse]: features.fantasy.enabled
-                }
-              )}
-            >
-              <HeaderActionsGroupComponent>
-                {ui.layout.header.networkSelector.enabled &&
-                  theme.device.isDesktop && (
-                    <NetworkSelector
-                      size="sm"
-                      responsive
-                      className={headerActionsClasses.network}
-                    />
-                  )}
-                {isLoading ? (
-                  <ActionLoadingComponent />
-                ) : (
-                  <HeaderActionComponent isLoggedIn={isLoggedIn} />
-                )}
-              </HeaderActionsGroupComponent>
-              {!features.fantasy.enabled && <ThemeSelector />}
-              {ui.layout.header.helpUrl && (
-                <HelpButton
-                  className={cn({
-                    [headerActionsClasses.help]: features.fantasy.enabled
-                  })}
-                  href={ui.layout.header.helpUrl}
+      <HeaderActionsAnimate show={isLoggedIn}>
+        <Wrapper
+          className={cn(
+            headerActionsClasses.root,
+            headerActionsClasses.gutterActions,
+            {
+              [headerClasses.container]: !theme.device.isDesktop,
+              [headerActionsClasses.reverse]: features.fantasy.enabled
+            }
+          )}
+        >
+          <HeaderActionsGroupComponent>
+            {ui.layout.header.networkSelector.enabled &&
+              theme.device.isDesktop && (
+                <NetworkSelector
+                  size="sm"
+                  responsive
+                  className={headerActionsClasses.network}
                 />
               )}
-            </Wrapper>
-          </AnimateWrapperComponent>
-        )}
-      </AnimatePresence>
+            {isLoading ? (
+              <ActionLoadingComponent />
+            ) : (
+              <HeaderActionComponent isLoggedIn={isLoggedIn} />
+            )}
+          </HeaderActionsGroupComponent>
+          {!features.fantasy.enabled && <ThemeSelector />}
+          {ui.layout.header.helpUrl && (
+            <HelpButton
+              className={cn({
+                [headerActionsClasses.help]: features.fantasy.enabled
+              })}
+              href={ui.layout.header.helpUrl}
+            />
+          )}
+        </Wrapper>
+      </HeaderActionsAnimate>
     </Root>
   );
 }
