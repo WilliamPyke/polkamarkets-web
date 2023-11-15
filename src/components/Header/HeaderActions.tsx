@@ -87,7 +87,9 @@ function HeaderActionsAnimate({
   children,
   show
 }: React.PropsWithChildren<{ show: boolean }>) {
-  if (features.fantasy.enabled)
+  const theme = useTheme();
+
+  if (!theme.device.isDesktop)
     return (
       <AnimatePresence>
         {show && (
@@ -126,7 +128,7 @@ export default function HeaderActions() {
 
   return (
     <Root>
-      <HeaderActionsAnimate show={isLoggedIn}>
+      <HeaderActionsAnimate show={!features.fantasy.enabled || isLoggedIn}>
         <Wrapper
           className={cn(
             headerActionsClasses.root,
