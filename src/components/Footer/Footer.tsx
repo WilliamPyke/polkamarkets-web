@@ -21,7 +21,13 @@ export default function Footer({ className, $gutterTop }: FooterProps) {
 
   return (
     <footer
-      className={cn(styles.root, { [styles.gutterTop]: $gutterTop }, className)}
+      className={cn(
+        styles.root,
+        {
+          [styles.gutterTop]: $gutterTop
+        },
+        className
+      )}
     >
       <Container className={styles.container}>
         <Text
