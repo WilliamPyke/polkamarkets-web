@@ -157,30 +157,37 @@ export default class PolkamarketsService {
   }
 
   public async socialLoginGoogle() {
+    await this.polkamarkets.socialLogin.init();
     return this.polkamarkets.socialLoginGoogle();
   }
 
   public async socialLoginFacebook() {
+    await this.polkamarkets.socialLogin.init();
     return this.polkamarkets.socialLoginFacebook();
   }
 
   public async socialLoginTwitter() {
+    await this.polkamarkets.socialLogin.init();
     return this.polkamarkets.socialLoginTwitter();
   }
 
   public async socialLoginGithub() {
+    await this.polkamarkets.socialLogin.init();
     return this.polkamarkets.socialLoginGithub();
   }
 
   public async socialLoginDiscord() {
+    await this.polkamarkets.socialLogin.init();
     return this.polkamarkets.socialLoginDiscord();
   }
 
   public async socialLoginEmail(email) {
+    await this.polkamarkets.socialLogin.init();
     return this.polkamarkets.socialLoginEmail(email);
   }
 
   public async socialLoginMetamask() {
+    await this.polkamarkets.socialLogin.init();
     return this.polkamarkets.socialLoginMetamask();
   }
 

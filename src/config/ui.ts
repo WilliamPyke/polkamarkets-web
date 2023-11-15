@@ -121,7 +121,13 @@ const ui = {
     enabled: isTrue(environment.FEATURE_CLUBS)
   },
   tournaments: {
-    enabled: isTrue(environment.FEATURE_TOURNAMENTS)
+    enabled: isTrue(environment.FEATURE_TOURNAMENTS),
+    upcoming: {
+      enabled: isTrue(environment.UI_TOURNAMENTS_UPCOMING_ENABLED)
+    },
+    tabs: {
+      enabled: isTrue(environment.UI_TOURNAMENTS_TABS_ENABLED)
+    }
   },
   achievements: {
     enabled: isTrue(environment.FEATURE_ACHIEVEMENTS)

@@ -1,3 +1,4 @@
+const CopyPlugin = require('copy-webpack-plugin');
 const cracoPluginStyleResourcesLoader = require('craco-plugin-style-resources-loader');
 const path = require('path');
 
@@ -36,6 +37,30 @@ module.exports = {
       '@babel/plugin-proposal-optional-chaining',
       '@babel/plugin-proposal-private-methods',
       '@babel/plugin-proposal-numeric-separator'
+    ]
+  },
+  webpack: {
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: 'public/manifest.json',
+            to: 'manifest.json',
+            transform(content) {
+              return content
+                .toString()
+                .replace(
+                  /%REACT_APP_MANIFEST_SHORT_NAME%/g,
+                  m => process.env[m.slice(1, m.length - 1)] || 'Polkamarkets'
+                )
+                .replace(
+                  /%REACT_APP_MANIFEST_NAME%/g,
+                  m => process.env[m.slice(1, m.length - 1)] || 'Polkamarkets'
+                );
+            }
+          }
+        ]
+      })
     ]
   }
 };

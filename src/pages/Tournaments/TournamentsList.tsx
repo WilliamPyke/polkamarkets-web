@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ui } from 'config';
 import isEmpty from 'lodash/isEmpty';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
@@ -95,7 +96,7 @@ function TournamentsList() {
 
   return (
     <>
-      {markets ? (
+      {markets && ui.tournaments.upcoming.enabled ? (
         <div className={styles.upcoming}>
           <div className={styles.upcomingHeader}>
             <h2 className={styles.upcomingTitle}>Upcoming</h2>
@@ -109,38 +110,48 @@ function TournamentsList() {
           <TournamentsUpcomingMarkets markets={markets} />
         </div>
       ) : null}
-      <Tabs
-        direction="row"
-        fullwidth
-        value={currentTab}
-        onChange={tab => setCurrentTab(tab)}
-        className={{
-          root: styles.tabsRoot,
-          header: styles.tabsHeader,
-          item: styles.tabsItem
-        }}
-      >
-        <Tabs.TabPane id="all" tab="All">
-          <ul className={styles.root}>
-            {groups.map(group => (
-              <li key={group.id}>
-                <TournamentGroup group={group} />
-              </li>
-            ))}
-          </ul>
-        </Tabs.TabPane>
-        {groups.map(group => (
-          <Tabs.TabPane
-            key={group.id}
-            id={group.id.toString()}
-            tab={group.title}
-          >
+      {ui.tournaments.tabs.enabled ? (
+        <Tabs
+          direction="row"
+          fullwidth
+          value={currentTab}
+          onChange={tab => setCurrentTab(tab)}
+          className={{
+            root: styles.tabsRoot,
+            header: styles.tabsHeader,
+            item: styles.tabsItem
+          }}
+        >
+          <Tabs.TabPane id="all" tab="All">
             <ul className={styles.root}>
-              <TournamentGroup group={group} />
+              {groups.map(group => (
+                <li key={group.id}>
+                  <TournamentGroup group={group} />
+                </li>
+              ))}
             </ul>
           </Tabs.TabPane>
-        ))}
-      </Tabs>
+          {groups.map(group => (
+            <Tabs.TabPane
+              key={group.id}
+              id={group.id.toString()}
+              tab={group.title}
+            >
+              <ul className={styles.root}>
+                <TournamentGroup group={group} />
+              </ul>
+            </Tabs.TabPane>
+          ))}
+        </Tabs>
+      ) : (
+        <ul className={styles.root}>
+          {groups.map(group => (
+            <li key={group.id}>
+              <TournamentGroup group={group} />
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 }
