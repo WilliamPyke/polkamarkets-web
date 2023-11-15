@@ -12,8 +12,14 @@
 }
 
 .header {
-  padding-left: var(--size-16);
-  padding-right: var(--size-16);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--size-16);
+
+  &Avatar {
+    flex-shrink: 0;
+  }
 }
 
 .title {
