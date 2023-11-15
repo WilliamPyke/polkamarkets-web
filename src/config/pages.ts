@@ -149,6 +149,15 @@ const pages = {
     meta: metadataByPage.tournaments,
     enabled: ui.tournaments.enabled
   },
+  land: {
+    pathname: '/lands/:slug',
+    Component: lazy(() => import('pages/Land')),
+    exact: false,
+    navigation: false,
+    name: '',
+    meta: null,
+    enabled: ui.tournaments.enabled
+  },
   leaderboard: {
     pathname: '/leaderboard',
     Component: Leaderboard,

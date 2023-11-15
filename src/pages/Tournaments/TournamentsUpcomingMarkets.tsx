@@ -15,7 +15,7 @@ import {
   getTokenByTicker
 } from 'redux/ducks/market';
 
-import { Icon, PredictionCard } from 'components';
+import { AlertMini, Icon, PredictionCard } from 'components';
 
 import styles from './TournamentsUpcomingMarkets.module.scss';
 
@@ -108,6 +108,18 @@ function TournamentsUpcomingMarkets({
     },
     []
   );
+
+  if (!marketsByVolume.length)
+    return (
+      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-medium">
+        <AlertMini
+          style={{ border: 'none' }}
+          styles="outline"
+          variant="information"
+          description="There are no available markets at the moment."
+        />
+      </div>
+    );
 
   return (
     <ScrollMenu

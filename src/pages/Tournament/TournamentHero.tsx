@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 import { ui } from 'config';
 import { Container, Hero } from 'ui';
@@ -8,14 +9,18 @@ import { Pill, Text } from 'components';
 import styles from './TournamentHero.module.scss';
 
 type TournamentHeroProps = {
-  groupName?: string;
+  landName?: string;
+  landSlug?: string;
+  landBannerUrl?: string | null;
   tournamentName?: string;
   tournamentDescription?: string;
   topUsers?: ReactNode;
 };
 
 export default function TournamentHero({
-  groupName,
+  landName,
+  landSlug,
+  landBannerUrl,
   tournamentName,
   tournamentDescription,
   topUsers
@@ -25,22 +30,24 @@ export default function TournamentHero({
       <Hero
         $backdrop="main"
         $rounded
-        $image={ui.hero.image}
+        $image={landBannerUrl || ui.hero.image}
         className={`pm-p-home__hero ${styles.headerHero}`}
       >
         <div className={styles.headerHeroContent}>
           <div>
             <div className="pm-p-home__hero__breadcrumb">
-              {groupName ? (
-                <Pill
-                  color="primary"
-                  className={{
-                    root: styles.headerHeroContentPill,
-                    text: styles.headerHeroContentPillText
-                  }}
-                >
-                  {groupName}
-                </Pill>
+              {landName && landSlug ? (
+                <Link to={`/lands/${landSlug}`}>
+                  <Pill
+                    color="primary"
+                    className={{
+                      root: styles.headerHeroContentPill,
+                      text: styles.headerHeroContentPillText
+                    }}
+                  >
+                    {landName}
+                  </Pill>
+                </Link>
               ) : null}
             </div>
             {tournamentName ? (

@@ -1,0 +1,49 @@
+.header {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--color-surface-tertiary) 100%
+  );
+  padding: 0;
+  margin-top: var(--size-8);
+
+  &Hero {
+    padding: 40px 12px 12px 12px;
+
+    @media (min-width: 768px) {
+      padding: 40px 90px 40px 40px;
+    }
+  }
+}
+
+.meta {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--size-24);
+
+  &Avatar {
+    flex-shrink: 0;
+
+    height: var(--size-64);
+    width: var(--size-64);
+
+    @media (min-width: 768px) {
+      height: var(--size-96);
+      width: var(--size-96);
+    }
+  }
+
+  &Details {
+    display: flex;
+    flex-direction: column;
+
+    &Title {
+      font-size: var(--size-24--rem);
+
+      @media (min-width: 768px) {
+        font-size: var(--size-28--rem);
+      }
+    }
+  }
+}
