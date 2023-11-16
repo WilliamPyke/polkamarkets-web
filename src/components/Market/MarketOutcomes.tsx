@@ -54,6 +54,7 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
       trade.selectedOutcomeId
     ]
   );
+
   const setOutcome = useCallback(
     async (outcomeId: string) => {
       const { marketSelected } = await import('redux/ducks/market');
@@ -64,6 +65,7 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
     },
     [dispatch, market]
   );
+
   const handleOutcomeClick = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       const { value } = event.currentTarget;
