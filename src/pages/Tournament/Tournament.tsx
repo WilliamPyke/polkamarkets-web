@@ -67,6 +67,13 @@ export default function Tournament() {
 
   const isTournamentEnded = dayjs().utc().isAfter(dayjs(data?.expiresAt).utc());
 
+  if (isLoadingTournamentBySlugQuery || isLoadingLeaderboardByTimeframeQuery)
+    return (
+      <div className="flex-row justify-center align-center width-full padding-y-5 padding-x-4">
+        <span className="spinner--primary" />
+      </div>
+    );
+
   return (
     <div className="max-width-screen-xl">
       {data && (
