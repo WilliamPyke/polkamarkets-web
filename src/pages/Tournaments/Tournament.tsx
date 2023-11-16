@@ -6,7 +6,7 @@ import isNull from 'lodash/isNull';
 import type { Tournament as TournamentType } from 'types/tournament';
 import { Avatar } from 'ui';
 
-import { Pill } from 'components';
+import { Pill, Share } from 'components';
 
 import styles from './Tournament.module.scss';
 
@@ -45,9 +45,11 @@ function Tournament({ tournament }: TournamentProps) {
     .utc()
     .isAfter(dayjs(tournament.expiresAt).utc());
 
+  const { origin } = window.location;
+
   return (
-    <Link to={`/tournaments/${tournament.slug}`} className={styles.root}>
-      <div className={styles.content}>
+    <div className={styles.root}>
+      <Link to={`/tournaments/${tournament.slug}`} className={styles.content}>
         <Avatar
           $size="md"
           $radius="sm"
@@ -68,7 +70,7 @@ function Tournament({ tournament }: TournamentProps) {
             </span>
           </div>
         </div>
-      </div>
+      </Link>
       <div className={styles.footer}>
         <div className={styles.stats}>
           <span className={styles.statsTitle}>
@@ -89,9 +91,24 @@ function Tournament({ tournament }: TournamentProps) {
             </>
           ) : null}
         </div>
-        {isTournamentEnded ? <Pill badge>Ended</Pill> : null}
+        <div className={styles.footerActions}>
+          <Share
+            id={tournament.slug}
+            link={{
+              title: tournament.title,
+              url: `${origin}/tournaments/${tournament.slug}`
+            }}
+            className="pm-c-market-footer__actions-button"
+          />
+          {!isTournamentEnded ? (
+            <>
+              <span className="pm-c-divider--circle" />
+              <Pill badge>Ended</Pill>
+            </>
+          ) : null}
+        </div>
       </div>
-    </Link>
+    </div>
   );
 }
 

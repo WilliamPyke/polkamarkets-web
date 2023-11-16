@@ -67,6 +67,13 @@ export default function Tournament() {
 
   const isTournamentEnded = dayjs().utc().isAfter(dayjs(data?.expiresAt).utc());
 
+  if (isLoadingTournamentBySlugQuery || isLoadingLeaderboardByTimeframeQuery)
+    return (
+      <div className="flex-row justify-center align-center width-full padding-y-5 padding-x-4">
+        <span className="spinner--primary" />
+      </div>
+    );
+
   return (
     <div className="max-width-screen-xl">
       {data && (
@@ -85,6 +92,7 @@ export default function Tournament() {
           landBannerUrl={data?.land?.bannerUrl}
           tournamentName={data?.title}
           tournamentDescription={data?.description}
+          tournamentSlug={data?.slug}
           topUsers={
             <TournamentTopUsers
               rows={leaderboardByTimeframe?.filter(row => row.username)}
@@ -95,6 +103,7 @@ export default function Tournament() {
       )}
       <Container ref={ref} className={styles.nav}>
         <TournamentNav
+          tournamentSlug={data?.slug || slug}
           onFilterClick={theme.device.isDesktop ? handleToggle : handleShow}
         />
       </Container>

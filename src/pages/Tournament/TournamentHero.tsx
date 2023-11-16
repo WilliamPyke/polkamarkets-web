@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ui } from 'config';
 import { Container, Hero } from 'ui';
 
-import { Pill, Text } from 'components';
+import { Pill, Share, Text } from 'components';
 
 import styles from './TournamentHero.module.scss';
 
@@ -14,6 +14,7 @@ type TournamentHeroProps = {
   landBannerUrl?: string | null;
   tournamentName?: string;
   tournamentDescription?: string;
+  tournamentSlug?: string;
   topUsers?: ReactNode;
 };
 
@@ -23,6 +24,7 @@ export default function TournamentHero({
   landBannerUrl,
   tournamentName,
   tournamentDescription,
+  tournamentSlug,
   topUsers
 }: TournamentHeroProps) {
   return (
@@ -65,6 +67,17 @@ export default function TournamentHero({
               <Text as="span" fontWeight="medium" color="light">
                 {tournamentDescription}
               </Text>
+            ) : null}
+            {tournamentSlug ? (
+              <div className={styles.headerHeroActions}>
+                <Share
+                  id={`${tournamentSlug}-hero`}
+                  size="xs"
+                  variant="normal"
+                  color="default"
+                  iconOnly={false}
+                />
+              </div>
             ) : null}
           </div>
           {topUsers || null}
