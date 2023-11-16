@@ -83,7 +83,7 @@ function Land() {
           description={`${land.description}\nStart now with $ALPHA`}
         />
       )}
-      <LandHero {...{ title, description, imageUrl, bannerUrl }} />
+      <LandHero {...{ slug, title, description, imageUrl, bannerUrl }} />
       <div className="width-full">
         <div className={styles.upcoming}>
           <div className={styles.upcomingHeader}>

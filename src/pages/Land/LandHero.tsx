@@ -3,16 +3,17 @@ import { ui } from 'config';
 import { Land } from 'types/land';
 import { Avatar, Container, Hero } from 'ui';
 
-import { Text } from 'components';
+import { Share, Text } from 'components';
 
 import styles from './LandHero.module.scss';
 
 type LandHeroProps = Pick<
   Land,
-  'title' | 'description' | 'imageUrl' | 'bannerUrl'
+  'slug' | 'title' | 'description' | 'imageUrl' | 'bannerUrl'
 >;
 
 export default function LandHero({
+  slug,
   title,
   description,
   imageUrl,
@@ -57,6 +58,15 @@ export default function LandHero({
               >
                 {description}
               </Text>
+              <div className={styles.headerHeroActions}>
+                <Share
+                  id={slug}
+                  size="xs"
+                  variant="normal"
+                  color="default"
+                  iconOnly={false}
+                />
+              </div>
             </div>
           </div>
         </div>
