@@ -85,7 +85,7 @@ export default function Tournament() {
           landBannerUrl={data?.land?.bannerUrl}
           tournamentName={data?.title}
           tournamentDescription={data?.description}
-          tournamentSlug={data?.slug || slug}
+          tournamentSlug={data?.slug}
           topUsers={
             <TournamentTopUsers
               rows={leaderboardByTimeframe?.filter(row => row.username)}

@@ -14,7 +14,7 @@ type TournamentHeroProps = {
   landBannerUrl?: string | null;
   tournamentName?: string;
   tournamentDescription?: string;
-  tournamentSlug: string;
+  tournamentSlug?: string;
   topUsers?: ReactNode;
 };
 
@@ -68,15 +68,17 @@ export default function TournamentHero({
                 {tournamentDescription}
               </Text>
             ) : null}
-            <div className={styles.headerHeroActions}>
-              <Share
-                id={`${tournamentSlug}-hero`}
-                size="xs"
-                variant="normal"
-                color="default"
-                iconOnly={false}
-              />
-            </div>
+            {tournamentSlug ? (
+              <div className={styles.headerHeroActions}>
+                <Share
+                  id={`${tournamentSlug}-hero`}
+                  size="xs"
+                  variant="normal"
+                  color="default"
+                  iconOnly={false}
+                />
+              </div>
+            ) : null}
           </div>
           {topUsers || null}
         </div>
