@@ -83,6 +83,7 @@ export default function Tournament() {
           groupName={data?.group?.title}
           tournamentName={data?.title}
           tournamentDescription={data?.description}
+          tournamentSlug={data?.slug || slug}
           topUsers={
             <TournamentTopUsers
               rows={leaderboardByTimeframe?.filter(row => row.username)}
@@ -93,6 +94,7 @@ export default function Tournament() {
       )}
       <Container ref={ref} className={styles.nav}>
         <TournamentNav
+          tournamentSlug={data?.slug || slug}
           onFilterClick={theme.device.isDesktop ? handleToggle : handleShow}
         />
       </Container>

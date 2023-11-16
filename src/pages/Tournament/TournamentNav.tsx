@@ -14,12 +14,12 @@ import { filters } from '../Home/utils';
 import styles from './TournamentNav.module.scss';
 
 type TournamentNavProps = {
-  slug: string;
+  tournamentSlug: string;
   onFilterClick(): void;
 };
 
 export default function TournamentNav({
-  slug,
+  tournamentSlug,
   onFilterClick
 }: TournamentNavProps) {
   const theme = useTheme();
@@ -96,7 +96,7 @@ export default function TournamentNav({
       />
       <div className={styles.navActions}>
         <Share
-          id={`${slug}-nav`}
+          id={`${tournamentSlug}-nav`}
           size="xs"
           variant="outline"
           color="default"
