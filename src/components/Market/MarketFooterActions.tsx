@@ -1,5 +1,4 @@
 import cn from 'classnames';
-import { environment } from 'config';
 import { Market } from 'models/market';
 
 import FavoriteMarket from 'components/FavoriteMarket';
@@ -14,8 +13,7 @@ export default function MarketFooterActions({
   market,
   $variant = 'text'
 }: MarketFooterActionsProps) {
-  // stripping protocol from publicUrl
-  const publicUrl = environment.PUBLIC_URL?.replace(/(^\w+:|^)\/\//, '') || '';
+  const { origin } = window.location;
 
   return (
     <div className="pm-c-market-footer__actions">
@@ -25,7 +23,7 @@ export default function MarketFooterActions({
         })}
         link={{
           title: market.title,
-          url: `${publicUrl}/markets/${market.slug}`
+          url: `${origin}/markets/${market.slug}`
         }}
       />
       <FavoriteMarket
