@@ -18,6 +18,7 @@ export default function MarketFooterActions({
   return (
     <div className="pm-c-market-footer__actions">
       <Share
+        id={market.slug}
         className={cn('pm-c-market-footer__actions-button', {
           'pm-c-market-footer__actions-button-filled': $variant === 'filled'
         })}
