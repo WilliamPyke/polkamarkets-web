@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { features, ui } from 'config';
+import { features } from 'config';
 import {
   useGetLeaderboardByAddressQuery,
   useGetPortfolioByAddressQuery,
@@ -13,7 +13,6 @@ import { Container } from 'ui';
 import { useFantasyTokenTicker, useLanguage, useNetwork } from 'hooks';
 
 import { getPortfolioFeedByAddressTransformResponse } from './prepare';
-import ProfileAchievements from './ProfileAchievements';
 import ProfileActivities from './ProfileActivities';
 import ProfileError from './ProfileError';
 import ProfileSummary from './ProfileSummary';
@@ -89,14 +88,14 @@ export default function Profile() {
         ticker={fantasyTokenTicker}
         data={leaderboard.data}
       />
-      <div className="pm-p-profile-lists margin-top-6">
-        {ui.achievements.enabled && (
+      <div className="pm-p-profile-lists">
+        {/* {ui.achievements.enabled && (
           <ProfileAchievements
             listHeight={LIST_HEIGHT}
             isLoading={leaderboard.isLoading}
             data={leaderboard.data}
           />
-        )}
+        )} */}
         <ProfileActivities
           isLoading={activity.isLoading}
           listHeight={LIST_HEIGHT}
