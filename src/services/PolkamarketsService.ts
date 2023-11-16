@@ -495,12 +495,18 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async getUserPortfolio(user: string): Promise<Object> {
+    const response = await this.contracts.pm.getPortfolio({ user });
+
+    return response;
+  }
+
   public async getPortfolio(): Promise<Object> {
     // ensuring user has wallet connected
     await this.login();
     if (!this.address) return {};
 
-    const response = await this.contracts.pm.getMyPortfolio();
+    const response = await this.getUserPortfolio(this.address);
 
     return response;
   }
