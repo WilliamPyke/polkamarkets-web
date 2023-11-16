@@ -93,6 +93,7 @@ function Tournament({ tournament }: TournamentProps) {
         </div>
         <div className={styles.footerActions}>
           <Share
+            id={tournament.slug}
             link={{
               title: tournament.title,
               url: `${origin}/tournaments/${tournament.slug}`
