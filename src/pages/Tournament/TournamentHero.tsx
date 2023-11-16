@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { ui } from 'config';
 import { Container, Hero } from 'ui';
 
-import { Pill, Text } from 'components';
+import { Pill, Share, Text } from 'components';
 
 import styles from './TournamentHero.module.scss';
 
@@ -11,6 +11,7 @@ type TournamentHeroProps = {
   groupName?: string;
   tournamentName?: string;
   tournamentDescription?: string;
+  tournamentSlug: string;
   topUsers?: ReactNode;
 };
 
@@ -18,6 +19,7 @@ export default function TournamentHero({
   groupName,
   tournamentName,
   tournamentDescription,
+  tournamentSlug,
   topUsers
 }: TournamentHeroProps) {
   return (
@@ -59,6 +61,15 @@ export default function TournamentHero({
                 {tournamentDescription}
               </Text>
             ) : null}
+            <div className={styles.headerHeroActions}>
+              <Share
+                id={`${tournamentSlug}-hero`}
+                size="xs"
+                variant="normal"
+                color="default"
+                iconOnly={false}
+              />
+            </div>
           </div>
           {topUsers || null}
         </div>
