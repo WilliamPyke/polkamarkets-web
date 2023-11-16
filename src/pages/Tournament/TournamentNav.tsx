@@ -4,7 +4,7 @@ import { features } from 'config';
 import { setSorter, setSearchQuery } from 'redux/ducks/markets';
 import { useTheme } from 'ui';
 
-import { Button, Filter, Icon, SearchBar } from 'components';
+import { Button, Filter, Icon, SearchBar, Share } from 'components';
 import { FilterProps } from 'components/Filter/Filter';
 
 import { useAppDispatch, useAppSelector } from 'hooks';
@@ -14,10 +14,14 @@ import { filters } from '../Home/utils';
 import styles from './TournamentNav.module.scss';
 
 type TournamentNavProps = {
+  slug: string;
   onFilterClick(): void;
 };
 
-export default function TournamentNav({ onFilterClick }: TournamentNavProps) {
+export default function TournamentNav({
+  slug,
+  onFilterClick
+}: TournamentNavProps) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const markets = useMarkets();
@@ -90,6 +94,15 @@ export default function TournamentNav({ onFilterClick }: TournamentNavProps) {
         options={filters}
         onChange={handleSelectedFilter}
       />
+      <div className={styles.navActions}>
+        <Share
+          id={`${slug}-nav`}
+          size="xs"
+          variant="outline"
+          color="default"
+          className={styles.navActionsButton}
+        />
+      </div>
     </>
   );
 }
