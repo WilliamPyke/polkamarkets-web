@@ -75,18 +75,6 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
 
       if (features.fantasy.enabled) {
         setTradeVisible(true);
-
-        try {
-          const persistIds = {
-            market: market.id,
-            network: market.networkId,
-            outcome: value
-          };
-
-          localStorage.setItem('SELECTED_OUTCOME', JSON.stringify(persistIds));
-        } catch (error) {
-          // unsupported
-        }
       } else {
         if (market.state === 'closed') {
           const { openReportForm } = await import('redux/ducks/ui');
@@ -138,6 +126,14 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
           ) {
             setOutcome(isOutcomeActive ? '' : persistIds.outcome);
             setTradeVisible(true);
+
+            // clean local storage after modal is opened
+            try {
+              if ('SELECTED_OUTCOME' in localStorage)
+                localStorage.removeItem('SELECTED_OUTCOME');
+            } catch (error) {
+              // unsupported
+            }
           }
         }
       } catch (error) {

@@ -240,6 +240,20 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
     return true;
   }
 
+  async function handleLoginToPredict() {
+    try {
+      const persistIds = {
+        market: marketId,
+        network: marketNetworkId,
+        outcome: predictionId
+      };
+
+      localStorage.setItem('SELECTED_OUTCOME', JSON.stringify(persistIds));
+    } catch (error) {
+      // unsupported
+    }
+  }
+
   const isValidAmount = amount > 0 && amount <= maxAmount;
 
   const preventBankruptcy = features.fantasy.enabled && ui.socialLogin.enabled;
@@ -309,7 +323,12 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
                 </ButtonLoading>
               </ApproveToken>
             ) : (
-              <ProfileSignin fullwidth size="normal" color="primary">
+              <ProfileSignin
+                fullwidth
+                size="normal"
+                color="primary"
+                onClick={handleLoginToPredict}
+              >
                 Login to Predict
               </ProfileSignin>
             )}
