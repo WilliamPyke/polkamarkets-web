@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ui } from 'config';
 import isEmpty from 'lodash/isEmpty';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
@@ -9,7 +10,7 @@ import {
   useGetMarketsByIdsQuery,
   useGetTournamentsQuery
 } from 'services/Polkamarkets';
-import type { TournamentGroup as TournamentGroupType } from 'types/tournament';
+import type { Land } from 'types/land';
 
 import { AlertMini, Tabs } from 'components';
 
@@ -24,24 +25,24 @@ function TournamentsList() {
 
   const [currentTab, setCurrentTab] = useState('all');
 
-  const groups = useMemo(() => {
+  const lands = useMemo(() => {
     if (isLoadingGetTournamentsQuery || isEmptyTournaments) return [];
 
     return orderBy(
       uniqBy(
         tournaments
-          .map(tournament => tournament.group)
-          .filter(group => group !== null) as TournamentGroupType[],
+          .map(tournament => tournament.land)
+          .filter(land => land !== null) as Omit<Land, 'tournaments'>[],
         'id'
-      ).map(group => {
+      ).map(land => {
         const tournamentsInGroup = orderBy(
           tournaments
-            .filter(tournament => tournament.group?.id === group.id)
-            .map(tournament => omit(tournament, 'group'))
+            .filter(tournament => tournament.land?.id === land.id)
+            .map(tournament => omit(tournament, 'land'))
         );
 
         return {
-          ...group,
+          ...land,
           tournaments: tournamentsInGroup
         };
       }),
@@ -81,9 +82,9 @@ function TournamentsList() {
       </div>
     );
 
-  if (isEmpty(groups))
+  if (isEmpty(lands))
     return (
-      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-small">
+      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-medium">
         <AlertMini
           style={{ border: 'none' }}
           styles="outline"
@@ -95,7 +96,7 @@ function TournamentsList() {
 
   return (
     <>
-      {markets ? (
+      {markets && ui.tournaments.upcoming.enabled ? (
         <div className={styles.upcoming}>
           <div className={styles.upcomingHeader}>
             <h2 className={styles.upcomingTitle}>Upcoming</h2>
@@ -109,38 +110,48 @@ function TournamentsList() {
           <TournamentsUpcomingMarkets markets={markets} />
         </div>
       ) : null}
-      <Tabs
-        direction="row"
-        fullwidth
-        value={currentTab}
-        onChange={tab => setCurrentTab(tab)}
-        className={{
-          root: styles.tabsRoot,
-          header: styles.tabsHeader,
-          item: styles.tabsItem
-        }}
-      >
-        <Tabs.TabPane id="all" tab="All">
-          <ul className={styles.root}>
-            {groups.map(group => (
-              <li key={group.id}>
-                <TournamentGroup group={group} />
-              </li>
-            ))}
-          </ul>
-        </Tabs.TabPane>
-        {groups.map(group => (
-          <Tabs.TabPane
-            key={group.id}
-            id={group.id.toString()}
-            tab={group.title}
-          >
+      {ui.tournaments.tabs.enabled ? (
+        <Tabs
+          direction="row"
+          fullwidth
+          value={currentTab}
+          onChange={tab => setCurrentTab(tab)}
+          className={{
+            root: styles.tabsRoot,
+            header: styles.tabsHeader,
+            item: styles.tabsItem
+          }}
+        >
+          <Tabs.TabPane id="all" tab="All">
             <ul className={styles.root}>
-              <TournamentGroup group={group} />
+              {lands.map(land => (
+                <li key={land.id}>
+                  <TournamentGroup group={land} />
+                </li>
+              ))}
             </ul>
           </Tabs.TabPane>
-        ))}
-      </Tabs>
+          {lands.map(land => (
+            <Tabs.TabPane
+              key={land.id}
+              id={land.id.toString()}
+              tab={land.title}
+            >
+              <ul className={styles.root}>
+                <TournamentGroup group={land} />
+              </ul>
+            </Tabs.TabPane>
+          ))}
+        </Tabs>
+      ) : (
+        <ul className={styles.root}>
+          {lands.map(land => (
+            <li key={land.id}>
+              <TournamentGroup group={land} />
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   );
 }

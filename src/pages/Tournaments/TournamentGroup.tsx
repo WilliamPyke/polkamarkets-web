@@ -1,11 +1,14 @@
+import { Link } from 'react-router-dom';
+
 import type { Tournament as TournamentType } from 'types/tournament';
+import { Avatar } from 'ui';
 
 import Tournament from './Tournament';
 import styles from './TournamentGroup.module.scss';
 
 type TournamentGroupProps = {
-  group: TournamentType['group'] & {
-    tournaments: Omit<TournamentType, 'group'>[];
+  group: TournamentType['land'] & {
+    tournaments: Omit<TournamentType, 'land'>[];
   };
 };
 
@@ -13,8 +16,21 @@ function TournamentGroup({ group }: TournamentGroupProps) {
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h3 className={styles.title}>{group.title}</h3>
-        <p className={styles.description}>{group.description}</p>
+        {group.imageUrl ? (
+          <Avatar
+            src={group.imageUrl}
+            alt={group.title}
+            $size="md"
+            $radius="sm"
+            className={styles.headerAvatar}
+          />
+        ) : null}
+        <div className={styles.headerDetails}>
+          <Link to={`/lands/${group.slug}`} className={styles.title}>
+            {group.title}
+          </Link>
+          <p className={styles.description}>{group.description}</p>
+        </div>
       </div>
       <ul className={styles.list}>
         {group.tournaments.map(tournament => (

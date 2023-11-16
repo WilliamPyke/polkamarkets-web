@@ -1,5 +1,7 @@
 import { Market } from 'models/market';
 
+import type { Land } from './land';
+
 export type TournamentGroup = {
   id: number;
   slug: string;
@@ -17,6 +19,7 @@ export type Tournament = {
   imageUrl: string | null;
   markets?: Pick<Market, 'id' | 'title' | 'imageUrl' | 'slug'>[];
   group: TournamentGroup | null;
+  land: Omit<Land, 'tournaments'> | null;
   users: number;
   expiresAt: string;
 };

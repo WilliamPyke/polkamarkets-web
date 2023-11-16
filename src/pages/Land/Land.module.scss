@@ -1,0 +1,27 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-24);
+}
+
+.upcoming {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-24);
+
+  margin-bottom: var(--size-32);
+
+  &Header {
+    display: flex;
+    flex-direction: row;
+    gap: var(--size-12);
+    align-items: center;
+    padding: 0 var(--size-16);
+  }
+
+  &Title {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: var(--color-text-1);
+  }
+}
