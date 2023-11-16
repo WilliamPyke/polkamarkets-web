@@ -511,12 +511,18 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async getUserActions(user: string): Promise<any[]> {
+    const response = await this.contracts.pm.getActions({ user });
+
+    return response;
+  }
+
   public async getActions(): Promise<any[]> {
     // ensuring user has wallet connected
     await this.login();
     if (!this.address) return [];
 
-    const response = await this.contracts.pm.getMyActions();
+    const response = await this.contracts.pm.getUserActions(this.address);
 
     return response;
   }
