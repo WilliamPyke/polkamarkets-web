@@ -100,7 +100,7 @@ function Tournament({ tournament }: TournamentProps) {
             }}
             className="pm-c-market-footer__actions-button"
           />
-          {!isTournamentEnded ? (
+          {isTournamentEnded ? (
             <>
               <span className="pm-c-divider--circle" />
               <Pill badge>Ended</Pill>
