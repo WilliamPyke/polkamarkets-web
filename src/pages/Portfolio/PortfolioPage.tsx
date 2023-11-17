@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector, useNetwork } from 'hooks';
 
 import PortfolioAnalytics from './PortfolioAnalytics';
 import PortfolioChart from './PortfolioChart';
-import PortfolioTabs from './PortfolioTabs';
+// import PortfolioTabs from './PortfolioTabs';
 
 export default function PortfolioPage() {
   const dispatch = useAppDispatch();
@@ -27,7 +27,7 @@ export default function PortfolioPage() {
     <Container className="portfolio-page max-width-screen-xl">
       <PortfolioAnalytics isLoading={isLoading} />
       <PortfolioChart isLoading={isLoading} />
-      <PortfolioTabs />
+      {/* <PortfolioTabs /> */}
     </Container>
   );
 }
