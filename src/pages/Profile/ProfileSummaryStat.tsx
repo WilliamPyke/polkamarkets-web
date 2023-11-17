@@ -47,7 +47,9 @@ export default function ProfileSummaryStat({
             <>
               <Skeleton style={{ height: 76 }} />
               <Skeleton style={{ height: 76 }} />
-              <Skeleton style={{ height: 76 }} />
+              {ui.profile.summary.liquidityProvided.enabled ? (
+                <Skeleton style={{ height: 76 }} />
+              ) : null}
             </>
           );
         if (!data)
