@@ -10,6 +10,8 @@ import {
 import type { LeaderboardTimeframe } from 'types/leaderboard';
 import { Container } from 'ui';
 
+import PortfolioTabs from 'pages/Portfolio/PortfolioTabs';
+
 import { useFantasyTokenTicker, useLanguage, useNetwork } from 'hooks';
 
 import { getPortfolioFeedByAddressTransformResponse } from './prepare';
@@ -101,6 +103,9 @@ export default function Profile() {
           listHeight={LIST_HEIGHT}
           data={activity.data}
         />
+      </div>
+      <div className="pm-p-profile-portfolio">
+        <PortfolioTabs />
       </div>
     </Container>
   );
