@@ -96,6 +96,7 @@ export default function Profile() {
           isLoading={portfolio.isLoading}
           ticker={fantasyTokenTicker}
           data={portfolio.data}
+          leaderboard={leaderboard}
         />
       </div>
       <ProfileYourStats

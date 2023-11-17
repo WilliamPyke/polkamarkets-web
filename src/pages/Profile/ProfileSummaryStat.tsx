@@ -12,20 +12,21 @@ import type { ProfileStatsProps } from './types';
 export default function ProfileSummaryStat({
   isLoading,
   data,
-  ticker
+  ticker,
+  leaderboard
 }: ProfileStatsProps) {
   const stats = useMemo(
     () => [
       {
         title: 'Total earnings',
-        value: data
-          ? `${roundNumber(data.closedMarketsProfit, 3)} ${ticker}`
+        value: leaderboard
+          ? `${roundNumber(leaderboard?.earningsEur, 3)} ${ticker}`
           : '',
         backgroundColor: 'yellow'
       },
       {
         title: 'Won predictions',
-        value: data?.wonPositions.toString(),
+        value: leaderboard?.claimWinningsCount.toString(),
         backgroundColor: 'orange'
       },
       {
