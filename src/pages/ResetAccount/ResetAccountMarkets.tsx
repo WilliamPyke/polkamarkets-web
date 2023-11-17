@@ -25,9 +25,8 @@ function ResetAccountMarkets({
   const { network } = useNetwork();
 
   // fetching all marketIds from portfolio positions with outcome shares
-  const { portfolio, actions, marketsWithActions, isLoading } = useAppSelector(
-    state => state.polkamarkets
-  );
+  const { isLoggedIn, portfolio, actions, marketsWithActions, isLoading } =
+    useAppSelector(state => state.polkamarkets);
 
   const { actions: isLoadingActions } = isLoading;
   const { portfolio: isLoadingPortfolio } = isLoading;
@@ -47,8 +46,8 @@ function ResetAccountMarkets({
     isLoadingActions || isLoadingMarkets || isLoadingPortfolio;
 
   const marketPositions = useMemo(
-    () => formatMarketPositions(portfolio, actions, data),
-    [actions, data, portfolio]
+    () => formatMarketPositions(isLoggedIn, portfolio, actions, data),
+    [actions, data, isLoggedIn, portfolio]
   );
 
   // filtering positions that have already had an action
