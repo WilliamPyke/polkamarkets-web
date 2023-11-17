@@ -183,7 +183,7 @@ const pages = {
     navigation: true,
     name: 'Portfolio',
     meta: metadataByPage.portfolio,
-    enabled: true
+    enabled: false
   },
   home: {
     pathname:
