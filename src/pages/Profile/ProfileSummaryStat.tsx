@@ -37,7 +37,7 @@ export default function ProfileSummaryStat({
         backgroundColor: 'pink'
       }
     ],
-    [data, ticker]
+    [data, leaderboard, ticker]
   );
 
   return (

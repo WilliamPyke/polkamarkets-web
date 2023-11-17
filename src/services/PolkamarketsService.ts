@@ -808,7 +808,7 @@ export default class PolkamarketsService {
     return response;
   }
 
-  public async getUserBonds(user: string): Promise<Object> {
+  public async getUserBonds(_user: string): Promise<Object> {
     // TODO: use correct user
     return this.getBonds();
   }
@@ -834,7 +834,7 @@ export default class PolkamarketsService {
     return response;
   }
 
-  public async getUserBondMarketsIds(user: string): Promise<string[]> {
+  public async getUserBondMarketsIds(_user: string): Promise<string[]> {
     // TODO: use correct user
     return this.getBondMarketIds();
   }
