@@ -170,25 +170,25 @@ function PortfolioTabs({ user, isLoadingUser }: PortfolioTabsProps) {
     );
 
   const marketPositions = useMemo(
-    () => formatMarketPositions(portfolio, actions, markets),
-    [actions, markets, portfolio]
+    () => formatMarketPositions(user.isLoggedIn, portfolio, actions, markets),
+    [actions, markets, portfolio, user.isLoggedIn]
   );
 
   const liquidityPositions = useMemo(() => {
     if (ui.portfolio.tabs.liquidityPositions.enabled) {
-      return formatLiquidityPositions(portfolio, markets);
+      return formatLiquidityPositions(user.isLoggedIn, portfolio, markets);
     }
 
     return undefined;
-  }, [markets, portfolio]);
+  }, [markets, portfolio, user.isLoggedIn]);
 
   const reportPositions = useMemo(() => {
     if (ui.portfolio.tabs.reportPositions.enabled) {
-      return formatReportPositions(bonds, markets);
+      return formatReportPositions(user.isLoggedIn, bonds, markets);
     }
 
     return undefined;
-  }, [bonds, markets]);
+  }, [bonds, markets, user.isLoggedIn]);
 
   const positions = theme.device.isDesktop
     ? marketPositions
