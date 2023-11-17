@@ -37,8 +37,8 @@ function ProfileYourStats({
           if (isLoading)
             return (
               <>
-                <Skeleton style={{ height: 96 }} />
-                <Skeleton style={{ height: 96 }} />
+                <Skeleton style={{ height: 175 }} />
+                <Skeleton style={{ height: 175 }} />
               </>
             );
           if (!data)
