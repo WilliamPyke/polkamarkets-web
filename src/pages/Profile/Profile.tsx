@@ -12,7 +12,12 @@ import { Container } from 'ui';
 
 import PortfolioTabs from 'pages/Portfolio/PortfolioTabs';
 
-import { useFantasyTokenTicker, useLanguage, useNetwork } from 'hooks';
+import {
+  useAppSelector,
+  useFantasyTokenTicker,
+  useLanguage,
+  useNetwork
+} from 'hooks';
 
 import { getPortfolioFeedByAddressTransformResponse } from './prepare';
 import ProfileActivities from './ProfileActivities';
@@ -30,15 +35,24 @@ export default function Profile() {
   const fantasyTokenTicker = useFantasyTokenTicker() || '€';
   const language = useLanguage();
 
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const userAddress = useAppSelector(state => state.polkamarkets.ethAddress);
+
   const portfolio = useGetPortfolioByAddressQuery({
     address,
     networkId: network.id
   });
-  const leaderboard = useGetLeaderboardByAddressQuery({
+
+  const {
+    data: leaderboard,
+    isFetching: isFetchingLeaderboard,
+    isLoading: isLoadingLeaderboard
+  } = useGetLeaderboardByAddressQuery({
     address,
     networkId: network.id,
     timeframe
   });
+
   const portfolioFeed = useGetPortfolioFeedByAddressQuery({
     address,
     networkId: network.id
@@ -73,9 +87,9 @@ export default function Profile() {
           isLoading={portfolio.isLoading}
           network={network}
           {...(features.fantasy.enabled && {
-            username: leaderboard.data?.username,
-            avatar: leaderboard.data?.userImageUrl,
-            bankrupt: leaderboard.data?.bankrupt
+            username: leaderboard?.username,
+            avatar: leaderboard?.userImageUrl,
+            bankrupt: leaderboard?.bankrupt
           })}
         />
         <ProfileSummaryStat
@@ -86,9 +100,9 @@ export default function Profile() {
       </div>
       <ProfileYourStats
         onTimeframe={setTimeframe}
-        isLoading={leaderboard.isLoading}
+        isLoading={isLoadingLeaderboard}
         ticker={fantasyTokenTicker}
-        data={leaderboard.data}
+        data={leaderboard}
       />
       <div className="pm-p-profile-lists">
         {/* {ui.achievements.enabled && (
@@ -105,7 +119,13 @@ export default function Profile() {
         />
       </div>
       <div className="pm-p-profile-portfolio">
-        <PortfolioTabs />
+        <PortfolioTabs
+          user={{
+            address: leaderboard?.user,
+            isLoggedIn: isLoggedIn && userAddress === leaderboard?.user
+          }}
+          isLoadingUser={isFetchingLeaderboard || isLoadingLeaderboard}
+        />
       </div>
     </Container>
   );
