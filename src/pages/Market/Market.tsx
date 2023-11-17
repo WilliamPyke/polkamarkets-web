@@ -182,7 +182,7 @@ function MarketUI() {
         <Table
           columns={tableItems.columns}
           rows={tableItems.rows}
-          emptyDataDescription="You have no positions."
+          emptyDataDescription="No positions."
         />
       ),
     [

@@ -233,7 +233,7 @@ const PortfolioReportTable = ({
           <AlertMini
             styles="outline"
             variant="information"
-            description="You have no report positions."
+            description="No report positions."
           />
         </div>
       ) : null}
