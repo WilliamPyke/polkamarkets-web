@@ -38,6 +38,7 @@ function generateChartRandomData(reverse = false) {
 }
 
 function formatMarketPositions(
+  isLoggedIn: boolean,
   portfolio: Object,
   actions: Action[],
   markets?: GetMarketsByIdsData
@@ -136,7 +137,9 @@ function formatMarketPositions(
           // user already claimed winnings of voided outcome
           market.voided === true
         ) {
-          result = { type: 'awaiting_claim_voided' };
+          result = {
+            type: !isLoggedIn ? 'claimed_voided' : 'awaiting_claim_voided'
+          };
         } else if (
           // user holds shares of winning outcome
           market.state === 'resolved' &&
@@ -145,7 +148,7 @@ function formatMarketPositions(
           outcome.id === market.resolvedOutcomeId
         ) {
           // user already claimed winnings of winning outcome
-          result = { type: 'awaiting_claim' };
+          result = { type: !isLoggedIn ? 'claimed' : 'awaiting_claim' };
         } else if (
           // user holds shares of winning outcome
           market.state === 'resolved' &&
@@ -179,6 +182,7 @@ function formatMarketPositions(
 }
 
 function formatLiquidityPositions(
+  isLoggedIn: boolean,
   portfolio: Object,
   markets?: GetMarketsByIdsData
 ) {
@@ -223,7 +227,7 @@ function formatLiquidityPositions(
         !portfolio[market.id]?.claimStatus.liquidityClaimed
       ) {
         // user already claimed winnings of winning outcome
-        result = { type: 'awaiting_claim' };
+        result = { type: !isLoggedIn ? 'claimed' : 'awaiting_claim' };
       } else if (
         // user holds shares of winning outcome
         market.state === 'resolved' &&
@@ -301,7 +305,11 @@ function formatPortfolioAnalytics(
   ];
 }
 
-function formatReportPositions(bonds: Object, markets?: GetMarketsByIdsData) {
+function formatReportPositions(
+  isLoggedIn: boolean,
+  bonds: Object,
+  markets?: GetMarketsByIdsData
+) {
   const headers = [
     { title: 'Market', key: 'market', align: 'left', sortBy: 'market.id' },
     { title: 'Reported', key: 'value', align: 'center', sortBy: 'value' },
@@ -327,7 +335,7 @@ function formatReportPositions(bonds: Object, markets?: GetMarketsByIdsData) {
         result = { type: 'claimed' };
       } else if (market.question.isFinalized) {
         // user still has report tokens to claim
-        result = { type: 'awaiting_claim' };
+        result = { type: !isLoggedIn ? 'claimed' : 'awaiting_claim' };
       }
 
       rows.push({
