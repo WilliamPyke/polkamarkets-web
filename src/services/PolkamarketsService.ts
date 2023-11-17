@@ -834,6 +834,11 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async getUserBondMarketsIds(user: string): Promise<string[]> {
+    // TODO: use correct user
+    return this.getBondMarketIds();
+  }
+
   public async getBondMarketIds(): Promise<string[]> {
     // ensuring user has wallet connected
     if (!this.address) return [];
