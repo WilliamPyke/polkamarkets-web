@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from 'react';
+import { useState, useMemo, memo, useEffect } from 'react';
 
 import { ui, features } from 'config';
 import { isEmpty } from 'lodash';
@@ -14,7 +14,7 @@ import {
   Filter
 } from 'components';
 
-import { useAppSelector, useAppDispatch, useNetwork } from 'hooks';
+import { useAppDispatch, useNetwork, usePolkamarketsService } from 'hooks';
 
 import {
   formatLiquidityPositions,
@@ -61,24 +61,97 @@ const getDefaultCols = ({ headers, rows }) => ({
 
 const PortfolioTabsFilter = memo(TabsFilter);
 
-function PortfolioTabs() {
-  const { network } = useNetwork();
-  const [currentTab, setCurrentTab] = useState('marketPositions');
+type PortfolioTabsProps = {
+  user: {
+    isLoggedIn: boolean;
+    address?: string;
+  };
+  isLoadingUser: boolean;
+};
+
+function PortfolioTabs({ user, isLoadingUser }: PortfolioTabsProps) {
   const theme = useTheme();
-  const {
-    bonds,
-    portfolio,
-    actions,
-    marketsWithActions,
-    marketsWithBonds,
-    isLoading
-  } = useAppSelector(state => state.polkamarkets);
+  const { network } = useNetwork();
+  const polkamarketsService = usePolkamarketsService();
+
+  const [currentTab, setCurrentTab] = useState('marketPositions');
+
+  const [state, setState] = useState<{
+    bonds: Object;
+    portfolio: Object;
+    actions: any[];
+    marketsWithActions: any[];
+    marketsWithBonds: any[];
+  }>({
+    bonds: {},
+    portfolio: {},
+    actions: [],
+    marketsWithActions: [],
+    marketsWithBonds: []
+  });
+
+  const [isLoading, setIsLoading] = useState({
+    portfolio: false,
+    bonds: false,
+    actions: false
+  });
+
+  useEffect(() => {
+    async function fetchPortfolio() {
+      setIsLoading(prev => ({ ...prev, portfolio: true }));
+      const portfolio = await polkamarketsService.getUserPortfolio(
+        user.address!
+      );
+      setState(prev => ({ ...prev, portfolio }));
+      setIsLoading(prev => ({ ...prev, portfolio: false }));
+    }
+
+    async function fetchBonds() {
+      setIsLoading(prev => ({ ...prev, bonds: true }));
+      const bonds = await polkamarketsService.getUserBonds(user.address!);
+      setState(prev => ({ ...prev, bonds }));
+      setIsLoading(prev => ({ ...prev, bonds: false }));
+    }
+
+    async function fetchBondsMarketsIds() {
+      setIsLoading(prev => ({ ...prev, bonds: true }));
+      const bondMarketsIds = await polkamarketsService.getUserBondMarketsIds(
+        user.address!
+      );
+      setState(prev => ({
+        ...prev,
+        marketsWithBonds: bondMarketsIds
+      }));
+      setIsLoading(prev => ({ ...prev, bonds: false }));
+    }
+
+    async function fetchActions() {
+      setIsLoading(prev => ({ ...prev, actions: true }));
+      const actions = await polkamarketsService.getUserActions(user.address!);
+      setState(prev => ({
+        ...prev,
+        actions,
+        marketsWithActions: actions.map(action => action.marketId.toString())
+      }));
+      setIsLoading(prev => ({ ...prev, actions: false }));
+    }
+
+    if (!isLoadingUser && user.address) {
+      fetchPortfolio();
+      fetchBonds();
+      fetchBondsMarketsIds();
+      fetchActions();
+    }
+  }, [isLoadingUser, polkamarketsService, user.address]);
 
   const {
     portfolio: isLoadingPortfolio,
     bonds: isLoadingBonds,
     actions: isLoadingActions
   } = isLoading;
+
+  const { bonds, portfolio, actions, marketsWithActions, marketsWithBonds } =
+    state;
 
   const marketsIds = [...marketsWithActions, ...marketsWithBonds];
 
@@ -97,29 +170,31 @@ function PortfolioTabs() {
     );
 
   const marketPositions = useMemo(
-    () => formatMarketPositions(portfolio, actions, markets),
-    [actions, markets, portfolio]
+    () => formatMarketPositions(user.isLoggedIn, portfolio, actions, markets),
+    [actions, markets, portfolio, user.isLoggedIn]
   );
 
   const liquidityPositions = useMemo(() => {
     if (ui.portfolio.tabs.liquidityPositions.enabled) {
-      return formatLiquidityPositions(portfolio, markets);
+      return formatLiquidityPositions(user.isLoggedIn, portfolio, markets);
     }
 
     return undefined;
-  }, [markets, portfolio]);
+  }, [markets, portfolio, user.isLoggedIn]);
 
   const reportPositions = useMemo(() => {
     if (ui.portfolio.tabs.reportPositions.enabled) {
-      return formatReportPositions(bonds, markets);
+      return formatReportPositions(user.isLoggedIn, bonds, markets);
     }
 
     return undefined;
-  }, [bonds, markets]);
+  }, [bonds, markets, user.isLoggedIn]);
 
   const positions = theme.device.isDesktop
     ? marketPositions
     : getDefaultCols(marketPositions);
+
+  if (!isLoadingUser && !user.address) return null;
 
   return (
     <div className="portfolio-tabs">
@@ -156,7 +231,10 @@ function PortfolioTabs() {
             rows={positions.rows}
             headers={positions.headers}
             isLoadingData={
-              isLoadingMarkets || isLoadingPortfolio || isLoadingActions
+              isLoadingUser ||
+              isLoadingMarkets ||
+              isLoadingPortfolio ||
+              isLoadingActions
             }
           />
         ) : null}
@@ -164,7 +242,9 @@ function PortfolioTabs() {
           <PortfolioLiquidityTable
             rows={liquidityPositions.rows}
             headers={liquidityPositions.headers}
-            isLoadingData={isLoadingMarkets || isLoadingPortfolio}
+            isLoadingData={
+              isLoadingUser || isLoadingMarkets || isLoadingPortfolio
+            }
           />
         ) : null}
         {reportPositions && currentTab === 'reportPositions' ? (
@@ -172,7 +252,10 @@ function PortfolioTabs() {
             rows={reportPositions.rows}
             headers={reportPositions.headers}
             isLoadingData={
-              isLoadingMarkets || isLoadingPortfolio || isLoadingBonds
+              isLoadingUser ||
+              isLoadingMarkets ||
+              isLoadingPortfolio ||
+              isLoadingBonds
             }
           />
         ) : null}

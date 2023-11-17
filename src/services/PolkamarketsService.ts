@@ -495,12 +495,24 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async getUserPortfolio(user: string): Promise<Object> {
+    const response = await this.contracts.pm.getPortfolio({ user });
+
+    return response;
+  }
+
   public async getPortfolio(): Promise<Object> {
     // ensuring user has wallet connected
     await this.login();
     if (!this.address) return {};
 
-    const response = await this.contracts.pm.getMyPortfolio();
+    const response = await this.getUserPortfolio(this.address);
+
+    return response;
+  }
+
+  public async getUserActions(user: string): Promise<any[]> {
+    const response = await this.contracts.pm.getActions({ user });
 
     return response;
   }
@@ -510,7 +522,7 @@ export default class PolkamarketsService {
     await this.login();
     if (!this.address) return [];
 
-    const response = await this.contracts.pm.getMyActions();
+    const response = await this.contracts.pm.getUserActions(this.address);
 
     return response;
   }
@@ -796,6 +808,11 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async getUserBonds(_user: string): Promise<Object> {
+    // TODO: use correct user
+    return this.getBonds();
+  }
+
   public async getBonds(): Promise<Object> {
     // ensuring user has wallet connected
     await this.login();
@@ -815,6 +832,11 @@ export default class PolkamarketsService {
     const response = await this.contracts.realitio.getMyActions();
 
     return response;
+  }
+
+  public async getUserBondMarketsIds(_user: string): Promise<string[]> {
+    // TODO: use correct user
+    return this.getBondMarketIds();
   }
 
   public async getBondMarketIds(): Promise<string[]> {

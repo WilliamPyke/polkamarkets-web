@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { features, ui } from 'config';
+import { features } from 'config';
 import {
   useGetLeaderboardByAddressQuery,
   useGetPortfolioByAddressQuery,
@@ -10,10 +10,16 @@ import {
 import type { LeaderboardTimeframe } from 'types/leaderboard';
 import { Container } from 'ui';
 
-import { useFantasyTokenTicker, useLanguage, useNetwork } from 'hooks';
+import PortfolioTabs from 'pages/Portfolio/PortfolioTabs';
+
+import {
+  useAppSelector,
+  useFantasyTokenTicker,
+  useLanguage,
+  useNetwork
+} from 'hooks';
 
 import { getPortfolioFeedByAddressTransformResponse } from './prepare';
-import ProfileAchievements from './ProfileAchievements';
 import ProfileActivities from './ProfileActivities';
 import ProfileError from './ProfileError';
 import ProfileSummary from './ProfileSummary';
@@ -29,15 +35,24 @@ export default function Profile() {
   const fantasyTokenTicker = useFantasyTokenTicker() || '€';
   const language = useLanguage();
 
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const userAddress = useAppSelector(state => state.polkamarkets.ethAddress);
+
   const portfolio = useGetPortfolioByAddressQuery({
     address,
     networkId: network.id
   });
-  const leaderboard = useGetLeaderboardByAddressQuery({
+
+  const {
+    data: leaderboard,
+    isFetching: isFetchingLeaderboard,
+    isLoading: isLoadingLeaderboard
+  } = useGetLeaderboardByAddressQuery({
     address,
     networkId: network.id,
     timeframe
   });
+
   const portfolioFeed = useGetPortfolioFeedByAddressQuery({
     address,
     networkId: network.id
@@ -72,35 +87,45 @@ export default function Profile() {
           isLoading={portfolio.isLoading}
           network={network}
           {...(features.fantasy.enabled && {
-            username: leaderboard.data?.username,
-            avatar: leaderboard.data?.userImageUrl,
-            bankrupt: leaderboard.data?.bankrupt
+            username: leaderboard?.username,
+            avatar: leaderboard?.userImageUrl,
+            bankrupt: leaderboard?.bankrupt
           })}
         />
         <ProfileSummaryStat
           isLoading={portfolio.isLoading}
           ticker={fantasyTokenTicker}
           data={portfolio.data}
+          leaderboard={leaderboard}
         />
       </div>
       <ProfileYourStats
         onTimeframe={setTimeframe}
-        isLoading={leaderboard.isLoading}
+        isLoading={isLoadingLeaderboard}
         ticker={fantasyTokenTicker}
-        data={leaderboard.data}
+        data={leaderboard}
       />
-      <div className="pm-p-profile-lists margin-top-6">
-        {ui.achievements.enabled && (
+      <div className="pm-p-profile-lists">
+        {/* {ui.achievements.enabled && (
           <ProfileAchievements
             listHeight={LIST_HEIGHT}
             isLoading={leaderboard.isLoading}
             data={leaderboard.data}
           />
-        )}
+        )} */}
         <ProfileActivities
           isLoading={activity.isLoading}
           listHeight={LIST_HEIGHT}
           data={activity.data}
+        />
+      </div>
+      <div className="pm-p-profile-portfolio">
+        <PortfolioTabs
+          user={{
+            address: leaderboard?.user,
+            isLoggedIn: isLoggedIn && userAddress === leaderboard?.user
+          }}
+          isLoadingUser={isFetchingLeaderboard || isLoadingLeaderboard}
         />
       </div>
     </Container>

@@ -80,11 +80,11 @@
 }
 
 .pm-p-profile-lists {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: px-to-rem(24px);
+  width: 100%;
 
-  @include breakpoint-to('lg') {
-    grid-template-columns: repeat(2, minmax(px-to-rem(200px), 1fr));
-  }
+  margin-top: var(--size-24);
+}
+
+.pm-p-profile-portfolio {
+  margin-top: var(--size-24);
 }

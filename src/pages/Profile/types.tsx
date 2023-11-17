@@ -55,6 +55,7 @@ export type ProfileStatsProps = {
   isLoading: boolean;
   data?: GetPortfolioByAddressData;
   ticker: string;
+  leaderboard?: GetLeaderboardByAddressData;
 };
 export type ProfileYourStatsProps = {
   onTimeframe(arg: LeaderboardTimeframe): void;

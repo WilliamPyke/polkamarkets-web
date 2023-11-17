@@ -11,6 +11,9 @@
   &__image {
     position: relative;
 
+    height: var(--size-64);
+    width: var(--size-64);
+
     img {
       filter: saturate(0);
     }
