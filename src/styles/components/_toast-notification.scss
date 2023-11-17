@@ -1,9 +1,9 @@
 #toast-notification-portal {
-  position: absolute;
+  position: fixed;
   z-index: 99999;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: var(--size-20);
+  right: var(--size-20);
 
   @include flex-column(flex-start, flex-end);
-  gap: 2rem;
+  gap: var(--size-20);
 }

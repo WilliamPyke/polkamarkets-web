@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { Fragment, useMemo } from 'react';
 
 import cn from 'classnames';
 import { ui } from 'config';
@@ -21,7 +21,13 @@ export default function Footer({ className, $gutterTop }: FooterProps) {
 
   return (
     <footer
-      className={cn(styles.root, { [styles.gutterTop]: $gutterTop }, className)}
+      className={cn(
+        styles.root,
+        {
+          [styles.gutterTop]: $gutterTop
+        },
+        className
+      )}
     >
       <Container className={styles.container}>
         <Text
@@ -30,25 +36,27 @@ export default function Footer({ className, $gutterTop }: FooterProps) {
           fontWeight="medium"
           className="pm-l-footer__terms-text-secondary"
         >
-          {items.map(item =>
-            item.isLink ? (
-              <a
-                className={cn('caption medium', {
-                  [styles.itemLinkDefault]:
-                    !item.color || item.color === 'default',
-                  [styles.itemLinkPrimary]: item.color === 'primary',
-                  [styles.itemLinkUnderline]: item.underline
-                })}
-                href={item.url!}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {item.text}
-              </a>
-            ) : (
-              item.text
-            )
-          )}
+          {items.map(item => (
+            <Fragment key={item.text}>
+              {item.isLink ? (
+                <a
+                  className={cn('caption medium', {
+                    [styles.itemLinkDefault]:
+                      !item.color || item.color === 'default',
+                    [styles.itemLinkPrimary]: item.color === 'primary',
+                    [styles.itemLinkUnderline]: item.underline
+                  })}
+                  href={item.url!}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {item.text}
+                </a>
+              ) : (
+                item.text
+              )}
+            </Fragment>
+          ))}
         </Text>
       </Container>
     </footer>

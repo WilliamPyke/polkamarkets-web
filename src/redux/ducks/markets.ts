@@ -36,6 +36,12 @@ const isMarketTokenFantasy = (market: Market) => {
   return !fantasyTokenTicker || market.token.symbol === fantasyTokenTicker;
 };
 
+const isMarketTokenFromSocialLoginNetwork = (market: Market) => {
+  if (!ui.socialLogin.enabled) return true;
+
+  return market.networkId.toString() === ui.socialLogin.networkId?.toString();
+};
+
 const isMarketFromAvailableNetwork = (market: Market) =>
   AVAILABLE_NETWORKS_IDS.includes(`${market.networkId}`);
 
@@ -142,6 +148,7 @@ const marketsSlice = createSlice({
             data: data
               .filter(isMarketFromAvailableNetwork)
               .filter(isMarketTokenFantasy)
+              .filter(isMarketTokenFromSocialLoginNetwork)
               .map(market => {
                 const network = getNetworkById(market.networkId);
                 const currencyByTokenSymbol = getCurrencyByTicker(

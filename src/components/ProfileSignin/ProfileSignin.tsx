@@ -26,7 +26,7 @@ import profileSigninClasses from './ProfileSignin.module.scss';
 const hasSingleProvider = ui.socialLogin.providers.length === 1;
 const singleProviderName = ui.socialLogin.providers[0];
 
-export default function ProfileSignin(props: ButtonProps) {
+export default function ProfileSignin({ onClick, ...props }: ButtonProps) {
   const dispatch = useAppDispatch();
   const polkamarketsService = usePolkamarketsService();
   const [show, setShow] = useState(false);
@@ -159,9 +159,6 @@ export default function ProfileSignin(props: ButtonProps) {
     [handleClick, handleSubmit, load]
   );
 
-  function handleShow() {
-    setShow(true);
-  }
   function handleHide() {
     setShow(false);
   }
@@ -207,7 +204,10 @@ export default function ProfileSignin(props: ButtonProps) {
       ) : (
         <Button
           size="sm"
-          onClick={handleShow}
+          onClick={event => {
+            onClick?.(event);
+            setShow(true);
+          }}
           className={profileSigninClasses.signin}
           {...props}
         />

@@ -2,8 +2,10 @@ import { Fragment, useEffect } from 'react';
 
 import cn from 'classnames';
 import { features, ui } from 'config';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Container, Skeleton, useTheme } from 'ui';
 
+import HelpButton from 'components/HelpButton';
 import NetworkSelector from 'components/NetworkSelector';
 import Profile from 'components/Profile';
 import ThemeSelector from 'components/ThemeSelector';
@@ -11,7 +13,6 @@ import Wallet from 'components/Wallet';
 
 import { useAppSelector, usePortal } from 'hooks';
 
-import Icon from '../Icon';
 import headerClasses from './Header.module.scss';
 import headerActionsClasses from './HeaderActions.module.scss';
 
@@ -82,6 +83,35 @@ function SkeletonProfile() {
     </div>
   );
 }
+function HeaderActionsAnimate({
+  children,
+  show
+}: React.PropsWithChildren<{ show: boolean }>) {
+  const theme = useTheme();
+
+  if (!theme.device.isDesktop)
+    return (
+      <AnimatePresence>
+        {show && (
+          <motion.div
+            initial={{
+              y: 60
+            }}
+            animate={{
+              y: 0
+            }}
+            exit={{
+              y: 60
+            }}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+
+  return <>{children}</>;
+}
 export default function HeaderActions() {
   const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
   const isLoading = useAppSelector(state => state.polkamarkets.isLoading.login);
@@ -98,53 +128,43 @@ export default function HeaderActions() {
 
   return (
     <Root>
-      <Wrapper
-        className={cn(
-          headerActionsClasses.root,
-          headerActionsClasses.gutterActions,
-          {
-            [headerClasses.container]: !theme.device.isDesktop,
-            [headerActionsClasses.reverse]: features.fantasy.enabled
-          }
-        )}
-      >
-        <HeaderActionsGroupComponent>
-          {ui.layout.header.networkSelector.enabled &&
-            theme.device.isDesktop && (
-              <NetworkSelector
-                size="sm"
-                responsive
-                className={headerActionsClasses.network}
-              />
-            )}
-          {isLoading ? (
-            <ActionLoadingComponent />
-          ) : (
-            <HeaderActionComponent isLoggedIn={isLoggedIn} />
+      <HeaderActionsAnimate show={!features.fantasy.enabled || isLoggedIn}>
+        <Wrapper
+          className={cn(
+            headerActionsClasses.root,
+            headerActionsClasses.gutterActions,
+            {
+              [headerClasses.container]: !theme.device.isDesktop,
+              [headerActionsClasses.reverse]: features.fantasy.enabled
+            }
           )}
-        </HeaderActionsGroupComponent>
-        {!features.fantasy.enabled && <ThemeSelector />}
-        {ui.layout.header.helpUrl && (
-          <a
-            role="button"
-            href={ui.layout.header.helpUrl}
-            target="_blank"
-            rel="noreferrer"
-            className={cn(
-              [headerActionsClasses.help],
-              'pm-c-button--sm',
-              'pm-c-button-ghost--default'
+        >
+          <HeaderActionsGroupComponent>
+            {ui.layout.header.networkSelector.enabled &&
+              theme.device.isDesktop && (
+                <NetworkSelector
+                  size="sm"
+                  responsive
+                  className={headerActionsClasses.network}
+                />
+              )}
+            {isLoading ? (
+              <ActionLoadingComponent />
+            ) : (
+              <HeaderActionComponent isLoggedIn={isLoggedIn} />
             )}
-          >
-            <Icon
-              name="Question"
-              size="lg"
-              className={headerActionsClasses.helpIcon}
+          </HeaderActionsGroupComponent>
+          {!features.fantasy.enabled && <ThemeSelector />}
+          {ui.layout.header.helpUrl && (
+            <HelpButton
+              className={cn({
+                [headerActionsClasses.help]: features.fantasy.enabled
+              })}
+              href={ui.layout.header.helpUrl}
             />
-            Help
-          </a>
-        )}
-      </Wrapper>
+          )}
+        </Wrapper>
+      </HeaderActionsAnimate>
     </Root>
   );
 }

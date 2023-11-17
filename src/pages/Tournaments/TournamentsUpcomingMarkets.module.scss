@@ -1,6 +1,12 @@
 .predictionsWithImage {
+  width: 100vw;
+
   &Wrapper {
-    margin: 0 -24px;
+    margin: 0 -12px;
+
+    @media (min-width: 1024px) {
+      margin: 0;
+    }
 
     :global {
       .react-horizontal-scrolling-menu--inner-wrapper {
