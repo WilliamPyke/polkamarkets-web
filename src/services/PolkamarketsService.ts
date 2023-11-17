@@ -808,6 +808,11 @@ export default class PolkamarketsService {
     return response;
   }
 
+  public async getUserBonds(user: string): Promise<Object> {
+    // TODO: use correct user
+    return this.getBonds();
+  }
+
   public async getBonds(): Promise<Object> {
     // ensuring user has wallet connected
     await this.login();
