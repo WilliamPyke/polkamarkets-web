@@ -84,7 +84,7 @@ function MarketPreview({ token }: MarketPreviewProps) {
                     fontWeight="semibold"
                     className={MarketPreviewClasses.statsText}
                   >
-                    {dayjs(closingDate).utc().format('MMMM D, YYYY')}
+                    {dayjs(closingDate).utc().format('MMM D, YYYY h:mm A')}
                   </Text>
                 </Text>
               </>
