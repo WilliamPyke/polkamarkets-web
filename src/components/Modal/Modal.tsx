@@ -50,10 +50,7 @@ export default forwardRef<HTMLDivElement, ModalProps>(function Modal(
   const root = document.body;
   const rootClasses = theme.device.isMobileDevice
     ? [ModalClasses.overflow]
-    : [
-        ModalClasses.overflow,
-        theme.device.isMobileDevice ? '' : ModalClasses.scrollOffset
-      ];
+    : [ModalClasses.overflow, ModalClasses.scrollOffset];
   const Portal = usePortal({
     root,
     onEffect() {
