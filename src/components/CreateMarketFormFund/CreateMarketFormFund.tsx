@@ -1,12 +1,22 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
+import { useEffect, useState } from 'react';
+
 import cn from 'classnames';
+import { features, ui } from 'config';
 import { useField } from 'formik';
 import { roundDown, roundNumber } from 'helpers/math';
+import { changeCreateMarketToken } from 'redux/ducks/polkamarkets';
 import { Token } from 'types/token';
 
 import { InfoIcon } from 'assets/icons';
 
-import { useAppSelector, useNetwork, useERC20Balance } from 'hooks';
+import {
+  useAppSelector,
+  useNetwork,
+  useERC20Balance,
+  usePolkamarketsService,
+  useAppDispatch
+} from 'hooks';
 
 import Icon from '../Icon';
 import NetworkSelector from '../NetworkSelector';
@@ -20,21 +30,69 @@ import MarketPreview from './MarketPreview';
 
 function CreateMarketFormFund() {
   const network = useNetwork();
+  const polkamarketsService = usePolkamarketsService();
+  const dispatch = useAppDispatch();
+
   const { ethBalance, createMarketToken } = useAppSelector(
     state => state.polkamarkets
   );
   const [field] = useField('liquidity');
 
-  let erc20Address = '';
+  const [erc20Address, setErc20Address] = useState<string>('');
 
-  if (createMarketToken && (createMarketToken as Token).addresses) {
-    erc20Address = (createMarketToken as Token).addresses[network.network.key];
+  if (
+    createMarketToken &&
+    (createMarketToken as Token).addresses &&
+    erc20Address !== (createMarketToken as Token).addresses[network.network.key]
+  ) {
+    setErc20Address(
+      (createMarketToken as Token).addresses[network.network.key]
+    );
   }
 
   const { balance: erc20Balance } = useERC20Balance(erc20Address);
 
   const balance = erc20Address ? erc20Balance : ethBalance;
   const currency = createMarketToken || network.network.currency;
+
+  useEffect(() => {
+    const setFantasyErc20AsDefaultToken = async () => {
+      // setting fantasy erc20 token as default
+      const tokenInfo = await polkamarketsService.getERC20TokenInfo(
+        polkamarketsService.erc20ContractAddress
+      );
+
+      if (!tokenInfo) return;
+
+      const token = {
+        name: tokenInfo.name,
+        ticker: tokenInfo.ticker,
+        symbol: tokenInfo.ticker,
+        iconName: 'Token',
+        addresses: {
+          [network.network.key]: polkamarketsService.erc20ContractAddress
+        }
+      } as any;
+
+      setErc20Address(polkamarketsService.erc20ContractAddress);
+      dispatch(changeCreateMarketToken(token));
+    };
+
+    if (
+      !createMarketToken &&
+      !erc20Address &&
+      features.fantasy.enabled &&
+      ui.socialLogin.enabled
+    ) {
+      setFantasyErc20AsDefaultToken();
+    }
+  }, [
+    createMarketToken,
+    dispatch,
+    erc20Address,
+    network.network.key,
+    polkamarketsService
+  ]);
 
   return (
     <>
