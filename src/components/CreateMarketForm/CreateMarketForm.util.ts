@@ -6,8 +6,6 @@ import { almost } from 'helpers/math';
 import sum from 'lodash/sum';
 import * as Yup from 'yup';
 
-import { useAppSelector } from 'hooks';
-
 import type { CreateMarketFormData } from './CreateMarketForm.type';
 
 const initialValues: CreateMarketFormData = {
