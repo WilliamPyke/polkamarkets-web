@@ -195,22 +195,20 @@ export default function HeaderNav() {
           </>
         )}
       </Link>
-      {theme.device.isTv ? (
-        <HeaderNavMenu />
-      ) : (
-        !theme.device.isDesktop && (
-          <>
-            {ui.layout.header.networkSelector.enabled ? (
-              <NetworkSelector
-                size="sm"
-                responsive
-                className={headerNavClasses.network}
-              />
-            ) : null}
-            <HeaderNavMenuModal />
-          </>
-        )
-      )}
+      {theme.device.isTv
+        ? !!headerNavMenu.length && <HeaderNavMenu />
+        : !theme.device.isDesktop && (
+            <>
+              {ui.layout.header.networkSelector.enabled ? (
+                <NetworkSelector
+                  size="sm"
+                  responsive
+                  className={headerNavClasses.network}
+                />
+              ) : null}
+              <HeaderNavMenuModal />
+            </>
+          )}
     </nav>
   );
 }
