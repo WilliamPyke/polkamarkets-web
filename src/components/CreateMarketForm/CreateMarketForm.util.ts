@@ -6,6 +6,8 @@ import { almost } from 'helpers/math';
 import sum from 'lodash/sum';
 import * as Yup from 'yup';
 
+import { useAppSelector } from 'hooks';
+
 import type { CreateMarketFormData } from './CreateMarketForm.type';
 
 const initialValues: CreateMarketFormData = {
@@ -42,7 +44,7 @@ const initialValues: CreateMarketFormData = {
   category: '',
   subcategory: '',
   closingDate: dayjs().toString(),
-  liquidity: 0,
+  liquidity: features.fantasy.enabled ? 5000 : 0,
   fee: features.fantasy.enabled ? 0 : 2,
   treasuryFee: features.fantasy.enabled ? 0 : 1,
   ...(features.regular.enabled && {
