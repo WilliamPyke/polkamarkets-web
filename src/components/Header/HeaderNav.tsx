@@ -24,6 +24,9 @@ import useAppSelector from 'hooks/useAppSelector';
 import headerNavClasses from './HeaderNav.module.scss';
 
 const LogoComponent = ui.logo ? Logos[ui.logo] : null;
+const headerNavMenu = Object.values(pages).filter(
+  page => page.enabled && page.navigation
+);
 
 function HeaderNavModal({
   children
@@ -109,44 +112,41 @@ function HeaderNavMenu({ onMenuItemClick }: { onMenuItemClick?(): void }) {
 
   return (
     <ul className={headerNavClasses.list}>
-      {Object.values(pages)
-        .filter(page => page.enabled && page.navigation)
-        .reverse()
-        .map(page => (
-          <li key={page.name} className={headerNavClasses.item}>
-            <NavLink
-              to={page.pathname}
-              className={headerNavClasses.link}
-              activeClassName={headerNavClasses.active}
-              onClick={onMenuItemClick}
-              isActive={(_, location) => {
-                if (
-                  location.pathname === pages.home.pathname ||
-                  /^\/markets/.test(location.pathname)
-                ) {
-                  return page.pathname === pages.home.pathname;
-                }
+      {headerNavMenu.reverse().map(page => (
+        <li key={page.name} className={headerNavClasses.item}>
+          <NavLink
+            to={page.pathname}
+            className={headerNavClasses.link}
+            activeClassName={headerNavClasses.active}
+            onClick={onMenuItemClick}
+            isActive={(_, location) => {
+              if (
+                location.pathname === pages.home.pathname ||
+                /^\/markets/.test(location.pathname)
+              ) {
+                return page.pathname === pages.home.pathname;
+              }
 
-                if (pages.clubs.enabled && /^\/clubs/.test(location.pathname)) {
-                  return page.pathname === pages.clubs.pathname;
-                }
+              if (pages.clubs.enabled && /^\/clubs/.test(location.pathname)) {
+                return page.pathname === pages.clubs.pathname;
+              }
 
-                if (
-                  pages.tournaments.enabled &&
-                  /^\/tournaments/.test(location.pathname)
-                ) {
-                  return page.pathname === pages.tournaments.pathname;
-                }
+              if (
+                pages.tournaments.enabled &&
+                /^\/tournaments/.test(location.pathname)
+              ) {
+                return page.pathname === pages.tournaments.pathname;
+              }
 
-                return new RegExp(shiftSlash(location.pathname)).test(
-                  shiftSlash(page.pathname)
-                );
-              }}
-            >
-              {page.name}
-            </NavLink>
-          </li>
-        ))}
+              return new RegExp(shiftSlash(location.pathname)).test(
+                shiftSlash(page.pathname)
+              );
+            }}
+          >
+            {page.name}
+          </NavLink>
+        </li>
+      ))}
       {!isLoggedIn && !theme.device.isTv && (
         <>
           <li className={headerNavClasses.item}>
@@ -171,6 +171,8 @@ function HeaderNavMenu({ onMenuItemClick }: { onMenuItemClick?(): void }) {
   );
 }
 function HeaderNavMenuModal() {
+  if (!headerNavMenu.length) return null;
+
   return (
     <HeaderNavModal>
       {handleHide => <HeaderNavMenu onMenuItemClick={handleHide} />}
