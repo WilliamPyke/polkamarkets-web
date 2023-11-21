@@ -77,6 +77,11 @@ export default function AmountInput({
 
   const step = 100 * ((amount || 0) / max);
 
+  if (amount > 0 && !touched) {
+    // if default liquidity is > 0, set touched to true
+    helpers.setTouched(true);
+  }
+
   return (
     <div className="pm-c-amount-input">
       <div className="pm-c-amount-input__header">
