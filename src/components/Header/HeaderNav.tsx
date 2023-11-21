@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
+import cn from 'classnames';
 import { pages, community, ui } from 'config';
 import { shiftSlash } from 'helpers/string';
 import isEmpty from 'lodash/isEmpty';
@@ -24,14 +25,14 @@ import useAppSelector from 'hooks/useAppSelector';
 import headerNavClasses from './HeaderNav.module.scss';
 
 const LogoComponent = ui.logo ? Logos[ui.logo] : null;
-const headerNavMenu = Object.values(pages).filter(
-  page => page.enabled && page.navigation
-);
+const headerNavMenu = Object.values(pages)
+  .filter(page => page.enabled && page.navigation)
+  .reverse();
 
 function HeaderNavModal({
   children
 }: {
-  children: ((arg: () => void) => React.ReactNode) | React.ReactNode;
+  children: (arg: () => void) => React.ReactNode;
 }) {
   const [show, setShow] = useState(false);
   const handleHide = useCallback(() => setShow(false), []);
@@ -59,7 +60,7 @@ function HeaderNavModal({
             <Icon name="Cross" size="lg" title="Close Menu" />
           </Button>
         </header>
-        {typeof children === 'function' ? children(handleHide) : children}
+        {children(handleHide)}
         <footer className={headerNavClasses.footer}>
           {ui.layout.header.communityUrls.enabled && !isEmpty(community) ? (
             <>
@@ -93,7 +94,6 @@ function HeaderNavModal({
               </ul>
             </>
           ) : null}
-
           <Feature name="regular">
             <CreateMarket
               fullwidth
@@ -108,11 +108,10 @@ function HeaderNavModal({
 }
 function HeaderNavMenu({ onMenuItemClick }: { onMenuItemClick?(): void }) {
   const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
-  const theme = useTheme();
 
   return (
     <ul className={headerNavClasses.list}>
-      {headerNavMenu.reverse().map(page => (
+      {headerNavMenu.map(page => (
         <li key={page.name} className={headerNavClasses.item}>
           <NavLink
             to={page.pathname}
@@ -147,32 +146,28 @@ function HeaderNavMenu({ onMenuItemClick }: { onMenuItemClick?(): void }) {
           </NavLink>
         </li>
       ))}
-      {!isLoggedIn && !theme.device.isTv && (
-        <>
-          <li className={headerNavClasses.item}>
-            <ProfileSignin fullwidth variant="normal" color="primary">
-              <Icon name="LogIn" size="lg" />
-              Login
-            </ProfileSignin>
-          </li>
-          {ui.layout.header.helpUrl && (
-            <li className={headerNavClasses.item}>
-              <HelpButton
-                $outline
-                $fullWidth
-                onClick={onMenuItemClick}
-                href={ui.layout.header.helpUrl}
-              />
-            </li>
-          )}
-        </>
+      {!isLoggedIn && (
+        <li className={headerNavClasses.item}>
+          <ProfileSignin fullwidth variant="normal" color="primary">
+            <Icon name="LogIn" size="lg" />
+            Login
+          </ProfileSignin>
+        </li>
+      )}
+      {ui.layout.header.helpUrl && (
+        <li className={headerNavClasses.item}>
+          <HelpButton
+            $outline
+            $fullWidth
+            onClick={onMenuItemClick}
+            href={ui.layout.header.helpUrl}
+          />
+        </li>
       )}
     </ul>
   );
 }
 function HeaderNavMenuModal() {
-  if (!headerNavMenu.length) return null;
-
   return (
     <HeaderNavModal>
       {handleHide => <HeaderNavMenu onMenuItemClick={handleHide} />}
@@ -181,11 +176,20 @@ function HeaderNavMenuModal() {
 }
 export default function HeaderNav() {
   const theme = useTheme();
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const showLeftMenu =
+    theme.device.isDesktop && !theme.device.isTv && !!headerNavMenu.length;
 
   return (
     <nav className={headerNavClasses.root}>
-      {theme.device.isDesktop && !theme.device.isTv && <HeaderNavMenuModal />}
-      <Link to="/" aria-label="Homepage" className={headerNavClasses.logos}>
+      {showLeftMenu && <HeaderNavMenuModal />}
+      <Link
+        to="/"
+        aria-label="Homepage"
+        className={cn(headerNavClasses.logos, {
+          [headerNavClasses.logosGutter]: showLeftMenu
+        })}
+      >
         {LogoComponent ? (
           <LogoComponent />
         ) : (
@@ -206,7 +210,9 @@ export default function HeaderNav() {
                   className={headerNavClasses.network}
                 />
               ) : null}
-              <HeaderNavMenuModal />
+              {(!isLoggedIn || !!headerNavMenu.length) && (
+                <HeaderNavMenuModal />
+              )}
             </>
           )}
     </nav>
