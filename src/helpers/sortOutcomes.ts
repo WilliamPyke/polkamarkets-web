@@ -10,7 +10,7 @@ export type SortOutcomes = {
 function getPricesDiff(priceChart?: PriceChart) {
   const pricesArr = priceChart?.prices;
 
-  if (!pricesArr)
+  if (!pricesArr || pricesArr.length < 2)
     return {
       value: '0',
       pct: '0%'
