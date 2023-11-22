@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type TradeType = 'buy' | 'sell' | string;
+export type TradeType = 'buy' | 'sell' | string;
 
 export interface TradeDetails {
   shares: number;
