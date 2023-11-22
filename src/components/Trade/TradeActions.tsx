@@ -109,7 +109,16 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   }
 
   async function handleBuy() {
-    set({ type: 'buy', status: 'pending' });
+    set({
+      type: 'buy',
+      status: 'pending',
+      trade: {
+        market: marketId,
+        outcome: predictionId,
+        network: marketNetworkId,
+        location: window.location.pathname
+      }
+    });
     setIsLoading(true);
     setNeedsPricesRefresh(false);
 
@@ -169,7 +178,16 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   }
 
   async function handleSell() {
-    set({ type: 'sell', status: 'pending' });
+    set({
+      type: 'sell',
+      status: 'pending',
+      trade: {
+        market: marketId,
+        outcome: predictionId,
+        network: marketNetworkId,
+        location: window.location.pathname
+      }
+    });
     setIsLoading(true);
     setNeedsPricesRefresh(false);
 
