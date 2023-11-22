@@ -70,7 +70,10 @@ function TradeProvider({ children }) {
             network: trade.network
           })
         );
-        history.push(trade.location);
+
+        if (window.location.pathname !== trade.location) {
+          history.push(trade.location);
+        }
       } catch (error) {
         // unsupported
       }
@@ -96,7 +99,7 @@ function TradeProvider({ children }) {
   return (
     <>
       {status === 'success' ? (
-        <ToastNotification id={`${type}-success`} duration={3000}>
+        <ToastNotification id={`${type}-success`} duration={5000}>
           <Toast
             variant="success"
             title="Success"
