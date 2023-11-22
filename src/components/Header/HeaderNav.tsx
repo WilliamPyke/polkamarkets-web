@@ -140,24 +140,25 @@ function HeaderNavMenuModal() {
     <HeaderNavModal>
       {handleHide => (
         <HeaderNavMenu onMenuItemClick={handleHide}>
-          {!features.fantasy.enabled ||
-            (!isLoggedIn && (
+          {features.fantasy.enabled && !isLoggedIn && (
+            <>
               <li className={headerNavClasses.item}>
                 <ProfileSignin fullwidth variant="normal" color="primary">
                   <Icon name="LogIn" size="lg" />
                   Login
                 </ProfileSignin>
               </li>
-            ))}
-          {ui.layout.header.helpUrl && (
-            <li className={headerNavClasses.item}>
-              <HelpButton
-                $outline
-                $fullWidth
-                onClick={handleHide}
-                href={ui.layout.header.helpUrl}
-              />
-            </li>
+              {ui.layout.header.helpUrl && (
+                <li className={headerNavClasses.item}>
+                  <HelpButton
+                    $outline
+                    $fullWidth
+                    onClick={handleHide}
+                    href={ui.layout.header.helpUrl}
+                  />
+                </li>
+              )}
+            </>
           )}
         </HeaderNavMenu>
       )}
