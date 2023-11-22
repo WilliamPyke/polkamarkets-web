@@ -42,4 +42,4 @@ function TradeProvider({ children }) {
   );
 }
 
-export default TradeProvider;
+export { TradeProvider };
