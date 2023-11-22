@@ -35,7 +35,7 @@ function HeaderActionsGroup(
   return <div className={headerActionsClasses.actionsGroup} {...props} />;
 }
 function SkeletonWallet() {
-  return <Skeleton style={{ height: 44, width: 192 }} />;
+  return <Skeleton style={{ height: 46, width: 192 }} />;
 }
 function SkeletonProfile() {
   const theme = useTheme();
