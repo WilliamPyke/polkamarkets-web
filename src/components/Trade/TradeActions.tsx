@@ -17,17 +17,14 @@ import {
   useERC20Balance,
   useFantasyTokenTicker,
   useNetwork,
-  usePolkamarketsService
+  usePolkamarketsService,
+  useTrade
 } from 'hooks';
-import useToastNotification from 'hooks/useToastNotification';
 
 import ApproveToken from '../ApproveToken';
-import { Button, ButtonLoading } from '../Button';
-import Feature from '../Feature';
+import { ButtonLoading } from '../Button';
 import NetworkSwitch from '../Networks/NetworkSwitch';
 import Text from '../Text';
-import Toast from '../Toast';
-import ToastNotification from '../ToastNotification';
 
 type TradeActionsProps = {
   onTradeFinished: () => void;
@@ -38,8 +35,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const dispatch = useAppDispatch();
   const { network, networkConfig } = useNetwork();
   const polkamarketsService = usePolkamarketsService();
-  const { show, close } = useToastNotification();
   const fantasyTokenTicker = useFantasyTokenTicker();
+  const { set } = useTrade();
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
@@ -70,9 +67,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   // Local state
   const [isLoading, setIsLoading] = useState(false);
-  const [transactionSuccess, setTransactionSuccess] = useState(false);
-  const [transactionSuccessHash, setTransactionSuccessHash] =
-    useState(undefined);
+
   const [needsPricesRefresh, setNeedsPricesRefresh] = useState(false);
   const { refreshBalance } = useERC20Balance(address);
 
@@ -114,9 +109,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   }
 
   async function handleBuy() {
-    setTransactionSuccess(false);
-    setTransactionSuccessHash(undefined);
-
+    set({ type: 'buy', status: 'pending' });
     setIsLoading(true);
     setNeedsPricesRefresh(false);
 
@@ -145,25 +138,18 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
           setIsLoading(false);
           onTradeFinished();
+          set({ status: 'success' });
         }
       }, 300);
 
       // performing buy action on smart contract
-      const response = await polkamarketsService.buy(
+      await polkamarketsService.buy(
         marketId,
         predictionId,
         amount,
         minShares,
         tokenWrapped && !wrapped
       );
-
-      const { status, transactionHash } = response;
-
-      if (status && transactionHash) {
-        setTransactionSuccess(status);
-        setTransactionSuccessHash(transactionHash);
-        show(type);
-      }
 
       // triggering market prices redux update
       reloadMarketPrices();
@@ -183,9 +169,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   }
 
   async function handleSell() {
-    setTransactionSuccess(false);
-    setTransactionSuccessHash(undefined);
-
+    set({ type: 'sell', status: 'pending' });
     setIsLoading(true);
     setNeedsPricesRefresh(false);
 
@@ -215,25 +199,18 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
           setIsLoading(false);
           onTradeFinished();
+          set({ status: 'success' });
         }
       }, 300);
 
       // performing sell action on smart contract
-      const response = await polkamarketsService.sell(
+      await polkamarketsService.sell(
         marketId,
         predictionId,
         ethAmount,
         minShares,
         tokenWrapped && !wrapped
       );
-
-      const { status, transactionHash } = response;
-
-      if (status && transactionHash) {
-        setTransactionSuccess(status);
-        setTransactionSuccessHash(transactionHash);
-        show(type);
-      }
 
       // triggering market prices redux update
       reloadMarketPrices();
@@ -358,32 +335,6 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           </ButtonLoading>
         ) : null}
       </div>
-      {transactionSuccess && transactionSuccessHash ? (
-        <ToastNotification id={type} duration={10000}>
-          <Toast
-            variant="success"
-            title="Success"
-            description="Your transaction is completed!"
-          >
-            <Toast.Actions>
-              <Feature name="regular">
-                <a
-                  target="_blank"
-                  href={`${network.explorerURL}/tx/${transactionSuccessHash}`}
-                  rel="noreferrer"
-                >
-                  <Button size="sm" color="success">
-                    View on Explorer
-                  </Button>
-                </a>
-              </Feature>
-              <Button size="sm" variant="ghost" onClick={() => close(type)}>
-                Dismiss
-              </Button>
-            </Toast.Actions>
-          </Toast>
-        </ToastNotification>
-      ) : null}
     </div>
   );
 }
