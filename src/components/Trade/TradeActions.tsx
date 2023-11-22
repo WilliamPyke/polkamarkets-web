@@ -139,6 +139,15 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         return false;
       }
 
+      setTimeout(() => {
+        if (!needsPricesRefresh) {
+          // Dispatch data to Redux
+
+          setIsLoading(false);
+          onTradeFinished();
+        }
+      }, 300);
+
       // performing buy action on smart contract
       const response = await polkamarketsService.buy(
         marketId,
@@ -147,8 +156,6 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         minShares,
         tokenWrapped && !wrapped
       );
-
-      setIsLoading(false);
 
       const { status, transactionHash } = response;
 
@@ -168,9 +175,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       // updating wallet
       await updateWallet();
       await refreshBalance();
-      setTimeout(() => onTradeFinished(), 1000);
     } catch (error) {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
 
     return true;
@@ -203,6 +209,15 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         return false;
       }
 
+      setTimeout(() => {
+        if (!needsPricesRefresh) {
+          // Dispatch data to Redux
+
+          setIsLoading(false);
+          onTradeFinished();
+        }
+      }, 300);
+
       // performing sell action on smart contract
       const response = await polkamarketsService.sell(
         marketId,
@@ -211,8 +226,6 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         minShares,
         tokenWrapped && !wrapped
       );
-
-      setIsLoading(false);
 
       const { status, transactionHash } = response;
 
@@ -232,9 +245,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       // updating wallet
       await updateWallet();
       await refreshBalance();
-      setTimeout(() => onTradeFinished(), 1000);
     } catch (error) {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
 
     return true;
