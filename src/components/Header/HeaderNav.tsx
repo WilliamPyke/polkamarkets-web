@@ -4,7 +4,6 @@ import { NavLink, Link } from 'react-router-dom';
 import cn from 'classnames';
 import { pages, community, ui, features } from 'config';
 import getPathname from 'helpers/getPathname';
-import { shiftSlash } from 'helpers/string';
 import isEmpty from 'lodash/isEmpty';
 import { useTheme } from 'ui';
 
