@@ -2,7 +2,8 @@ import { useCallback, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 import cn from 'classnames';
-import { pages, community, ui } from 'config';
+import { pages, community, ui, features } from 'config';
+import getPathname from 'helpers/getPathname';
 import { shiftSlash } from 'helpers/string';
 import isEmpty from 'lodash/isEmpty';
 import { useTheme } from 'ui';
@@ -63,7 +64,7 @@ function HeaderNavModal({
         {children(handleHide)}
         <footer className={headerNavClasses.footer}>
           {ui.layout.header.communityUrls.enabled && !isEmpty(community) ? (
-            <>
+            <div>
               <Text
                 color="gray"
                 scale="tiny-uppercase"
@@ -92,7 +93,7 @@ function HeaderNavModal({
                   </li>
                 ))}
               </ul>
-            </>
+            </div>
           ) : null}
           <Feature name="regular">
             <CreateMarket
@@ -106,9 +107,12 @@ function HeaderNavModal({
     </>
   );
 }
-function HeaderNavMenu({ onMenuItemClick }: { onMenuItemClick?(): void }) {
-  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
-
+function HeaderNavMenu({
+  onMenuItemClick,
+  children
+}: React.PropsWithChildren<{
+  onMenuItemClick?(): void;
+}>) {
   return (
     <ul className={headerNavClasses.list}>
       {headerNavMenu.map(page => (
@@ -118,65 +122,51 @@ function HeaderNavMenu({ onMenuItemClick }: { onMenuItemClick?(): void }) {
             className={headerNavClasses.link}
             activeClassName={headerNavClasses.active}
             onClick={onMenuItemClick}
-            isActive={(_, location) => {
-              if (
-                location.pathname === pages.home.pathname ||
-                /^\/markets/.test(location.pathname)
-              ) {
-                return page.pathname === pages.home.pathname;
-              }
-
-              if (pages.clubs.enabled && /^\/clubs/.test(location.pathname)) {
-                return page.pathname === pages.clubs.pathname;
-              }
-
-              if (
-                pages.tournaments.enabled &&
-                /^\/tournaments/.test(location.pathname)
-              ) {
-                return page.pathname === pages.tournaments.pathname;
-              }
-
-              return new RegExp(shiftSlash(location.pathname)).test(
-                shiftSlash(page.pathname)
-              );
-            }}
+            isActive={(_, location) =>
+              !!location.pathname.match(getPathname(page.pathname))
+            }
           >
             {page.name}
           </NavLink>
         </li>
       ))}
-      {!isLoggedIn && (
-        <li className={headerNavClasses.item}>
-          <ProfileSignin fullwidth variant="normal" color="primary">
-            <Icon name="LogIn" size="lg" />
-            Login
-          </ProfileSignin>
-        </li>
-      )}
-      {ui.layout.header.helpUrl && (
-        <li className={headerNavClasses.item}>
-          <HelpButton
-            $outline
-            $fullWidth
-            onClick={onMenuItemClick}
-            href={ui.layout.header.helpUrl}
-          />
-        </li>
-      )}
+      {children}
     </ul>
   );
 }
 function HeaderNavMenuModal() {
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+
   return (
     <HeaderNavModal>
-      {handleHide => <HeaderNavMenu onMenuItemClick={handleHide} />}
+      {handleHide => (
+        <HeaderNavMenu onMenuItemClick={handleHide}>
+          {!features.fantasy.enabled ||
+            (!isLoggedIn && (
+              <li className={headerNavClasses.item}>
+                <ProfileSignin fullwidth variant="normal" color="primary">
+                  <Icon name="LogIn" size="lg" />
+                  Login
+                </ProfileSignin>
+              </li>
+            ))}
+          {ui.layout.header.helpUrl && (
+            <li className={headerNavClasses.item}>
+              <HelpButton
+                $outline
+                $fullWidth
+                onClick={handleHide}
+                href={ui.layout.header.helpUrl}
+              />
+            </li>
+          )}
+        </HeaderNavMenu>
+      )}
     </HeaderNavModal>
   );
 }
 export default function HeaderNav() {
   const theme = useTheme();
-  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
   const showLeftMenu =
     theme.device.isDesktop && !theme.device.isTv && !!headerNavMenu.length;
 
@@ -199,22 +189,17 @@ export default function HeaderNav() {
           </>
         )}
       </Link>
-      {theme.device.isTv
-        ? !!headerNavMenu.length && <HeaderNavMenu />
-        : !theme.device.isDesktop && (
-            <>
-              {ui.layout.header.networkSelector.enabled ? (
-                <NetworkSelector
-                  size="sm"
-                  responsive
-                  className={headerNavClasses.network}
-                />
-              ) : null}
-              {(!isLoggedIn || !!headerNavMenu.length) && (
-                <HeaderNavMenuModal />
-              )}
-            </>
-          )}
+      {theme.device.isTv && <HeaderNavMenu />}
+      {!theme.device.isDesktop && ui.layout.header.networkSelector.enabled && (
+        <NetworkSelector
+          size="sm"
+          responsive
+          className={headerNavClasses.network}
+        />
+      )}
+      {!theme.device.isDesktop && !!headerNavMenu.length && (
+        <HeaderNavMenuModal />
+      )}
     </nav>
   );
 }

@@ -4,12 +4,8 @@
   align-items: center;
 }
 .list {
-  max-width: 440px;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
   @media (min-width: 1440px) {
-    display: inherit;
+    display: flex;
     align-items: center;
     width: unset;
     margin-left: unset;
@@ -67,6 +63,10 @@
 .dialog {
   display: flex;
   flex-flow: column nowrap;
+  max-width: 440px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 .header {
   height: var(--header-y);
@@ -78,8 +78,6 @@
   margin-top: auto;
   display: flex;
   flex-flow: column nowrap;
-  align-self: center;
-  width: 100%;
 }
 .title {
   text-align: center;
