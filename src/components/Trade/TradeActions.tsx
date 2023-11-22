@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import * as Sentry from '@sentry/react';
 import { features, ui } from 'config';
 import { changeOutcomeData, changeData } from 'redux/ducks/market';
 import { changeMarketOutcomeData, changeMarketData } from 'redux/ducks/markets';
@@ -172,7 +173,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       await refreshBalance();
       resetTrade();
     } catch (error) {
-      // setIsLoading(false);
+      setTrade({ status: 'error' });
+      Sentry.captureException(error);
     }
 
     return true;
@@ -243,7 +245,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       await refreshBalance();
       resetTrade();
     } catch (error) {
-      // setIsLoading(false);
+      setTrade({ status: 'error' });
+      Sentry.captureException(error);
     }
 
     return true;
