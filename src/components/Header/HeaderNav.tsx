@@ -166,6 +166,7 @@ function HeaderNavMenuModal() {
   );
 }
 export default function HeaderNav() {
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
   const theme = useTheme();
   const showLeftMenu =
     theme.device.isDesktop && !theme.device.isTv && !!headerNavMenu.length;
@@ -197,9 +198,9 @@ export default function HeaderNav() {
           className={headerNavClasses.network}
         />
       )}
-      {!theme.device.isDesktop && !!headerNavMenu.length && (
-        <HeaderNavMenuModal />
-      )}
+      {!theme.device.isDesktop &&
+        ((features.fantasy.enabled && !isLoggedIn) ||
+          !!headerNavMenu.length) && <HeaderNavMenuModal />}
     </nav>
   );
 }
