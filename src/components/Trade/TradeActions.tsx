@@ -36,7 +36,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const { network, networkConfig } = useNetwork();
   const polkamarketsService = usePolkamarketsService();
   const fantasyTokenTicker = useFantasyTokenTicker();
-  const { set } = useTrade();
+  const { status, set: setTrade } = useTrade();
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
@@ -109,7 +109,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   }
 
   async function handleBuy() {
-    set({
+    setTrade({
       type: 'buy',
       status: 'pending',
       trade: {
@@ -147,7 +147,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
           setIsLoading(false);
           onTradeFinished();
-          set({ status: 'success' });
+          setTrade({ status: 'success' });
         }
       }, 300);
 
@@ -178,7 +178,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   }
 
   async function handleSell() {
-    set({
+    setTrade({
       type: 'sell',
       status: 'pending',
       trade: {
@@ -217,7 +217,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
           setIsLoading(false);
           onTradeFinished();
-          set({ status: 'success' });
+          setTrade({ status: 'success' });
         }
       }, 300);
 
@@ -304,54 +304,62 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
             </Text>
           </div>
         ) : null}
-        {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
-          <div className="flex-column gap-6 width-full">
-            {isValidAmount && preventBankruptcy && amountOverHalfBalance ? (
-              <AlertMinimal
-                variant="warning"
-                description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}
-              />
-            ) : null}
-            {!features.fantasy.enabled || isLoggedIn ? (
-              <ApproveToken
-                fullwidth
-                address={token.address}
-                ticker={token.ticker}
-                wrapped={token.wrapped && !wrapped}
-              >
-                <ButtonLoading
-                  color="primary"
+        <div className="flex-column gap-4 width-full">
+          {status === 'error' ? (
+            <AlertMinimal
+              variant="danger"
+              description="Something went wrong. Please try again."
+            />
+          ) : null}
+          {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
+            <div className="flex-column gap-6 width-full">
+              {isValidAmount && preventBankruptcy && amountOverHalfBalance ? (
+                <AlertMinimal
+                  variant="warning"
+                  description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}
+                />
+              ) : null}
+              {!features.fantasy.enabled || isLoggedIn ? (
+                <ApproveToken
                   fullwidth
-                  onClick={handleBuy}
-                  disabled={!isValidAmount || isLoading}
-                  loading={isLoading}
+                  address={token.address}
+                  ticker={token.ticker}
+                  wrapped={token.wrapped && !wrapped}
                 >
-                  Predict
-                </ButtonLoading>
-              </ApproveToken>
-            ) : (
-              <ProfileSignin
-                fullwidth
-                size="normal"
-                color="primary"
-                onClick={handleLoginToPredict}
-              >
-                Login to Predict
-              </ProfileSignin>
-            )}
-          </div>
-        ) : null}
-        {type === 'sell' && !needsPricesRefresh && !isWrongNetwork ? (
-          <ButtonLoading
-            color="danger"
-            fullwidth
-            onClick={handleSell}
-            disabled={!isValidAmount || isLoading}
-            loading={isLoading}
-          >
-            Sell
-          </ButtonLoading>
-        ) : null}
+                  <ButtonLoading
+                    color="primary"
+                    fullwidth
+                    onClick={handleBuy}
+                    disabled={!isValidAmount || isLoading}
+                    loading={isLoading}
+                  >
+                    Predict
+                  </ButtonLoading>
+                </ApproveToken>
+              ) : (
+                <ProfileSignin
+                  fullwidth
+                  size="normal"
+                  color="primary"
+                  onClick={handleLoginToPredict}
+                >
+                  Login to Predict
+                </ProfileSignin>
+              )}
+            </div>
+          ) : null}
+          {type === 'sell' && !needsPricesRefresh && !isWrongNetwork ? (
+            <ButtonLoading
+              color="danger"
+              fullwidth
+              onClick={handleSell}
+              disabled={!isValidAmount || isLoading}
+              loading={isLoading}
+            >
+              Sell
+            </ButtonLoading>
+          ) : null}
+        </div>
       </div>
     </div>
   );
