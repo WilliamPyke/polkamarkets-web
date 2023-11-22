@@ -1,4 +1,5 @@
 import { createContext, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Market, Outcome } from 'models/market';
 import { TradeType } from 'redux/ducks/trade';
@@ -14,6 +15,7 @@ export type TradeContextState = {
   trade: {
     market: Market['id'];
     outcome: Outcome['id'];
+    network: Market['networkId'];
     location: string;
   };
   set: (newState: Partial<TradeContextState>) => void;
@@ -26,6 +28,7 @@ const initialState: TradeContextState = {
   trade: {
     market: '',
     outcome: '',
+    network: '',
     location: ''
   },
   set: () => {},
@@ -44,16 +47,51 @@ export const TradeContext = createContext<TradeContextState>(
 );
 
 function TradeProvider({ children }) {
+  const history = useHistory();
   const state = useTradeStore();
   const { show, close } = useToastNotification();
 
-  const { type, status } = state;
+  const { type, status, trade } = state;
 
   useEffect(() => {
     if (status === 'success') {
       show(`${type}-success`);
     }
   }, [status, type, show]);
+
+  useEffect(() => {
+    if (status === 'error') {
+      try {
+        localStorage.setItem(
+          'SELECTED_OUTCOME',
+          JSON.stringify({
+            market: trade.market,
+            outcome: trade.outcome,
+            network: trade.network
+          })
+        );
+        history.push(trade.location);
+      } catch (error) {
+        // unsupported
+      }
+    }
+
+    return () => {
+      try {
+        if ('SELECTED_OUTCOME' in localStorage)
+          localStorage.removeItem('SELECTED_OUTCOME');
+      } catch (error) {
+        // unsupported
+      }
+    };
+  }, [
+    history,
+    status,
+    trade.location,
+    trade.market,
+    trade.network,
+    trade.outcome
+  ]);
 
   return (
     <>
