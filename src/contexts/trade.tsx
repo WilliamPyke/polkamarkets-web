@@ -11,17 +11,26 @@ export type TradeContextState = {
     slug: Market['slug'];
     outcome: Outcome['id'];
   };
-  setStatus: (status: TradeContextState['status']) => void;
+  set: (newState: Partial<TradeContextState>) => void;
+  reset: () => void;
 };
 
-const useTradeStore = create<TradeContextState>(set => ({
+const initialState: TradeContextState = {
   type: 'buy',
   status: 'pending',
   market: {
     slug: '',
     outcome: ''
   },
-  setStatus: status => set({ status })
+  set: () => {},
+  reset: () => {}
+};
+
+const useTradeStore = create<TradeContextState>(set => ({
+  ...initialState,
+  set: (newState: Partial<TradeContextState>) =>
+    set(state => ({ ...state, ...newState })),
+  reset: () => set(() => ({ ...initialState }))
 }));
 
 export const TradeContext = createContext<TradeContextState>(
