@@ -123,7 +123,9 @@ const pages = {
     enabled: ui.clubs.enabled
   },
   tournamentLeaderboard: {
-    pathname: `/tournaments/:slug${features.fantasy.enabled && '/leaderboard'}`,
+    pathname: `/tournaments/:slug${
+      features.fantasy.enabled ? '/leaderboard' : ''
+    }`,
     Component: Leaderboard,
     exact: false,
     navigation: false,
@@ -190,7 +192,7 @@ const pages = {
       features.fantasy.enabled && ui.tournaments.enabled ? '/markets' : '/',
     Component: lazy(() => import('pages/Home')),
     exact: false,
-    navigation: false,
+    navigation: !features.fantasy.enabled,
     name: 'Markets',
     meta: defaultMetadata,
     enabled: true,

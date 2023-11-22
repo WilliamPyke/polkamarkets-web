@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
-import { pages, community, ui } from 'config';
-import { shiftSlash } from 'helpers/string';
+import cn from 'classnames';
+import { pages, community, ui, features } from 'config';
+import getPathname from 'helpers/getPathname';
 import isEmpty from 'lodash/isEmpty';
 import { useTheme } from 'ui';
 
@@ -24,11 +25,14 @@ import useAppSelector from 'hooks/useAppSelector';
 import headerNavClasses from './HeaderNav.module.scss';
 
 const LogoComponent = ui.logo ? Logos[ui.logo] : null;
+const headerNavMenu = Object.values(pages)
+  .filter(page => page.enabled && page.navigation)
+  .reverse();
 
 function HeaderNavModal({
   children
 }: {
-  children: ((arg: () => void) => React.ReactNode) | React.ReactNode;
+  children: (arg: () => void) => React.ReactNode;
 }) {
   const [show, setShow] = useState(false);
   const handleHide = useCallback(() => setShow(false), []);
@@ -56,10 +60,10 @@ function HeaderNavModal({
             <Icon name="Cross" size="lg" title="Close Menu" />
           </Button>
         </header>
-        {typeof children === 'function' ? children(handleHide) : children}
+        {children(handleHide)}
         <footer className={headerNavClasses.footer}>
           {ui.layout.header.communityUrls.enabled && !isEmpty(community) ? (
-            <>
+            <div>
               <Text
                 color="gray"
                 scale="tiny-uppercase"
@@ -88,9 +92,8 @@ function HeaderNavModal({
                   </li>
                 ))}
               </ul>
-            </>
+            </div>
           ) : null}
-
           <Feature name="regular">
             <CreateMarket
               fullwidth
@@ -103,87 +106,81 @@ function HeaderNavModal({
     </>
   );
 }
-function HeaderNavMenu({ onMenuItemClick }: { onMenuItemClick?(): void }) {
-  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
-  const theme = useTheme();
-
+function HeaderNavMenu({
+  onMenuItemClick,
+  children
+}: React.PropsWithChildren<{
+  onMenuItemClick?(): void;
+}>) {
   return (
     <ul className={headerNavClasses.list}>
-      {Object.values(pages)
-        .filter(page => page.enabled && page.navigation)
-        .reverse()
-        .map(page => (
-          <li key={page.name} className={headerNavClasses.item}>
-            <NavLink
-              to={page.pathname}
-              className={headerNavClasses.link}
-              activeClassName={headerNavClasses.active}
-              onClick={onMenuItemClick}
-              isActive={(_, location) => {
-                if (
-                  location.pathname === pages.home.pathname ||
-                  /^\/markets/.test(location.pathname)
-                ) {
-                  return page.pathname === pages.home.pathname;
-                }
-
-                if (pages.clubs.enabled && /^\/clubs/.test(location.pathname)) {
-                  return page.pathname === pages.clubs.pathname;
-                }
-
-                if (
-                  pages.tournaments.enabled &&
-                  /^\/tournaments/.test(location.pathname)
-                ) {
-                  return page.pathname === pages.tournaments.pathname;
-                }
-
-                return new RegExp(shiftSlash(location.pathname)).test(
-                  shiftSlash(page.pathname)
-                );
-              }}
-            >
-              {page.name}
-            </NavLink>
-          </li>
-        ))}
-      {!isLoggedIn && !theme.device.isTv && (
-        <>
-          <li className={headerNavClasses.item}>
-            <ProfileSignin fullwidth variant="normal" color="primary">
-              <Icon name="LogIn" size="lg" />
-              Login
-            </ProfileSignin>
-          </li>
-          {ui.layout.header.helpUrl && (
-            <li className={headerNavClasses.item}>
-              <HelpButton
-                $outline
-                $fullWidth
-                onClick={onMenuItemClick}
-                href={ui.layout.header.helpUrl}
-              />
-            </li>
-          )}
-        </>
-      )}
+      {headerNavMenu.map(page => (
+        <li key={page.name} className={headerNavClasses.item}>
+          <NavLink
+            to={page.pathname}
+            className={headerNavClasses.link}
+            activeClassName={headerNavClasses.active}
+            onClick={onMenuItemClick}
+            isActive={(_, location) =>
+              !!location.pathname.match(getPathname(page.pathname))
+            }
+          >
+            {page.name}
+          </NavLink>
+        </li>
+      ))}
+      {children}
     </ul>
   );
 }
 function HeaderNavMenuModal() {
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+
   return (
     <HeaderNavModal>
-      {handleHide => <HeaderNavMenu onMenuItemClick={handleHide} />}
+      {handleHide => (
+        <HeaderNavMenu onMenuItemClick={handleHide}>
+          {features.fantasy.enabled && !isLoggedIn && (
+            <>
+              <li className={headerNavClasses.item}>
+                <ProfileSignin fullwidth variant="normal" color="primary">
+                  <Icon name="LogIn" size="lg" />
+                  Login
+                </ProfileSignin>
+              </li>
+              {ui.layout.header.helpUrl && (
+                <li className={headerNavClasses.item}>
+                  <HelpButton
+                    $outline
+                    $fullWidth
+                    onClick={handleHide}
+                    href={ui.layout.header.helpUrl}
+                  />
+                </li>
+              )}
+            </>
+          )}
+        </HeaderNavMenu>
+      )}
     </HeaderNavModal>
   );
 }
 export default function HeaderNav() {
+  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
   const theme = useTheme();
+  const showLeftMenu =
+    theme.device.isDesktop && !theme.device.isTv && !!headerNavMenu.length;
 
   return (
     <nav className={headerNavClasses.root}>
-      {theme.device.isDesktop && !theme.device.isTv && <HeaderNavMenuModal />}
-      <Link to="/" aria-label="Homepage" className={headerNavClasses.logos}>
+      {showLeftMenu && <HeaderNavMenuModal />}
+      <Link
+        to="/"
+        aria-label="Homepage"
+        className={cn(headerNavClasses.logos, {
+          [headerNavClasses.logosGutter]: showLeftMenu
+        })}
+      >
         {LogoComponent ? (
           <LogoComponent />
         ) : (
@@ -193,22 +190,17 @@ export default function HeaderNav() {
           </>
         )}
       </Link>
-      {theme.device.isTv ? (
-        <HeaderNavMenu />
-      ) : (
-        !theme.device.isDesktop && (
-          <>
-            {ui.layout.header.networkSelector.enabled ? (
-              <NetworkSelector
-                size="sm"
-                responsive
-                className={headerNavClasses.network}
-              />
-            ) : null}
-            <HeaderNavMenuModal />
-          </>
-        )
+      {theme.device.isTv && <HeaderNavMenu />}
+      {!theme.device.isDesktop && ui.layout.header.networkSelector.enabled && (
+        <NetworkSelector
+          size="sm"
+          responsive
+          className={headerNavClasses.network}
+        />
       )}
+      {!theme.device.isDesktop &&
+        ((features.fantasy.enabled && !isLoggedIn) ||
+          !!headerNavMenu.length) && <HeaderNavMenuModal />}
     </nav>
   );
 }
