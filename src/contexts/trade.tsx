@@ -31,7 +31,7 @@ const initialState: TradeContextState = {
     network: '',
     location: ''
   },
-  set: () => {},
+  set: _newState => {},
   reset: () => {}
 };
 
@@ -39,7 +39,8 @@ const useTradeStore = create<TradeContextState>(set => ({
   ...initialState,
   set: (newState: Partial<TradeContextState>) =>
     set(state => ({ ...state, ...newState })),
-  reset: () => set(() => ({ ...initialState }))
+  reset: () =>
+    set(state => ({ ...initialState, set: state.set, reset: state.reset }))
 }));
 
 export const TradeContext = createContext<TradeContextState>(
