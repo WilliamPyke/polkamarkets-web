@@ -4,7 +4,13 @@ import * as Sentry from '@sentry/react';
 import { features, ui } from 'config';
 import { changeOutcomeData, changeData } from 'redux/ducks/market';
 import { changeMarketOutcomeData, changeMarketData } from 'redux/ducks/markets';
-import { login, fetchAditionalData } from 'redux/ducks/polkamarkets';
+import {
+  login,
+  fetchAditionalData,
+  changePolkBalance,
+  changeActions,
+  changePortfolio
+} from 'redux/ducks/polkamarkets';
 import { PolkamarketsService, PolkamarketsApiService } from 'services';
 
 import TWarningIcon from 'assets/icons/TWarningIcon';
@@ -37,11 +43,19 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const { network, networkConfig } = useNetwork();
   const polkamarketsService = usePolkamarketsService();
   const fantasyTokenTicker = useFantasyTokenTicker();
-  const { status, set: setTrade, reset: resetTrade } = useTrade();
+  const { status, trade, set: setTrade, reset: resetTrade } = useTrade();
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
-  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const {
+    isLoggedIn,
+    ethAddress,
+    ethBalance,
+    polkBalance,
+    actions,
+    portfolio
+  } = useAppSelector(state => state.polkamarkets);
+
   const wrapped = useAppSelector(state => state.trade.wrapped);
   const marketId = useAppSelector(state => state.trade.selectedMarketId);
   const marketNetworkId = useAppSelector(
@@ -53,12 +67,10 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
     state => state.trade
   );
   const maxAmount = useAppSelector(state => state.trade.maxAmount);
-  const ethAddress = useAppSelector(state => state.polkamarkets.ethAddress);
   const token = useAppSelector(state => state.market.market.token);
   const { wrapped: tokenWrapped, address } = token;
 
   const { balance: erc20Balance } = useERC20Balance(address);
-  const ethBalance = useAppSelector(state => state.polkamarkets.ethBalance);
 
   const balance = wrapped || !tokenWrapped ? erc20Balance : ethBalance;
 
@@ -145,6 +157,28 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       setTimeout(() => {
         if (!needsPricesRefresh) {
           // Dispatch data to Redux
+          const newPolkBalance = polkBalance - amount;
+          dispatch(changePolkBalance(newPolkBalance));
+
+          const newActions = actions.concat({
+            action: 'Buy',
+            marketId: parseInt(marketId, 10),
+            outcomeId: parseInt(predictionId, 10),
+            shares: sharesToBuy,
+            timestamp: Date.now() / 1000,
+            transactionHash:
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            value: amount
+          });
+          dispatch(changeActions(newActions));
+
+          if (portfolio[marketId]?.outcomes[predictionId]) {
+            const newPortfolio = JSON.parse(JSON.stringify(portfolio));
+            newPortfolio[marketId].outcomes[predictionId].shares += sharesToBuy;
+            newPortfolio[marketId].outcomes[predictionId].price =
+              sharesToBuy / amount;
+            dispatch(changePortfolio(newPortfolio));
+          }
 
           setIsLoading(false);
           onTradeFinished();
@@ -221,6 +255,29 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       setTimeout(() => {
         if (!needsPricesRefresh) {
           // Dispatch data to Redux
+          const newPolkBalance = polkBalance + ethAmount;
+          dispatch(changePolkBalance(newPolkBalance));
+
+          const newActions = actions.concat({
+            action: 'Sell',
+            marketId: parseInt(marketId, 10),
+            outcomeId: parseInt(predictionId, 10),
+            shares: sharesToSell,
+            timestamp: Date.now() / 1000,
+            transactionHash:
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            value: ethAmount
+          });
+          dispatch(changeActions(newActions));
+
+          if (portfolio[marketId]?.outcomes[predictionId]) {
+            const newPortfolio = JSON.parse(JSON.stringify(portfolio));
+            newPortfolio[marketId].outcomes[predictionId].shares -=
+              sharesToSell;
+            newPortfolio[marketId].outcomes[predictionId].price =
+              sharesToSell / ethAmount;
+            dispatch(changePortfolio(newPortfolio));
+          }
 
           setIsLoading(false);
           onTradeFinished();
