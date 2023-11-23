@@ -324,6 +324,12 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
               description="Something went wrong. Please try again."
             />
           ) : null}
+          {status === 'success' ? (
+            <AlertMinimal
+              variant="information"
+              description="There's an ongoing pending transaction. Please wait for it to be completed."
+            />
+          ) : null}
           {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
             <div className="flex-column gap-6 width-full">
               {isValidAmount && preventBankruptcy && amountOverHalfBalance ? (
@@ -343,7 +349,9 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
                     color="primary"
                     fullwidth
                     onClick={handleBuy}
-                    disabled={!isValidAmount || isLoading}
+                    disabled={
+                      !isValidAmount || isLoading || status === 'success'
+                    }
                     loading={isLoading}
                   >
                     Predict
@@ -366,7 +374,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
               color="danger"
               fullwidth
               onClick={handleSell}
-              disabled={!isValidAmount || isLoading}
+              disabled={!isValidAmount || isLoading || status === 'success'}
               loading={isLoading}
             >
               Sell
