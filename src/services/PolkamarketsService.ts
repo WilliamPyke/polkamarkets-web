@@ -522,7 +522,7 @@ export default class PolkamarketsService {
     await this.login();
     if (!this.address) return [];
 
-    const response = await this.contracts.pm.getUserActions(this.address);
+    const response = await this.contracts.pm.getActions({ user: this.address });
 
     return response;
   }
