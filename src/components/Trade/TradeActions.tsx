@@ -150,7 +150,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           onTradeFinished();
           setTrade({ status: 'success' });
         }
-      }, 300);
+      }, 200);
 
       // performing buy action on smart contract
       await polkamarketsService.buy(
@@ -226,7 +226,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           onTradeFinished();
           setTrade({ status: 'success' });
         }
-      }, 300);
+      }, 200);
 
       // performing sell action on smart contract
       await polkamarketsService.sell(
