@@ -381,7 +381,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
               description="Something went wrong. Please try again."
             />
           ) : null}
-          {status === 'success' ? (
+          {status === 'success' && trade.market === marketId ? (
             <AlertMinimal
               variant="information"
               description="There's an ongoing pending transaction. Please wait for it to be completed."
@@ -407,7 +407,9 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
                     fullwidth
                     onClick={handleBuy}
                     disabled={
-                      !isValidAmount || isLoading || status === 'success'
+                      !isValidAmount ||
+                      isLoading ||
+                      (status === 'success' && trade.market === marketId)
                     }
                     loading={isLoading}
                   >
@@ -431,7 +433,11 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
               color="danger"
               fullwidth
               onClick={handleSell}
-              disabled={!isValidAmount || isLoading || status === 'success'}
+              disabled={
+                !isValidAmount ||
+                isLoading ||
+                (status === 'success' && trade.market === marketId)
+              }
               loading={isLoading}
             >
               Sell
