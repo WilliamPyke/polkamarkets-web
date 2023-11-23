@@ -175,6 +175,10 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
     } catch (error) {
       setTrade({ status: 'error' });
       Sentry.captureException(error);
+
+      // restoring wallet data on error too
+      await updateWallet();
+      await refreshBalance();
     }
 
     return true;
@@ -247,6 +251,10 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
     } catch (error) {
       setTrade({ status: 'error' });
       Sentry.captureException(error);
+
+      // restoring wallet data on error too
+      await updateWallet();
+      await refreshBalance();
     }
 
     return true;
