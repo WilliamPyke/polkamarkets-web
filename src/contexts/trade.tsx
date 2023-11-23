@@ -61,40 +61,11 @@ function TradeProvider({ children }) {
 
   useEffect(() => {
     if (status === 'error') {
-      try {
-        localStorage.setItem(
-          'SELECTED_OUTCOME',
-          JSON.stringify({
-            market: trade.market,
-            outcome: trade.outcome,
-            network: trade.network
-          })
-        );
-
-        if (window.location.pathname !== trade.location) {
-          history.push(trade.location);
-        }
-      } catch (error) {
-        // unsupported
+      if (window.location.pathname !== trade.location) {
+        history.push(trade.location);
       }
     }
-
-    return () => {
-      try {
-        if ('SELECTED_OUTCOME' in localStorage)
-          localStorage.removeItem('SELECTED_OUTCOME');
-      } catch (error) {
-        // unsupported
-      }
-    };
-  }, [
-    history,
-    status,
-    trade.location,
-    trade.market,
-    trade.network,
-    trade.outcome
-  ]);
+  }, [history, status, trade.location]);
 
   return (
     <>
