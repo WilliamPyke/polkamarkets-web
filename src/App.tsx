@@ -10,6 +10,7 @@ import { ThemeProvider } from 'ui';
 import FavoriteMarketsProvider from 'contexts/favoriteMarkets';
 import { FiltersProvider } from 'contexts/filters';
 import { NetworksProvider } from 'contexts/networks';
+import { TradeProvider } from 'contexts/trade';
 import { VoteProvider } from 'contexts/vote';
 import { WhitelistProvider } from 'contexts/whitelist';
 
@@ -31,7 +32,9 @@ export default function App() {
                       <FiltersProvider>
                         <FavoriteMarketsProvider>
                           <VoteProvider>
-                            <Routes />
+                            <TradeProvider>
+                              <Routes />
+                            </TradeProvider>
                           </VoteProvider>
                         </FavoriteMarketsProvider>
                       </FiltersProvider>

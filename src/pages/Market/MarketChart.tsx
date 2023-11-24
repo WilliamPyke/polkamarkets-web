@@ -101,14 +101,14 @@ export default function MarketChart() {
       {
         {
           marketOverview: <MarketOverview />,
-          tradingView: (
+          tradingView: tradingViewSymbol ? (
             <TradingViewWidget
               theme={Themes[theme.device.mode.toUpperCase()]}
               width="100%"
               height={454}
               symbol={tradingViewSymbol}
             />
-          )
+          ) : null
         }[chartViewType]
       }
     </div>

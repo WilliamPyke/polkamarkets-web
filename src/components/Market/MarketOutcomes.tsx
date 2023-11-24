@@ -9,7 +9,12 @@ import { useTheme } from 'ui';
 
 import OutcomeItem from 'components/OutcomeItem';
 
-import { useAppDispatch, useAppSelector, useExpandableOutcomes } from 'hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useExpandableOutcomes,
+  useTrade
+} from 'hooks';
 
 import Modal from '../Modal';
 import ModalContent from '../ModalContent';
@@ -28,6 +33,7 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
   const dispatch = useAppDispatch();
   const trade = useAppSelector(state => state.trade);
   const theme = useTheme();
+  const { trade: tradeState, status } = useTrade();
 
   const [tradeVisible, setTradeVisible] = useState(false);
 
@@ -142,6 +148,25 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (
+      status === 'error' &&
+      tradeState.market === market.id &&
+      tradeState.network === market.networkId
+    ) {
+      setOutcome(tradeState.outcome.toString());
+      setTradeVisible(true);
+    }
+  }, [
+    market.id,
+    market.networkId,
+    setOutcome,
+    status,
+    tradeState.market,
+    tradeState.network,
+    tradeState.outcome
+  ]);
 
   return (
     <ul className="pm-c-market-outcomes">

@@ -6,7 +6,7 @@ export type AlertMinimalVariant =
   | 'information'
   | 'success'
   | 'warning'
-  | 'error';
+  | 'danger';
 
 type AlertMinimalProps = {
   /**

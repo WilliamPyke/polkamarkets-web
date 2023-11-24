@@ -16,7 +16,8 @@ import {
   useAppSelector,
   useAppDispatch,
   useNetwork,
-  useERC20Balance
+  useERC20Balance,
+  useFantasyTokenTicker
 } from 'hooks';
 
 import { Button } from '../Button';
@@ -32,6 +33,7 @@ const SELL_STEPS = [10, 25, 50, 100];
 function TradeFormInput() {
   const dispatch = useAppDispatch();
   const { network } = useNetwork();
+  const fantasyTokenTicker = useFantasyTokenTicker();
   const { currency } = network;
 
   const token = useAppSelector(state => state.market.market.token);
@@ -69,7 +71,9 @@ function TradeFormInput() {
   const outcome = market.outcomes[selectedOutcomeId];
 
   const { balance: erc20Balance, isLoadingBalance } = useERC20Balance(address);
-  const ethBalance = useAppSelector(state => state.polkamarkets.ethBalance);
+  const { ethBalance, polkBalance } = useAppSelector(
+    state => state.polkamarkets
+  );
 
   const balance = wrapped || !tokenWrapped ? erc20Balance : ethBalance;
 
@@ -81,7 +85,7 @@ function TradeFormInput() {
 
     // max for buy actions - eth balance
     if (type === 'buy') {
-      maxAmount = balance;
+      maxAmount = fantasyTokenTicker ? polkBalance : balance;
     }
     // max for sell actions - number of outcome shares
     else if (type === 'sell') {

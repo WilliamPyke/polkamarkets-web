@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react';
 
+import * as Sentry from '@sentry/react';
 import { features, ui } from 'config';
 import { changeOutcomeData, changeData } from 'redux/ducks/market';
 import { changeMarketOutcomeData, changeMarketData } from 'redux/ducks/markets';
-import { login, fetchAditionalData } from 'redux/ducks/polkamarkets';
+import {
+  login,
+  fetchAditionalData,
+  changePolkBalance,
+  changeActions,
+  changePortfolio
+} from 'redux/ducks/polkamarkets';
 import { PolkamarketsService, PolkamarketsApiService } from 'services';
 
 import TWarningIcon from 'assets/icons/TWarningIcon';
@@ -17,17 +24,14 @@ import {
   useERC20Balance,
   useFantasyTokenTicker,
   useNetwork,
-  usePolkamarketsService
+  usePolkamarketsService,
+  useTrade
 } from 'hooks';
-import useToastNotification from 'hooks/useToastNotification';
 
 import ApproveToken from '../ApproveToken';
-import { Button, ButtonLoading } from '../Button';
-import Feature from '../Feature';
+import { ButtonLoading } from '../Button';
 import NetworkSwitch from '../Networks/NetworkSwitch';
 import Text from '../Text';
-import Toast from '../Toast';
-import ToastNotification from '../ToastNotification';
 
 type TradeActionsProps = {
   onTradeFinished: () => void;
@@ -38,12 +42,20 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const dispatch = useAppDispatch();
   const { network, networkConfig } = useNetwork();
   const polkamarketsService = usePolkamarketsService();
-  const { show, close } = useToastNotification();
   const fantasyTokenTicker = useFantasyTokenTicker();
+  const { status, trade, set: setTrade, reset: resetTrade } = useTrade();
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
-  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
+  const {
+    isLoggedIn,
+    ethAddress,
+    ethBalance,
+    polkBalance,
+    actions,
+    portfolio
+  } = useAppSelector(state => state.polkamarkets);
+
   const wrapped = useAppSelector(state => state.trade.wrapped);
   const marketId = useAppSelector(state => state.trade.selectedMarketId);
   const marketNetworkId = useAppSelector(
@@ -55,12 +67,10 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
     state => state.trade
   );
   const maxAmount = useAppSelector(state => state.trade.maxAmount);
-  const ethAddress = useAppSelector(state => state.polkamarkets.ethAddress);
   const token = useAppSelector(state => state.market.market.token);
   const { wrapped: tokenWrapped, address } = token;
 
   const { balance: erc20Balance } = useERC20Balance(address);
-  const ethBalance = useAppSelector(state => state.polkamarkets.ethBalance);
 
   const balance = wrapped || !tokenWrapped ? erc20Balance : ethBalance;
 
@@ -70,9 +80,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   // Local state
   const [isLoading, setIsLoading] = useState(false);
-  const [transactionSuccess, setTransactionSuccess] = useState(false);
-  const [transactionSuccessHash, setTransactionSuccessHash] =
-    useState(undefined);
+
   const [needsPricesRefresh, setNeedsPricesRefresh] = useState(false);
   const { refreshBalance } = useERC20Balance(address);
 
@@ -114,9 +122,16 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   }
 
   async function handleBuy() {
-    setTransactionSuccess(false);
-    setTransactionSuccessHash(undefined);
-
+    setTrade({
+      type: 'buy',
+      status: 'pending',
+      trade: {
+        market: marketId,
+        outcome: predictionId,
+        network: marketNetworkId,
+        location: window.location.pathname
+      }
+    });
     setIsLoading(true);
     setNeedsPricesRefresh(false);
 
@@ -139,24 +154,55 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         return false;
       }
 
+      setTimeout(() => {
+        if (!needsPricesRefresh) {
+          // Dispatch data to Redux
+          const newPolkBalance = polkBalance - amount;
+          dispatch(changePolkBalance(newPolkBalance));
+
+          const newActions = actions.concat({
+            action: 'Buy',
+            marketId: parseInt(marketId, 10),
+            outcomeId: parseInt(predictionId, 10),
+            shares: sharesToBuy,
+            timestamp: Date.now() / 1000,
+            transactionHash:
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            value: amount
+          });
+          dispatch(changeActions(newActions));
+
+          const newPortfolio = JSON.parse(JSON.stringify(portfolio));
+          if (portfolio[marketId]?.outcomes[predictionId]) {
+            newPortfolio[marketId].outcomes[predictionId].shares += sharesToBuy;
+            newPortfolio[marketId].outcomes[predictionId].price =
+              sharesToBuy / amount;
+          } else {
+            newPortfolio[marketId] = {
+              outcomes: {
+                [predictionId]: {
+                  shares: sharesToBuy,
+                  price: sharesToBuy / amount
+                }
+              }
+            };
+          }
+          dispatch(changePortfolio(newPortfolio));
+
+          setIsLoading(false);
+          onTradeFinished();
+          setTrade({ status: 'success' });
+        }
+      }, 200);
+
       // performing buy action on smart contract
-      const response = await polkamarketsService.buy(
+      await polkamarketsService.buy(
         marketId,
         predictionId,
         amount,
         minShares,
         tokenWrapped && !wrapped
       );
-
-      setIsLoading(false);
-
-      const { status, transactionHash } = response;
-
-      if (status && transactionHash) {
-        setTransactionSuccess(status);
-        setTransactionSuccessHash(transactionHash);
-        show(type);
-      }
 
       // triggering market prices redux update
       reloadMarketPrices();
@@ -168,18 +214,30 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       // updating wallet
       await updateWallet();
       await refreshBalance();
-      setTimeout(() => onTradeFinished(), 1000);
+      resetTrade();
     } catch (error) {
-      setIsLoading(false);
+      setTrade({ status: 'error' });
+      Sentry.captureException(error);
+
+      // restoring wallet data on error too
+      await updateWallet();
+      await refreshBalance();
     }
 
     return true;
   }
 
   async function handleSell() {
-    setTransactionSuccess(false);
-    setTransactionSuccessHash(undefined);
-
+    setTrade({
+      type: 'sell',
+      status: 'pending',
+      trade: {
+        market: marketId,
+        outcome: predictionId,
+        network: marketNetworkId,
+        location: window.location.pathname
+      }
+    });
     setIsLoading(true);
     setNeedsPricesRefresh(false);
 
@@ -203,24 +261,47 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         return false;
       }
 
+      setTimeout(() => {
+        if (!needsPricesRefresh) {
+          // Dispatch data to Redux
+          const newPolkBalance = polkBalance + ethAmount;
+          dispatch(changePolkBalance(newPolkBalance));
+
+          const newActions = actions.concat({
+            action: 'Sell',
+            marketId: parseInt(marketId, 10),
+            outcomeId: parseInt(predictionId, 10),
+            shares: sharesToSell,
+            timestamp: Date.now() / 1000,
+            transactionHash:
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            value: ethAmount
+          });
+          dispatch(changeActions(newActions));
+
+          if (portfolio[marketId]?.outcomes[predictionId]) {
+            const newPortfolio = JSON.parse(JSON.stringify(portfolio));
+            newPortfolio[marketId].outcomes[predictionId].shares -=
+              sharesToSell;
+            newPortfolio[marketId].outcomes[predictionId].price =
+              sharesToSell / ethAmount;
+            dispatch(changePortfolio(newPortfolio));
+          }
+
+          setIsLoading(false);
+          onTradeFinished();
+          setTrade({ status: 'success' });
+        }
+      }, 200);
+
       // performing sell action on smart contract
-      const response = await polkamarketsService.sell(
+      await polkamarketsService.sell(
         marketId,
         predictionId,
         ethAmount,
         minShares,
         tokenWrapped && !wrapped
       );
-
-      setIsLoading(false);
-
-      const { status, transactionHash } = response;
-
-      if (status && transactionHash) {
-        setTransactionSuccess(status);
-        setTransactionSuccessHash(transactionHash);
-        show(type);
-      }
 
       // triggering market prices redux update
       reloadMarketPrices();
@@ -232,9 +313,14 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       // updating wallet
       await updateWallet();
       await refreshBalance();
-      setTimeout(() => onTradeFinished(), 1000);
+      resetTrade();
     } catch (error) {
-      setIsLoading(false);
+      setTrade({ status: 'error' });
+      Sentry.captureException(error);
+
+      // restoring wallet data on error too
+      await updateWallet();
+      await refreshBalance();
     }
 
     return true;
@@ -297,81 +383,77 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
             </Text>
           </div>
         ) : null}
-        {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
-          <div className="flex-column gap-6 width-full">
-            {isValidAmount && preventBankruptcy && amountOverHalfBalance ? (
-              <AlertMinimal
-                variant="warning"
-                description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}
-              />
-            ) : null}
-            {!features.fantasy.enabled || isLoggedIn ? (
-              <ApproveToken
-                fullwidth
-                address={token.address}
-                ticker={token.ticker}
-                wrapped={token.wrapped && !wrapped}
-              >
-                <ButtonLoading
-                  color="primary"
+        <div className="flex-column gap-4 width-full">
+          {status === 'error' ? (
+            <AlertMinimal
+              variant="danger"
+              description="Sorry, we failed to record your prediction. Please try again."
+            />
+          ) : null}
+          {status === 'success' && trade.market === marketId ? (
+            <AlertMinimal
+              variant="information"
+              description="We're recording your previous prediction. Hang on..."
+            />
+          ) : null}
+          {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
+            <div className="flex-column gap-6 width-full">
+              {isValidAmount && preventBankruptcy && amountOverHalfBalance ? (
+                <AlertMinimal
+                  variant="warning"
+                  description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}
+                />
+              ) : null}
+              {!features.fantasy.enabled || isLoggedIn ? (
+                <ApproveToken
                   fullwidth
-                  onClick={handleBuy}
-                  disabled={!isValidAmount || isLoading}
-                  loading={isLoading}
+                  address={token.address}
+                  ticker={token.ticker}
+                  wrapped={token.wrapped && !wrapped}
                 >
-                  Predict
-                </ButtonLoading>
-              </ApproveToken>
-            ) : (
-              <ProfileSignin
-                fullwidth
-                size="normal"
-                color="primary"
-                onClick={handleLoginToPredict}
-              >
-                Login to Predict
-              </ProfileSignin>
-            )}
-          </div>
-        ) : null}
-        {type === 'sell' && !needsPricesRefresh && !isWrongNetwork ? (
-          <ButtonLoading
-            color="danger"
-            fullwidth
-            onClick={handleSell}
-            disabled={!isValidAmount || isLoading}
-            loading={isLoading}
-          >
-            Sell
-          </ButtonLoading>
-        ) : null}
+                  <ButtonLoading
+                    color="primary"
+                    fullwidth
+                    onClick={handleBuy}
+                    disabled={
+                      !isValidAmount ||
+                      isLoading ||
+                      (status === 'success' && trade.market === marketId)
+                    }
+                    loading={isLoading}
+                  >
+                    Predict
+                  </ButtonLoading>
+                </ApproveToken>
+              ) : (
+                <ProfileSignin
+                  fullwidth
+                  size="normal"
+                  color="primary"
+                  onClick={handleLoginToPredict}
+                >
+                  Login to Predict
+                </ProfileSignin>
+              )}
+            </div>
+          ) : null}
+          {type === 'sell' && !needsPricesRefresh && !isWrongNetwork ? (
+            <ButtonLoading
+              color="danger"
+              fullwidth
+              onClick={handleSell}
+              disabled={
+                !isValidAmount ||
+                isLoading ||
+                (status === 'success' && trade.market === marketId)
+              }
+              loading={isLoading}
+            >
+              Sell
+            </ButtonLoading>
+          ) : null}
+        </div>
       </div>
-      {transactionSuccess && transactionSuccessHash ? (
-        <ToastNotification id={type} duration={10000}>
-          <Toast
-            variant="success"
-            title="Success"
-            description="Your transaction is completed!"
-          >
-            <Toast.Actions>
-              <Feature name="regular">
-                <a
-                  target="_blank"
-                  href={`${network.explorerURL}/tx/${transactionSuccessHash}`}
-                  rel="noreferrer"
-                >
-                  <Button size="sm" color="success">
-                    View on Explorer
-                  </Button>
-                </a>
-              </Feature>
-              <Button size="sm" variant="ghost" onClick={() => close(type)}>
-                Dismiss
-              </Button>
-            </Toast.Actions>
-          </Toast>
-        </ToastNotification>
-      ) : null}
     </div>
   );
 }
