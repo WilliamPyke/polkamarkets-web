@@ -378,13 +378,13 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           {status === 'error' ? (
             <AlertMinimal
               variant="danger"
-              description="Something went wrong. Please try again."
+              description="Sorry, we failed to record your prediction. Please try again."
             />
           ) : null}
           {status === 'success' && trade.market === marketId ? (
             <AlertMinimal
               variant="information"
-              description="There's an ongoing pending transaction. Please wait for it to be completed."
+              description="We're recording your previous prediction. Hang on..."
             />
           ) : null}
           {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
