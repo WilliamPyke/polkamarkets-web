@@ -3,7 +3,9 @@ import {
   useCallback,
   MouseEvent,
   ContextType,
-  WheelEvent
+  WheelEvent,
+  useRef,
+  useEffect
 } from 'react';
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
 
@@ -66,6 +68,26 @@ function TradePredictionsWithImages({
     state => state.trade
   );
 
+  const apiRef = useRef({} as scrollVisibilityApiType);
+
+  useEffect(() => {
+    if (apiRef.current) {
+      const itemIsVisible = apiRef.current.isItemVisible(
+        selectedOutcomeId.toString()
+      );
+
+      if (!itemIsVisible) {
+        const item = apiRef.current.getItemElementById(
+          selectedOutcomeId.toString()
+        );
+
+        if (item) {
+          apiRef.current.scrollToItem(item, 'auto', 'center');
+        }
+      }
+    }
+  }, [selectedOutcomeId]);
+
   const onWheel = useCallback(
     (apiObj: scrollVisibilityApiType, event: WheelEvent): void => {
       const isTouchpad =
@@ -96,6 +118,7 @@ function TradePredictionsWithImages({
 
   return (
     <ScrollMenu
+      apiRef={apiRef}
       wrapperClassName={multiple ? styles.predictionsWithImageWrapper : ''}
       scrollContainerClassName={
         multiple
