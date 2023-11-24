@@ -95,7 +95,15 @@ function TradeFormInput() {
 
     // rounding (down) to 5 decimals
     return roundDown(maxAmount);
-  }, [type, balance, portfolio, selectedMarketId, selectedOutcomeId]);
+  }, [
+    type,
+    fantasyTokenTicker,
+    polkBalance,
+    balance,
+    portfolio,
+    selectedMarketId,
+    selectedOutcomeId
+  ]);
 
   useEffect(() => {
     dispatch(setMaxAmount(max()));
