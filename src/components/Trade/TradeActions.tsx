@@ -172,13 +172,22 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           });
           dispatch(changeActions(newActions));
 
+          const newPortfolio = JSON.parse(JSON.stringify(portfolio));
           if (portfolio[marketId]?.outcomes[predictionId]) {
-            const newPortfolio = JSON.parse(JSON.stringify(portfolio));
             newPortfolio[marketId].outcomes[predictionId].shares += sharesToBuy;
             newPortfolio[marketId].outcomes[predictionId].price =
               sharesToBuy / amount;
-            dispatch(changePortfolio(newPortfolio));
+          } else {
+            newPortfolio[marketId] = {
+              outcomes: {
+                [predictionId]: {
+                  shares: sharesToBuy,
+                  price: sharesToBuy / amount
+                }
+              }
+            };
           }
+          dispatch(changePortfolio(newPortfolio));
 
           setIsLoading(false);
           onTradeFinished();
