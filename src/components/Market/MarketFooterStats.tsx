@@ -77,7 +77,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           {theme.device.isDesktop && <span className="pm-c-divider--circle" />}
         </>
       )}
-      {!!volume && (
+      {theme.device.isDesktop && !!volume && (
         <>
           <Text
             as="span"
@@ -188,7 +188,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           <span className="pm-c-divider--circle" />
         </Feature>
       )}
-      {theme.device.isDesktop && market.expiresAt && (
+      {market.expiresAt && (
         <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
           <Tooltip
             className={marketClasses.footerStatsTooltip}
