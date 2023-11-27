@@ -56,24 +56,24 @@ function formatMarketPositions(
       align: 'left',
       sortBy: 'outcome.title'
     },
-    {
-      title: 'Price (24h)',
-      key: 'price',
-      align: 'right',
-      sortBy: 'price.value'
-    },
+    // {
+    //   title: 'Price (24h)',
+    //   key: 'price',
+    //   align: 'right',
+    //   sortBy: 'price.value'
+    // },
     {
       title: 'Profit/Loss',
       key: 'profit',
       align: 'right',
       sortBy: 'profit.value'
     },
-    {
-      title: 'Shares',
-      key: 'shares',
-      align: 'center',
-      sortBy: 'shares'
-    },
+    // {
+    //   title: 'Shares',
+    //   key: 'shares',
+    //   align: 'center',
+    //   sortBy: 'shares'
+    // },
     { title: 'Value', key: 'value', align: 'right', sortBy: 'value' },
     {
       title: 'Max. Payout',
@@ -97,13 +97,13 @@ function formatMarketPositions(
       // ignoring zero balances
       if (portfolio[market.id]?.outcomes[outcome.id]?.shares >= 0.0005) {
         const shares = portfolio[market.id]?.outcomes[outcome.id]?.shares;
-        const price = {
-          value: outcome.price,
-          change: {
-            type: outcome.priceChange24h > 0 ? 'up' : 'down',
-            value: roundNumber(Math.abs(outcome.priceChange24h) * 100, 2)
-          }
-        };
+        // const price = {
+        //   value: outcome.price,
+        //   change: {
+        //     type: outcome.priceChange24h > 0 ? 'up' : 'down',
+        //     value: roundNumber(Math.abs(outcome.priceChange24h) * 100, 2)
+        //   }
+        // };
         const buyPrice = portfolio[market.id]?.outcomes[outcome.id]?.price;
         const profit = {
           value: (outcome.price - buyPrice) * shares,
@@ -167,10 +167,10 @@ function formatMarketPositions(
         rows.push({
           market,
           outcome,
-          price,
+          // price,
           value,
           profit,
-          shares,
+          // shares,
           maxPayout,
           result
         });
