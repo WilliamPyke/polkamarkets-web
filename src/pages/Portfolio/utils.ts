@@ -69,7 +69,13 @@ function formatMarketPositions(
       sortBy: 'buyPrice.value'
     },
     {
-      title: 'Profit/Loss',
+      title: 'Current',
+      key: 'value',
+      align: 'right',
+      sortBy: 'value.value'
+    },
+    {
+      title: 'Performance',
       key: 'profit',
       align: 'right',
       sortBy: 'profit.value'
@@ -80,12 +86,6 @@ function formatMarketPositions(
     //   align: 'center',
     //   sortBy: 'shares'
     // },
-    {
-      title: 'Current',
-      key: 'value',
-      align: 'right',
-      sortBy: 'value.value'
-    },
     {
       title: 'Max. Payout',
       key: 'maxPayout',
