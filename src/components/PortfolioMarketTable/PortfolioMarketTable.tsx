@@ -128,23 +128,29 @@ const PortfolioMarketTable = ({
       <table className="pm-c-table">
         <tbody>
           <tr className="pm-c-table__header">
-            {headers?.map(header => (
-              <th
-                id={header.key}
-                key={header.key}
-                className={classnames({
-                  'pm-c-table__header-item': true,
-                  [`pm-c-table__item--${header.align}`]: true,
-                  'pm-c-table__item--button': true,
-                  'pm-c-table__item--with-arrow': key && key === header.sortBy
-                })}
-                scope="col"
-                onClick={() => requestSort(header.sortBy)}
-              >
-                {sortDirectionArrow(header.sortBy)}
-                {header.title}
-              </th>
-            ))}
+            {headers
+              ?.filter(header =>
+                filter === 'resolved'
+                  ? !['maxPayout'].includes(header.key)
+                  : true
+              )
+              .map(header => (
+                <th
+                  id={header.key}
+                  key={header.key}
+                  className={classnames({
+                    'pm-c-table__header-item': true,
+                    [`pm-c-table__item--${header.align}`]: true,
+                    'pm-c-table__item--button': true,
+                    'pm-c-table__item--with-arrow': key && key === header.sortBy
+                  })}
+                  scope="col"
+                  onClick={() => requestSort(header.sortBy)}
+                >
+                  {sortDirectionArrow(header.sortBy)}
+                  {header.title}
+                </th>
+              ))}
           </tr>
           {sortedItems?.map(
             ({
@@ -348,7 +354,7 @@ const PortfolioMarketTable = ({
                     </div>
                   </td>
                 )}
-                {maxPayout && (
+                {filter !== 'resolved' && maxPayout && (
                   <td
                     id="maxPayout"
                     className="pm-c-table__row-item pm-c-table__item--right notranslate"
