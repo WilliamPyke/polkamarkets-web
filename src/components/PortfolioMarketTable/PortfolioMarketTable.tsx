@@ -313,21 +313,39 @@ const PortfolioMarketTable = ({
                     id="value"
                     className="pm-c-table__row-item pm-c-table__item--right notranslate"
                   >
-                    <Text
-                      as="span"
-                      scale="caption"
-                      fontWeight="semibold"
-                      style={{
-                        display: 'inline-flex',
-                        justifyContent: 'center',
-                        gap: '0.5rem'
-                      }}
-                    >
-                      {`${roundNumber(value, 3)} `}
-                      <Text as="strong" scale="caption" fontWeight="semibold">
-                        {` ${fantasyTokenTicker || market.token.symbol}`}
+                    <div className="market-table__row-item__group">
+                      <Text
+                        as="span"
+                        scale="caption"
+                        fontWeight="semibold"
+                        style={{
+                          display: 'inline-flex',
+                          justifyContent: 'center',
+                          gap: '0.5rem'
+                        }}
+                      >
+                        {`${roundNumber(value.value, 3)} `}
+                        <Text as="strong" scale="caption" fontWeight="semibold">
+                          {` ${fantasyTokenTicker || market.token.symbol}`}
+                        </Text>
                       </Text>
-                    </Text>
+                      <Text
+                        className={
+                          value.change.type !== 'stable'
+                            ? `market-table__row-item__change--${profit.change.type}`
+                            : undefined
+                        }
+                        as="span"
+                        scale="caption"
+                        fontWeight="bold"
+                      >
+                        {value.change.type === 'up' ? <ArrowUpIcon /> : null}
+                        {value.change.type === 'down' ? (
+                          <ArrowDownIcon />
+                        ) : null}
+                        {`${roundNumber(value.probability * 100, 2)}%`}
+                      </Text>
+                    </div>
                   </td>
                 )}
                 {maxPayout && (

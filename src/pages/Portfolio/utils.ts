@@ -80,7 +80,12 @@ function formatMarketPositions(
     //   align: 'center',
     //   sortBy: 'shares'
     // },
-    { title: 'Value', key: 'value', align: 'right', sortBy: 'value' },
+    {
+      title: 'Current',
+      key: 'value',
+      align: 'right',
+      sortBy: 'value.value'
+    },
     {
       title: 'Max. Payout',
       key: 'maxPayout',
@@ -178,7 +183,21 @@ function formatMarketPositions(
             value: buyPrice * shares,
             probability: buyPrice
           },
-          value,
+          value: {
+            value,
+            probability: outcome.price,
+            change: {
+              type: () => {
+                if (buyPrice === outcome.price) {
+                  return 'stable';
+                }
+                if (buyPrice < outcome.price) {
+                  return 'up';
+                }
+                return 'down';
+              }
+            }
+          },
           profit,
           // shares,
           maxPayout,
