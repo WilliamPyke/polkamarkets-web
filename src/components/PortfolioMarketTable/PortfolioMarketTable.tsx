@@ -151,6 +151,7 @@ const PortfolioMarketTable = ({
               market,
               outcome,
               price,
+              buyPrice,
               profit,
               value,
               shares,
@@ -231,6 +232,33 @@ const PortfolioMarketTable = ({
                           <ArrowDownIcon />
                         )}
                         {`${price.change.value}%`}
+                      </Text>
+                    </div>
+                  </td>
+                )}
+                {buyPrice && (
+                  <td
+                    id="buyPrice"
+                    className="pm-c-table__row-item pm-c-table__item--right notranslate"
+                  >
+                    <div className="market-table__row-item__group">
+                      <Text
+                        as="span"
+                        scale="caption"
+                        fontWeight="semibold"
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          gap: '0.5rem'
+                        }}
+                      >
+                        {`${roundNumber(buyPrice.value, 3)} `}
+                        <Text as="strong" scale="caption" fontWeight="semibold">
+                          {` ${fantasyTokenTicker || market.token.symbol}`}
+                        </Text>
+                      </Text>
+                      <Text as="span" scale="caption" fontWeight="bold">
+                        {`${roundNumber(buyPrice.probability * 100, 2)}%`}
                       </Text>
                     </div>
                   </td>

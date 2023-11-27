@@ -63,6 +63,12 @@ function formatMarketPositions(
     //   sortBy: 'price.value'
     // },
     {
+      title: 'Initial',
+      key: 'buyPrice',
+      align: 'right',
+      sortBy: 'buyPrice.value'
+    },
+    {
       title: 'Profit/Loss',
       key: 'profit',
       align: 'right',
@@ -168,6 +174,10 @@ function formatMarketPositions(
           market,
           outcome,
           // price,
+          buyPrice: {
+            value: buyPrice * shares,
+            probability: buyPrice
+          },
           value,
           profit,
           // shares,
