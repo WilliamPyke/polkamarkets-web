@@ -269,43 +269,6 @@ const PortfolioMarketTable = ({
                     </div>
                   </td>
                 )}
-                {profit && (
-                  <td
-                    id="profit"
-                    className="pm-c-table__row-item pm-c-table__item--right notranslate"
-                  >
-                    <div className="market-table__row-item__group">
-                      <Text
-                        as="span"
-                        scale="caption"
-                        fontWeight="semibold"
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          gap: '0.5rem'
-                        }}
-                      >
-                        {`${roundNumber(profit.value, 3)} `}
-                        <Text as="strong" scale="caption" fontWeight="semibold">
-                          {` ${fantasyTokenTicker || market.token.symbol}`}
-                        </Text>
-                      </Text>
-                      <Text
-                        className={`market-table__row-item__change--${profit.change.type}`}
-                        as="span"
-                        scale="caption"
-                        fontWeight="bold"
-                      >
-                        {profit.change.type === 'up' ? (
-                          <ArrowUpIcon />
-                        ) : (
-                          <ArrowDownIcon />
-                        )}
-                        {`${profit.change.value}%`}
-                      </Text>
-                    </div>
-                  </td>
-                )}
                 {shares && (
                   <td
                     id="shares"
@@ -350,6 +313,43 @@ const PortfolioMarketTable = ({
                           <ArrowDownIcon />
                         ) : null}
                         {`${roundNumber(value.probability * 100, 2)}%`}
+                      </Text>
+                    </div>
+                  </td>
+                )}
+                {profit && (
+                  <td
+                    id="profit"
+                    className="pm-c-table__row-item pm-c-table__item--right notranslate"
+                  >
+                    <div className="market-table__row-item__group">
+                      <Text
+                        as="span"
+                        scale="caption"
+                        fontWeight="semibold"
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          gap: '0.5rem'
+                        }}
+                      >
+                        {`${roundNumber(profit.value, 3)} `}
+                        <Text as="strong" scale="caption" fontWeight="semibold">
+                          {` ${fantasyTokenTicker || market.token.symbol}`}
+                        </Text>
+                      </Text>
+                      <Text
+                        className={`market-table__row-item__change--${profit.change.type}`}
+                        as="span"
+                        scale="caption"
+                        fontWeight="bold"
+                      >
+                        {profit.change.type === 'up' ? (
+                          <ArrowUpIcon />
+                        ) : (
+                          <ArrowDownIcon />
+                        )}
+                        {`${profit.change.value}%`}
                       </Text>
                     </div>
                   </td>
