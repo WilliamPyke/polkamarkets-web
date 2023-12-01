@@ -119,7 +119,8 @@ function TradeFormInput() {
   useEffect(() => {
     if (
       [type, market, outcome, amount].every(
-        value => !isUndefined(value) && !isEmpty(value)
+        value =>
+          !isUndefined(value) && (!isEmpty(value) || typeof value === 'number')
       )
     ) {
       const tradeDetails = calculateTradeDetails(type, market, outcome, amount);
