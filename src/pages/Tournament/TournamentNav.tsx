@@ -82,8 +82,8 @@ export default function TournamentNav({
       </Button>
       <SearchBar
         size="sm"
-        name="Search Markets"
-        placeholder="Search markets"
+        name="Search Questions"
+        placeholder="Search questions"
         onSearch={handleSearch}
         onChange={handleSearchChange}
         value={searchValue}
