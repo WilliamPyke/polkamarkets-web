@@ -25,6 +25,7 @@ type TournamentHeroProps = {
     imageUrl: string | null;
     name: string;
   };
+  criteria?: 'Won predictions' | 'Earnings';
 };
 
 export default function TournamentHero({
@@ -39,7 +40,8 @@ export default function TournamentHero({
   topUsers,
   questions,
   members,
-  reward
+  reward,
+  criteria
 }: TournamentHeroProps) {
   return (
     <Container className={styles.wrapper}>
@@ -145,10 +147,13 @@ export default function TournamentHero({
             </span>
           </div>
           <div className={styles.rootFooterStats}>
-            <span className={styles.rootFooterStatsItem}>
-              Criteria: <strong>Won predictions</strong>
-            </span>
-            <span
+            {criteria ? (
+              <span className={styles.rootFooterStatsItem}>
+                Criteria: <strong>{criteria}</strong>
+              </span>
+            ) : null}
+
+            {/* <span
               className={classNames(
                 'pm-c-divider--circle',
                 styles.rootFooterStatsDivider
@@ -159,7 +164,7 @@ export default function TournamentHero({
                 <Icon name="Todo" className={styles.rootFooterStatsItemIcon} />{' '}
                 <strong>Rules</strong>
               </span>
-            </a>
+            </a> */}
           </div>
         </div>
       </div>

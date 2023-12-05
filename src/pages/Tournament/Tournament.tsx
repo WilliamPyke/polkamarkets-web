@@ -67,6 +67,17 @@ export default function Tournament() {
 
   const isTournamentEnded = dayjs().utc().isAfter(dayjs(data?.expiresAt).utc());
 
+  const tournamentCriteria = useMemo(() => {
+    if (data) {
+      if (data.rankBy === 'claim_winnings_count,earnings_eur') {
+        return 'Won predictions';
+      }
+      return 'Earnings';
+    }
+
+    return undefined;
+  }, [data]);
+
   if (isLoadingTournamentBySlugQuery || isLoadingLeaderboardByTimeframeQuery)
     return (
       <div className="flex-row justify-center align-center width-full padding-y-5 padding-x-4">
@@ -107,6 +118,7 @@ export default function Tournament() {
             imageUrl: null,
             name: 'Amazon Gift Card'
           }}
+          criteria={tournamentCriteria}
         />
       )}
       <Container ref={ref} className={styles.nav}>
