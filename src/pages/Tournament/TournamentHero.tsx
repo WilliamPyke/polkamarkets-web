@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import { ui } from 'config';
 import { Avatar, Container, Hero } from 'ui';
 
-import { Button, Icon, Pill, Share } from 'components';
+import { Button, Icon, Share } from 'components';
 
 import styles from './TournamentHero.module.scss';
 
 type TournamentHeroProps = {
   landName?: string;
-  landSlug?: string;
+  landImageUrl?: string | null;
   landBannerUrl?: string | null;
   tournamentName?: string;
   tournamentDescription?: string;
@@ -21,7 +21,7 @@ type TournamentHeroProps = {
 
 export default function TournamentHero({
   landName,
-  landSlug,
+  landImageUrl,
   landBannerUrl,
   tournamentName,
   tournamentDescription,
@@ -68,19 +68,17 @@ export default function TournamentHero({
           ) : null}
           <div className={styles.rootHeroContent}>
             <div>
-              <div className="pm-p-home__hero__breadcrumb">
-                {landName && landSlug ? (
-                  <Link to={`/lands/${landSlug}`}>
-                    <Pill
-                      color="primary"
-                      className={{
-                        root: styles.rootHeroContentPill,
-                        text: styles.rootHeroContentPillText
-                      }}
-                    >
-                      {landName}
-                    </Pill>
-                  </Link>
+              <div className={styles.rootHeroContentLand}>
+                {landImageUrl ? (
+                  <Avatar
+                    $radius="lg"
+                    src={landImageUrl}
+                    alt={landName}
+                    className={styles.rootHeroContentLandAvatar}
+                  />
+                ) : null}
+                {landName ? (
+                  <h4 className={styles.rootHeroContentLandName}>{landName}</h4>
                 ) : null}
               </div>
               {tournamentName ? (
