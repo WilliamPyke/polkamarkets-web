@@ -11,6 +11,7 @@ import styles from './TournamentHero.module.scss';
 
 type TournamentHeroProps = {
   landName?: string;
+  landSlug?: string;
   landImageUrl?: string | null;
   landBannerUrl?: string | null;
   tournamentName?: string;
@@ -28,6 +29,7 @@ type TournamentHeroProps = {
 
 export default function TournamentHero({
   landName,
+  landSlug,
   landImageUrl,
   landBannerUrl,
   tournamentName,
@@ -44,9 +46,9 @@ export default function TournamentHero({
       <div className={styles.root}>
         <div className={styles.rootHeader}>
           <div className={styles.rootHeaderNavigation}>
-            <Link to="/tournaments">
+            <Link to={landSlug ? `/lands/${landSlug}` : '/tournaments'}>
               <Button className={styles.rootHeaderNavigationButton}>
-                <Icon name="Arrow" />
+                <Icon name="Arrow" title="Back to land" />
               </Button>
             </Link>
             {landName ? (
