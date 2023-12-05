@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ui } from 'config';
 import { Container, Hero } from 'ui';
 
-import { Pill, Share, Text } from 'components';
+import { Button, Icon, Pill, Share, Text } from 'components';
 
 import styles from './TournamentHero.module.scss';
 
@@ -28,14 +28,34 @@ export default function TournamentHero({
   topUsers
 }: TournamentHeroProps) {
   return (
-    <Container className={styles.header}>
+    <Container className={styles.root}>
+      <div className={styles.rootHeader}>
+        <div className={styles.rootHeaderNavigation}>
+          <Link to="/tournaments">
+            <Button className={styles.rootHeaderNavigationButton}>
+              <Icon name="Arrow" />
+            </Button>
+          </Link>
+          {landName ? (
+            <h4 className={styles.rootHeaderNavigationText}>{landName}</h4>
+          ) : null}
+        </div>
+        <div className={styles.rootHeaderActions}>
+          {tournamentSlug ? (
+            <Share
+              id={tournamentSlug}
+              className={styles.rootHeaderActionsButton}
+            />
+          ) : null}
+        </div>
+      </div>
       <Hero
         $backdrop="main"
         $rounded
         $image={landBannerUrl || ui.hero.image}
-        className={`pm-p-home__hero ${styles.headerHero}`}
+        className={`pm-p-home__hero ${styles.rootHero}`}
       >
-        <div className={styles.headerHeroContent}>
+        <div className={styles.rootHeroContent}>
           <div>
             <div className="pm-p-home__hero__breadcrumb">
               {landName && landSlug ? (
@@ -43,8 +63,8 @@ export default function TournamentHero({
                   <Pill
                     color="primary"
                     className={{
-                      root: styles.headerHeroContentPill,
-                      text: styles.headerHeroContentPillText
+                      root: styles.rootHeroContentPill,
+                      text: styles.rootHeroContentPillText
                     }}
                   >
                     {landName}
@@ -69,7 +89,7 @@ export default function TournamentHero({
               </Text>
             ) : null}
             {tournamentSlug ? (
-              <div className={styles.headerHeroActions}>
+              <div className={styles.rootHeroActions}>
                 <Share
                   id={`${tournamentSlug}-hero`}
                   size="xs"
@@ -83,6 +103,7 @@ export default function TournamentHero({
           {topUsers || null}
         </div>
       </Hero>
+      <div className={styles.rootFooter} />
     </Container>
   );
 }
