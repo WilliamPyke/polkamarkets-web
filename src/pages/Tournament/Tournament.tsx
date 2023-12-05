@@ -100,6 +100,12 @@ export default function Tournament() {
               isLoading={isLoadingLeaderboardByTimeframeQuery}
             />
           }
+          questions={marketsIds.length}
+          members={data?.users}
+          reward={{
+            imageUrl: null,
+            name: 'Amazon Gift Card'
+          }}
         />
       )}
       <Container ref={ref} className={styles.nav}>

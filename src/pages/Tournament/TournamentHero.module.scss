@@ -168,5 +168,51 @@
     gap: var(--size-24);
 
     padding: var(--size-12) var(--size-16);
+
+    &Stats {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      &Divider {
+        margin: 0 var(--size-12);
+        flex-shrink: 0;
+      }
+
+      &Item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        color: #637084;
+
+        font-size: var(--size-12--rem);
+        font-weight: 600;
+        line-height: normal;
+        letter-spacing: 0.012em;
+        text-transform: uppercase;
+        text-align: center;
+
+        strong {
+          margin-left: 0.3rem;
+          color: #ffffff;
+          font-weight: 600;
+        }
+
+        &Avatar {
+          height: var(--size-16);
+          width: var(--size-16);
+
+          aspect-ratio: 1 / 1;
+          flex-shrink: 0;
+
+          margin-right: 10px;
+        }
+
+        &Icon {
+          margin-right: var(--size-4);
+        }
+      }
+    }
   }
 }

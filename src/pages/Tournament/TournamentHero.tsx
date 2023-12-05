@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
+import classNames from 'classnames';
 import { ui } from 'config';
 import { Avatar, Container, Hero } from 'ui';
 
@@ -17,6 +18,12 @@ type TournamentHeroProps = {
   tournamentSlug?: string;
   tournamentImageUrl?: string | null;
   topUsers?: ReactNode;
+  questions: number;
+  members?: number;
+  reward: {
+    imageUrl: string | null;
+    name: string;
+  };
 };
 
 export default function TournamentHero({
@@ -27,7 +34,10 @@ export default function TournamentHero({
   tournamentDescription,
   tournamentSlug,
   tournamentImageUrl,
-  topUsers
+  topUsers,
+  questions,
+  members,
+  reward
 }: TournamentHeroProps) {
   return (
     <Container className={styles.wrapper}>
@@ -93,7 +103,61 @@ export default function TournamentHero({
             {topUsers || null}
           </div>
         </Hero>
-        <div className={styles.rootFooter} />
+        <div className={styles.rootFooter}>
+          <div className={styles.rootFooterStats}>
+            <span className={styles.rootFooterStatsItem}>
+              Questions: <strong>{questions}</strong>
+            </span>
+            {members ? (
+              <>
+                <span
+                  className={classNames(
+                    'pm-c-divider--circle',
+                    styles.rootFooterStatsDivider
+                  )}
+                />
+                <span className={styles.rootFooterStatsItem}>
+                  Members: <strong>{members}</strong>
+                </span>
+              </>
+            ) : null}
+            <span
+              className={classNames(
+                'pm-c-divider--circle',
+                styles.rootFooterStatsDivider
+              )}
+            />
+            <span className={styles.rootFooterStatsItem}>
+              Rewards:{' '}
+              <strong>
+                {reward.imageUrl ? (
+                  <Avatar
+                    $radius="lg"
+                    src={reward.imageUrl}
+                    alt={reward.name}
+                    className={styles.rootFooterStatsItemAvatar}
+                  />
+                ) : null}
+                {reward.name}
+              </strong>
+            </span>
+          </div>
+          <div className={styles.rootFooterStats}>
+            <span className={styles.rootFooterStatsItem}>
+              Criteria: <strong>Won predictions</strong>
+            </span>
+            <span
+              className={classNames(
+                'pm-c-divider--circle',
+                styles.rootFooterStatsDivider
+              )}
+            />
+            <span className={styles.rootFooterStatsItem}>
+              <Icon name="Todo" className={styles.rootFooterStatsItemIcon} />{' '}
+              <strong>Rules</strong>
+            </span>
+          </div>
+        </div>
       </div>
     </Container>
   );
