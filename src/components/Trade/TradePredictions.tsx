@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState, MouseEvent } from 'react';
+import { Virtuoso } from 'react-virtuoso';
 
 import cn from 'classnames';
 import { roundNumber } from 'helpers/math';
@@ -8,7 +9,6 @@ import { Image } from 'ui';
 
 import { useAppDispatch, useAppSelector } from 'hooks';
 
-import VirtualizedList from '../VirtualizedList';
 import styles from './Trade.module.scss';
 import { View } from './Trade.types';
 import TradePredictionsWithImages from './TradePredictionsWithImages';
@@ -19,13 +19,19 @@ type TradePredictionsProps = {
   onPredictionSelected?: () => void;
 };
 
+const DEFAULT_VISIBLE_PREDICTIONS = 3;
+
 function TradePredictions({
   view,
   size = 'md',
   onPredictionSelected
 }: TradePredictionsProps) {
   const dispatch = useAppDispatch();
-  const [visiblePredictions, setVisiblePredictions] = useState(3);
+  const [visiblePredictions, setVisiblePredictions] = useState(
+    DEFAULT_VISIBLE_PREDICTIONS
+  );
+  const hasVisiblePredictions =
+    visiblePredictions !== DEFAULT_VISIBLE_PREDICTIONS;
 
   const { id, outcomes, networkId } = useAppSelector(
     state => state.market.market
@@ -69,8 +75,11 @@ function TradePredictions({
   if (view === 'default' || (view === 'modal' && !withImages)) {
     return (
       <div>
-        <VirtualizedList
-          height={listHeight}
+        <Virtuoso
+          style={{
+            height: !hasVisiblePredictions ? listHeight : window.innerHeight
+          }}
+          useWindowScroll={hasVisiblePredictions}
           data={on}
           itemContent={(index, outcome) => (
             <button
