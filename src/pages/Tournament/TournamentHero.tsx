@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ui } from 'config';
 import { Avatar, Container, Hero } from 'ui';
 
-import { Button, Icon, Pill, Share, Text } from 'components';
+import { Button, Icon, Pill, Share } from 'components';
 
 import styles from './TournamentHero.module.scss';
 
@@ -84,20 +84,12 @@ export default function TournamentHero({
                 ) : null}
               </div>
               {tournamentName ? (
-                <Text
-                  as="h2"
-                  fontWeight="bold"
-                  scale="heading-large"
-                  color="light"
-                  className="pm-p-home__hero__heading"
-                >
-                  {tournamentName}
-                </Text>
+                <h2 className={styles.rootHeroContentName}>{tournamentName}</h2>
               ) : null}
               {tournamentDescription ? (
-                <Text as="span" fontWeight="medium" color="light">
+                <p className={styles.rootHeroContentDescription}>
                   {tournamentDescription}
-                </Text>
+                </p>
               ) : null}
             </div>
             {topUsers || null}

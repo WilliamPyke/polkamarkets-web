@@ -121,6 +121,26 @@
           opacity: 0.8;
         }
       }
+
+      &Name {
+        color: var(--color-text-1);
+        font-size: var(--size-24--rem);
+        font-weight: 600;
+        line-height: normal;
+
+        align-self: stretch;
+
+        margin-bottom: var(--size-8);
+      }
+
+      &Description {
+        color: #ffffff;
+        font-size: var(--size-14--rem);
+        font-weight: 400;
+        line-height: normal;
+
+        align-self: stretch;
+      }
     }
   }
 
