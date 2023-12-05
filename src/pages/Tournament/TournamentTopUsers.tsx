@@ -27,11 +27,6 @@ const columns: TournamentTopUsersColumn[] = [
     key: 'thirdPlace',
     title: 'Third place',
     render: topUserColumnRender
-  },
-  {
-    key: 'fourthPlace',
-    title: 'Fourth place',
-    render: topUserColumnRender
   }
 ];
 
