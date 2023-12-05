@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ui } from 'config';
-import { Container, Hero } from 'ui';
+import { Avatar, Container, Hero } from 'ui';
 
 import { Button, Icon, Pill, Share, Text } from 'components';
 
@@ -15,6 +15,7 @@ type TournamentHeroProps = {
   tournamentName?: string;
   tournamentDescription?: string;
   tournamentSlug?: string;
+  tournamentImageUrl?: string | null;
   topUsers?: ReactNode;
 };
 
@@ -25,6 +26,7 @@ export default function TournamentHero({
   tournamentName,
   tournamentDescription,
   tournamentSlug,
+  tournamentImageUrl,
   topUsers
 }: TournamentHeroProps) {
   return (
@@ -56,6 +58,14 @@ export default function TournamentHero({
           $image={landBannerUrl || ui.hero.image}
           className={`pm-p-home__hero ${styles.rootHero}`}
         >
+          {tournamentImageUrl ? (
+            <Avatar
+              $radius="md"
+              src={tournamentImageUrl}
+              alt={tournamentName}
+              className={styles.rootHeroAvatar}
+            />
+          ) : null}
           <div className={styles.rootHeroContent}>
             <div>
               <div className="pm-p-home__hero__breadcrumb">
@@ -88,17 +98,6 @@ export default function TournamentHero({
                 <Text as="span" fontWeight="medium" color="light">
                   {tournamentDescription}
                 </Text>
-              ) : null}
-              {tournamentSlug ? (
-                <div className={styles.rootHeroActions}>
-                  <Share
-                    id={`${tournamentSlug}-hero`}
-                    size="xs"
-                    variant="normal"
-                    color="default"
-                    iconOnly={false}
-                  />
-                </div>
               ) : null}
             </div>
             {topUsers || null}

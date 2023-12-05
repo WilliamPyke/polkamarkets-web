@@ -91,6 +91,14 @@
     border: 1px solid var(--color-border);
     border-radius: var(--size-8);
 
+    &Avatar {
+      height: 100px;
+      width: 100px;
+
+      aspect-ratio: 1 / 1;
+      flex-shrink: 0;
+    }
+
     &Content {
       display: flex;
       flex-direction: column;
@@ -112,17 +120,6 @@
           text-transform: uppercase;
           opacity: 0.8;
         }
-      }
-    }
-
-    &Actions {
-      display: none;
-
-      @media (min-width: 768px) {
-        display: flex;
-        align-items: center;
-
-        margin-top: var(--size-16);
       }
     }
   }
