@@ -108,7 +108,7 @@ function MarketUI() {
   const chartViews = useAppSelector(state => state.market.chartViews);
   const [tab, setTab] = useState(
     features.fantasy.enabled && ui.socialLogin.enabled
-      ? 'comments'
+      ? 'activity'
       : 'positions'
   );
 
@@ -137,7 +137,7 @@ function MarketUI() {
         }
 
         if (features.fantasy.enabled) {
-          return column.key !== 'transactionHash';
+          return !['shares', 'transactionHash'].includes(column.key);
         }
 
         return true;
@@ -151,7 +151,7 @@ function MarketUI() {
     }
 
     if (features.fantasy.enabled) {
-      return ['transactionHash'];
+      return ['transactionHash', 'shares'];
     }
 
     return [];
@@ -271,13 +271,13 @@ function MarketUI() {
               }}
             >
               {features.fantasy.enabled && ui.socialLogin.enabled ? (
-                <Tabs.TabPane tab="Comments" id="comments">
-                  <MarketComments />
+                <Tabs.TabPane tab="Activity" id="activity">
+                  <MarketActivity />
                 </Tabs.TabPane>
               ) : null}
               {features.fantasy.enabled && ui.socialLogin.enabled ? (
-                <Tabs.TabPane tab="Activity" id="activity">
-                  <MarketActivity />
+                <Tabs.TabPane tab="Comments" id="comments">
+                  <MarketComments />
                 </Tabs.TabPane>
               ) : null}
               <Tabs.TabPane tab="Positions" id="positions">
