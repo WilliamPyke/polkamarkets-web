@@ -152,10 +152,12 @@ export default function TournamentHero({
                 styles.rootFooterStatsDivider
               )}
             />
-            <span className={styles.rootFooterStatsItem}>
-              <Icon name="Todo" className={styles.rootFooterStatsItemIcon} />{' '}
-              <strong>Rules</strong>
-            </span>
+            <a href="/" target="_blank" rel="noreferrer">
+              <span className={styles.rootFooterStatsItem}>
+                <Icon name="Todo" className={styles.rootFooterStatsItemIcon} />{' '}
+                <strong>Rules</strong>
+              </span>
+            </a>
           </div>
         </div>
       </div>
