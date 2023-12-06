@@ -19,7 +19,6 @@ type TradePredictionsProps = {
   onPredictionSelected?: () => void;
 };
 
-
 function TradePredictions({
   view,
   size = 'md',
