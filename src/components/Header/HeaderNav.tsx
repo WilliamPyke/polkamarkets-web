@@ -39,7 +39,12 @@ function HeaderNavModal({
 
   return (
     <>
-      <Button size="xs" variant="ghost" onClick={() => setShow(true)}>
+      <Button
+        className={headerNavClasses.menu}
+        size="xs"
+        variant="ghost"
+        onClick={() => setShow(true)}
+      >
         <Icon name="Menu" size="lg" title="Open Menu" />
       </Button>
       <Modal
@@ -140,25 +145,15 @@ function HeaderNavMenuModal() {
     <HeaderNavModal>
       {handleHide => (
         <HeaderNavMenu onMenuItemClick={handleHide}>
-          {features.fantasy.enabled && !isLoggedIn && (
-            <>
-              <li className={headerNavClasses.item}>
-                <ProfileSignin fullwidth variant="normal" color="primary">
-                  <Icon name="LogIn" size="lg" />
-                  Login
-                </ProfileSignin>
-              </li>
-              {ui.layout.header.helpUrl && (
-                <li className={headerNavClasses.item}>
-                  <HelpButton
-                    $outline
-                    $fullWidth
-                    onClick={handleHide}
-                    href={ui.layout.header.helpUrl}
-                  />
-                </li>
-              )}
-            </>
+          {features.fantasy.enabled && !isLoggedIn && ui.layout.header.helpUrl && (
+            <li className={headerNavClasses.item}>
+              <HelpButton
+                $outline
+                $fullWidth
+                onClick={handleHide}
+                href={ui.layout.header.helpUrl}
+              />
+            </li>
           )}
         </HeaderNavMenu>
       )}
@@ -198,8 +193,14 @@ export default function HeaderNav() {
           className={headerNavClasses.network}
         />
       )}
+      {!theme.device.isDesktop && features.fantasy.enabled && !isLoggedIn && (
+        <ProfileSignin variant="normal" color="primary" size="xs">
+          <Icon name="Profile" size="md" />
+          Log in
+        </ProfileSignin>
+      )}
       {!theme.device.isDesktop &&
-        ((features.fantasy.enabled && !isLoggedIn) ||
+        ((features.fantasy.enabled && !!ui.layout.header.helpUrl) ||
           !!headerNavMenu.length) && <HeaderNavMenuModal />}
     </nav>
   );
