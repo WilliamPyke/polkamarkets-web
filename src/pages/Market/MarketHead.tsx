@@ -82,7 +82,7 @@ export default function MarketHead() {
           $enableGutters={!theme.device.isDesktop}
           className={marketClasses.heroInfo}
         >
-          {!isNull(market.imageUrl) && (
+          {!isNull(market.imageUrl) && theme.device.isDesktop && (
             <MarketAvatar
               $radius={theme.device.isDesktop ? 'md' : 'sm'}
               $size={theme.device.isDesktop ? 'lg' : 'md'}
