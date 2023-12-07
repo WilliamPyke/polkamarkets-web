@@ -130,7 +130,8 @@ const initialState: MarketInitialState = {
     news: [],
     users: 0,
     comments: [],
-    tournaments: []
+    tournaments: [],
+    relatedMarkets: []
   },
   chartViews: chartViewsEnum,
   chartViewType: 'marketOverview',

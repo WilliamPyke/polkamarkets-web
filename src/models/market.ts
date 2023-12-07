@@ -86,4 +86,5 @@ export interface Market {
   users: number;
   comments: Comment[];
   tournaments: Tournament[];
+  relatedMarkets: Market[];
 }
