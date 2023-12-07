@@ -75,7 +75,6 @@ export default function TournamentHero({
           </div>
         </div>
         <Hero
-          $backdrop="main"
           $rounded
           $image={landBannerUrl || ui.hero.image}
           className={`pm-p-home__hero ${styles.rootHero}`}
