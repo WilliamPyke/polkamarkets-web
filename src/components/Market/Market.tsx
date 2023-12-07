@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { features } from 'config';
 import { isNull } from 'lodash';
@@ -22,6 +22,8 @@ type MarketCardProps = {
 function Market({ market }: MarketCardProps) {
   const dispatch = useAppDispatch();
   const theme = useTheme();
+  const location = useLocation();
+
   const handleNavigation = useCallback(async () => {
     const { clearMarket } = await import('redux/ducks/market');
     const { openTradeForm } = await import('redux/ducks/ui');
@@ -43,7 +45,10 @@ function Market({ market }: MarketCardProps) {
   return (
     <Link
       className="pm-c-market__body"
-      to={`/markets/${market.slug}`}
+      to={{
+        pathname: `/markets/${market.slug}`,
+        state: { from: location.pathname }
+      }}
       onClick={handleNavigation}
     >
       {!isNull(market.imageUrl) && (

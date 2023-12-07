@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { features } from 'config';
 import sortOutcomes from 'helpers/sortOutcomes';
@@ -30,6 +30,7 @@ type MarketOutcomesProps = {
 
 export default function MarketOutcomes({ market }: MarketOutcomesProps) {
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const trade = useAppSelector(state => state.trade);
   const theme = useTheme();
@@ -96,10 +97,18 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
 
           dispatch(closeTradeForm());
         }
-        history.push(`/markets/${market.slug}`);
+        history.push(`/markets/${market.slug}`, { from: location.pathname });
       }
     },
-    [dispatch, getOutcomeActive, setOutcome, history, market]
+    [
+      getOutcomeActive,
+      setOutcome,
+      market.state,
+      market.slug,
+      history,
+      location.pathname,
+      dispatch
+    ]
   );
 
   const handleCloseTrade = useCallback(async () => {
