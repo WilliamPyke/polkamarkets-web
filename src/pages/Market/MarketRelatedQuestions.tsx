@@ -15,7 +15,7 @@ import { Text, PredictionCard } from 'components';
 import styles from './Market.module.scss';
 
 type MarketRelatedQuestionsProps = {
-  markets: Market[];
+  markets?: Market[];
 };
 
 function MarketRelatedQuestions({ markets }: MarketRelatedQuestionsProps) {
