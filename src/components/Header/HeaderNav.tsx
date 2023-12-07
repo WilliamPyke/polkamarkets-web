@@ -196,7 +196,9 @@ export default function HeaderNav() {
       {!theme.device.isDesktop && features.fantasy.enabled && !isLoggedIn && (
         <ProfileSignin variant="normal" color="primary" size="xs">
           <Icon name="Profile" size="md" />
-          Log in
+          <Text as="span" scale="caption">
+            Sign in
+          </Text>
         </ProfileSignin>
       )}
       {!theme.device.isDesktop &&
