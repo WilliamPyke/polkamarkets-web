@@ -24,6 +24,7 @@ import EthereumIcon from './EthereumIcon';
 import ExploreIcon from './ExploreIcon';
 import FavoriteIcon from './FavoriteIcon';
 import ForelandLogo from './ForelandLogo';
+import ForelandMobileLogo from './ForelandMobileLogo';
 import GamingConsoleIcon from './GamingConsoleIcon';
 import GitHubIcon from './GitHubIcon';
 import HamburguerMenuIcon from './HamburguerMenuIcon';
@@ -96,6 +97,7 @@ export {
   ExploreIcon,
   FavoriteIcon,
   ForelandLogo,
+  ForelandMobileLogo,
   GamingConsoleIcon,
   GitHubIcon,
   InfoIcon,
