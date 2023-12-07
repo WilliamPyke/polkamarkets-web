@@ -58,10 +58,15 @@
 
 .body {
   width: 100%;
-  border-right: 1px solid var(--color-border);
+
+  background-color: var(--color-surface-primary);
 
   @media (min-width: 1024px) {
-    background-color: var(--color-surface-primary);
+    margin-top: var(--size-24);
+
+    border: 1px solid var(--color-border);
+    border-top-left-radius: var(--size-8);
+    border-top-right-radius: var(--size-8);
   }
 }
 
