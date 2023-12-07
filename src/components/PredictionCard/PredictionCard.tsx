@@ -11,13 +11,15 @@ interface PredictionCardProps
   extends Pick<React.ComponentPropsWithoutRef<'div'>, 'itemID' | 'className'> {
   market: MarketInterface;
   $gutter?: boolean;
+  readonly?: boolean;
 }
 
 function PredictionCard({
   market,
   $gutter,
   itemID,
-  className
+  className,
+  readonly = false
 }: PredictionCardProps) {
   return (
     <div
@@ -30,7 +32,7 @@ function PredictionCard({
     >
       <div className="prediction-card__body">
         <Market market={market} />
-        <Market.Outcomes market={market} />
+        <Market.Outcomes market={market} readonly={readonly} />
       </div>
       <div className="prediction-card__footer">
         <Market.Footer market={market}>

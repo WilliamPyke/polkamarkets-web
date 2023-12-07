@@ -26,6 +26,10 @@ export default function MarketHead() {
   const location = useLocation<{ from?: string }>();
 
   const marketTournament = useMemo(() => {
+    if (!market.tournaments) {
+      return undefined;
+    }
+
     if (market.tournaments.length === 0) {
       return undefined;
     }

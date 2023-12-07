@@ -39,6 +39,7 @@ import MarketComments from './MarketComments';
 import MarketHead from './MarketHead';
 import MarketNews from './MarketNews';
 import MarketPredictions from './MarketPredictions';
+import MarketRelatedQuestions from './MarketRelatedQuestions';
 import MarketTitle from './MarketTitle';
 import { Column, formatMarketPositions, formatSEODescription } from './utils';
 
@@ -107,9 +108,7 @@ function MarketUI() {
   const market = useAppSelector(state => state.market.market);
   const chartViews = useAppSelector(state => state.market.chartViews);
   const [tab, setTab] = useState(
-    features.fantasy.enabled && ui.socialLogin.enabled
-      ? 'comments'
-      : 'positions'
+    features.fantasy.enabled ? 'relatedQuestions' : 'positions'
   );
 
   const handleChartChange = useCallback(
@@ -270,6 +269,9 @@ function MarketUI() {
                 header: marketClasses.tabsHeader
               }}
             >
+              <Tabs.TabPane tab="Related questions" id="relatedQuestions">
+                <MarketRelatedQuestions markets={market.relatedMarkets} />
+              </Tabs.TabPane>
               {features.fantasy.enabled && ui.socialLogin.enabled ? (
                 <Tabs.TabPane tab="Comments" id="comments">
                   <MarketComments />

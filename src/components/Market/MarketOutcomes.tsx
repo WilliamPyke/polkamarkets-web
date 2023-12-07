@@ -26,9 +26,13 @@ import styles from './MarketOutcomes.module.scss';
 
 type MarketOutcomesProps = {
   market: Market;
+  readonly?: boolean;
 };
 
-export default function MarketOutcomes({ market }: MarketOutcomesProps) {
+export default function MarketOutcomes({
+  market,
+  readonly = false
+}: MarketOutcomesProps) {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -75,37 +79,44 @@ export default function MarketOutcomes({ market }: MarketOutcomesProps) {
 
   const handleOutcomeClick = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
-      const { value } = event.currentTarget;
-      const isOutcomeActive = getOutcomeActive(value);
-
-      setOutcome(isOutcomeActive ? '' : value);
-
-      if (features.fantasy.enabled) {
-        setTradeVisible(true);
-      } else {
-        if (market.state === 'closed') {
-          const { openReportForm } = await import('redux/ducks/ui');
-
-          dispatch(openReportForm());
-        } else {
-          const { openTradeForm } = await import('redux/ducks/ui');
-
-          dispatch(openTradeForm());
-        }
-        if (isOutcomeActive) {
-          const { closeTradeForm } = await import('redux/ducks/ui');
-
-          dispatch(closeTradeForm());
-        }
+      if (readonly) {
         history.push(`/markets/${market.slug}`, { from: location.pathname });
+        window.location.reload();
+      } else {
+        const { value } = event.currentTarget;
+
+        const isOutcomeActive = getOutcomeActive(value);
+
+        setOutcome(isOutcomeActive ? '' : value);
+
+        if (features.fantasy.enabled) {
+          setTradeVisible(true);
+        } else {
+          if (market.state === 'closed') {
+            const { openReportForm } = await import('redux/ducks/ui');
+
+            dispatch(openReportForm());
+          } else {
+            const { openTradeForm } = await import('redux/ducks/ui');
+
+            dispatch(openTradeForm());
+          }
+          if (isOutcomeActive) {
+            const { closeTradeForm } = await import('redux/ducks/ui');
+
+            dispatch(closeTradeForm());
+          }
+          history.push(`/markets/${market.slug}`, { from: location.pathname });
+        }
       }
     },
     [
+      readonly,
       getOutcomeActive,
       setOutcome,
-      market.state,
-      market.slug,
       history,
+      market.slug,
+      market.state,
       location.pathname,
       dispatch
     ]

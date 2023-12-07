@@ -198,6 +198,14 @@
   }
 }
 
+.relatedQuestions {
+  margin-top: var(--size-4);
+
+  &Item {
+    margin-bottom: var(--size-24);
+  }
+}
+
 .about {
   &Description {
     color: var(--color-text-primary);
