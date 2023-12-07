@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import isNull from 'lodash/isNull';
-import { Container, useTheme } from 'ui';
+import { Avatar, Container, useTheme } from 'ui';
 
 import {
   Button,
@@ -91,11 +91,27 @@ export default function MarketHead() {
             />
           )}
           <div>
-            <MarketCategory
-              category={market.category}
-              subcategory={market.subcategory}
-              verified={theme.device.isDesktop && market.verified}
-            />
+            {marketTournament ? (
+              <div className={styles.heroTournament}>
+                {marketTournament.imageUrl ? (
+                  <Avatar
+                    $radius="lg"
+                    src={marketTournament.imageUrl}
+                    alt={marketTournament.title}
+                    className={styles.heroTournamentAvatar}
+                  />
+                ) : null}
+                <h4 className={styles.heroTournamentName}>
+                  {marketTournament.title}
+                </h4>
+              </div>
+            ) : (
+              <MarketCategory
+                category={market.category}
+                subcategory={market.subcategory}
+                verified={theme.device.isDesktop && market.verified}
+              />
+            )}
             <Text
               as="h2"
               fontWeight={theme.device.isDesktop ? 'bold' : 'medium'}
