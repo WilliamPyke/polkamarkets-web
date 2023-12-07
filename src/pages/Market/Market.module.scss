@@ -5,7 +5,6 @@
 }
 
 .hero {
-  height: 224px;
   display: flex;
   flex-direction: column;
 
@@ -14,6 +13,14 @@
     flex: 1 0 auto;
     gap: var(--size-24);
     align-items: center;
+
+    padding-top: var(--size-24);
+    padding-bottom: var(--size-24);
+
+    @media (min-width: 1024px) {
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
 
     &Breadcrumb {
       display: flex;
