@@ -5,7 +5,9 @@ import classNames from 'classnames';
 import { ui } from 'config';
 import { Avatar, Container, Hero } from 'ui';
 
-import { Button, Icon, Share } from 'components';
+import { Button, ButtonText, Icon, Share } from 'components';
+
+import { useTruncatedText } from 'hooks';
 
 import styles from './TournamentHero.module.scss';
 
@@ -43,6 +45,12 @@ export default function TournamentHero({
   reward,
   criteria
 }: TournamentHeroProps) {
+  const {
+    text: truncatedTournamentDescription,
+    truncated,
+    setTruncated
+  } = useTruncatedText(tournamentDescription || '', 156);
+
   return (
     <Container className={styles.wrapper}>
       <div className={styles.root}>
@@ -100,8 +108,17 @@ export default function TournamentHero({
               ) : null}
               {tournamentDescription ? (
                 <p className={styles.rootHeroContentDescription}>
-                  {tournamentDescription}
+                  {truncatedTournamentDescription}
                 </p>
+              ) : null}
+              {truncated ? (
+                <ButtonText
+                  size="sm"
+                  color="primary"
+                  onClick={() => setTruncated(false)}
+                >
+                  View more
+                </ButtonText>
               ) : null}
             </div>
             {topUsers || null}
