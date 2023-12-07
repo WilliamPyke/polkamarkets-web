@@ -23,4 +23,6 @@ export type Tournament = {
   users: number;
   expiresAt: string;
   rankBy: string;
+  rewards: string | null;
+  rules: string | null;
 };
