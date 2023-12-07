@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { ui } from 'config';
 import { Tournament } from 'types/tournament';
-import { Avatar, Container, Hero } from 'ui';
+import { Avatar, Container, Hero, useTheme } from 'ui';
 
 import { Button, ButtonText, Icon, Share } from 'components';
 
@@ -45,6 +45,7 @@ export default function TournamentHero({
   criteria,
   rules
 }: TournamentHeroProps) {
+  const theme = useTheme();
   const {
     text: truncatedTournamentDescription,
     truncated,
@@ -79,7 +80,7 @@ export default function TournamentHero({
           $image={landBannerUrl || ui.hero.image}
           className={`pm-p-home__hero ${styles.rootHero}`}
         >
-          {tournamentImageUrl ? (
+          {theme.device.isDesktop && tournamentImageUrl ? (
             <Avatar
               $radius="md"
               src={tournamentImageUrl}
@@ -89,22 +90,43 @@ export default function TournamentHero({
           ) : null}
           <div className={styles.rootHeroContent}>
             <div>
-              <div className={styles.rootHeroContentLand}>
-                {landImageUrl ? (
+              <div
+                className={classNames('flex-row align-center gap-5', {
+                  'margin-bottom-3': !theme.device.isDesktop
+                })}
+              >
+                {!theme.device.isDesktop && tournamentImageUrl ? (
                   <Avatar
-                    $radius="lg"
-                    src={landImageUrl}
-                    alt={landName}
-                    className={styles.rootHeroContentLandAvatar}
+                    $radius="md"
+                    src={tournamentImageUrl}
+                    alt={tournamentName}
+                    className={styles.rootHeroAvatar}
                   />
                 ) : null}
-                {landName ? (
-                  <h4 className={styles.rootHeroContentLandName}>{landName}</h4>
-                ) : null}
+                <div>
+                  <div className={styles.rootHeroContentLand}>
+                    {landImageUrl ? (
+                      <Avatar
+                        $radius="lg"
+                        src={landImageUrl}
+                        alt={landName}
+                        className={styles.rootHeroContentLandAvatar}
+                      />
+                    ) : null}
+                    {landName ? (
+                      <h4 className={styles.rootHeroContentLandName}>
+                        {landName}
+                      </h4>
+                    ) : null}
+                  </div>
+                  {tournamentName ? (
+                    <h2 className={styles.rootHeroContentName}>
+                      {tournamentName}
+                    </h2>
+                  ) : null}
+                </div>
               </div>
-              {tournamentName ? (
-                <h2 className={styles.rootHeroContentName}>{tournamentName}</h2>
-              ) : null}
+
               {tournamentDescription ? (
                 <p className={styles.rootHeroContentDescription}>
                   {truncatedTournamentDescription}
