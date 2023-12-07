@@ -45,7 +45,7 @@ function TradeFormInput() {
   );
 
   const type = useAppSelector(state => state.trade.type);
-  const label = `${type} shares`;
+  const label = `Amount`;
 
   const selectedMarketId = useAppSelector(
     state => state.trade.selectedMarketId

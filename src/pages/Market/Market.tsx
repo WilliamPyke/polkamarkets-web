@@ -136,7 +136,7 @@ function MarketUI() {
         }
 
         if (features.fantasy.enabled) {
-          return column.key !== 'transactionHash';
+          return !['shares', 'transactionHash'].includes(column.key);
         }
 
         return true;
@@ -150,7 +150,7 @@ function MarketUI() {
     }
 
     if (features.fantasy.enabled) {
-      return ['transactionHash'];
+      return ['transactionHash', 'shares'];
     }
 
     return [];
@@ -273,13 +273,13 @@ function MarketUI() {
                 <MarketRelatedQuestions markets={market.relatedMarkets} />
               </Tabs.TabPane>
               {features.fantasy.enabled && ui.socialLogin.enabled ? (
-                <Tabs.TabPane tab="Comments" id="comments">
-                  <MarketComments />
+                <Tabs.TabPane tab="Activity" id="activity">
+                  <MarketActivity />
                 </Tabs.TabPane>
               ) : null}
               {features.fantasy.enabled && ui.socialLogin.enabled ? (
-                <Tabs.TabPane tab="Activity" id="activity">
-                  <MarketActivity />
+                <Tabs.TabPane tab="Comments" id="comments">
+                  <MarketComments />
                 </Tabs.TabPane>
               ) : null}
               <Tabs.TabPane tab="Positions" id="positions">
