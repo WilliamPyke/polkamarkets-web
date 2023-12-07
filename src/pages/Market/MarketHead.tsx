@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import getMarketColors from 'helpers/getMarketColors';
 import isNull from 'lodash/isNull';
@@ -24,6 +24,7 @@ import styles from './MarketHead.module.scss';
 export default function MarketHead() {
   const market = useAppSelector(state => state.market.market);
   const theme = useTheme();
+  const location = useLocation<{ from?: string }>();
 
   const marketColors = useMemo(
     () =>
@@ -34,16 +35,49 @@ export default function MarketHead() {
     [market.id, market.network.id]
   );
 
+  const marketTournament = useMemo(() => {
+    if (market.tournaments.length === 0) {
+      return undefined;
+    }
+
+    if (market.tournaments.length === 1) {
+      return market.tournaments[0];
+    }
+
+    if (market.tournaments.length > 1) {
+      if (location.state && location.state.from) {
+        const tournament = market.tournaments.find(({ slug }) =>
+          location.state.from?.includes(slug)
+        );
+
+        return tournament;
+      }
+    }
+
+    return undefined;
+  }, [location.state, market.tournaments]);
+
   return (
     <Container className={styles.wrapper}>
       <div className={styles.header}>
         <div className={styles.headerNavigation}>
-          <Link to="/__temp__">
+          <Link
+            to={
+              marketTournament ? `/tournaments/${marketTournament.slug}` : '/'
+            }
+          >
             <Button className={styles.headerNavigationButton}>
-              <Icon name="Arrow" title="Back to __temp__" />
+              <Icon
+                name="Arrow"
+                title={`Back to ${marketTournament ? `Tournament` : 'Home'}`}
+              />
             </Button>
           </Link>
-          <h4 className={styles.headerNavigationText}>__temp__</h4>
+          {marketTournament ? (
+            <h4 className={styles.headerNavigationText}>
+              {marketTournament.title}
+            </h4>
+          ) : null}
         </div>
         <div className={styles.headerActions}>
           <Share id={market.slug} className={styles.headerActionsButton} />
