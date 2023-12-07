@@ -114,11 +114,9 @@ export default function Tournament() {
           }
           questions={marketsIds.length}
           members={data?.users}
-          reward={{
-            imageUrl: null,
-            name: 'Amazon Gift Card'
-          }}
+          rewards={data?.rewards}
           criteria={tournamentCriteria}
+          rules={data?.rules}
         />
       )}
       <Container ref={ref} className={styles.nav}>

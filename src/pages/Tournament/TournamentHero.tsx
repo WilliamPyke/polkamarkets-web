@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import classNames from 'classnames';
 import { ui } from 'config';
+import { Tournament } from 'types/tournament';
 import { Avatar, Container, Hero } from 'ui';
 
 import { Button, ButtonText, Icon, Share } from 'components';
@@ -23,11 +24,9 @@ type TournamentHeroProps = {
   topUsers?: ReactNode;
   questions: number;
   members?: number;
-  reward: {
-    imageUrl: string | null;
-    name: string;
-  };
+  rewards?: Tournament['rewards'];
   criteria?: 'Won predictions' | 'Earnings';
+  rules?: Tournament['rules'];
 };
 
 export default function TournamentHero({
@@ -42,8 +41,9 @@ export default function TournamentHero({
   topUsers,
   questions,
   members,
-  reward,
-  criteria
+  rewards,
+  criteria,
+  rules
 }: TournamentHeroProps) {
   const {
     text: truncatedTournamentDescription,
@@ -142,26 +142,19 @@ export default function TournamentHero({
                 </span>
               </>
             ) : null}
-            <span
-              className={classNames(
-                'pm-c-divider--circle',
-                styles.rootFooterStatsDivider
-              )}
-            />
-            <span className={styles.rootFooterStatsItem}>
-              Rewards:{' '}
-              <strong>
-                {reward.imageUrl ? (
-                  <Avatar
-                    $radius="lg"
-                    src={reward.imageUrl}
-                    alt={reward.name}
-                    className={styles.rootFooterStatsItemAvatar}
-                  />
-                ) : null}
-                {reward.name}
-              </strong>
-            </span>
+            {rewards ? (
+              <>
+                <span
+                  className={classNames(
+                    'pm-c-divider--circle',
+                    styles.rootFooterStatsDivider
+                  )}
+                />
+                <span className={styles.rootFooterStatsItem}>
+                  Rewards: <strong>{rewards}</strong>
+                </span>
+              </>
+            ) : null}
           </div>
           <div className={styles.rootFooterStats}>
             {criteria ? (
@@ -169,19 +162,25 @@ export default function TournamentHero({
                 Criteria: <strong>{criteria}</strong>
               </span>
             ) : null}
-
-            {/* <span
-              className={classNames(
-                'pm-c-divider--circle',
-                styles.rootFooterStatsDivider
-              )}
-            />
-            <a href="/" target="_blank" rel="noreferrer">
-              <span className={styles.rootFooterStatsItem}>
-                <Icon name="Todo" className={styles.rootFooterStatsItemIcon} />{' '}
-                <strong>Rules</strong>
-              </span>
-            </a> */}
+            {rules ? (
+              <>
+                <span
+                  className={classNames(
+                    'pm-c-divider--circle',
+                    styles.rootFooterStatsDivider
+                  )}
+                />
+                <a href={rules} target="_blank" rel="noreferrer">
+                  <span className={styles.rootFooterStatsItem}>
+                    <Icon
+                      name="Todo"
+                      className={styles.rootFooterStatsItemIcon}
+                    />{' '}
+                    <strong>Rules</strong>
+                  </span>
+                </a>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
