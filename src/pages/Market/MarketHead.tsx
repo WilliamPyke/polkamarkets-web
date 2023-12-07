@@ -123,11 +123,9 @@ export default function MarketHead() {
           </div>
         </Container>
       </div>
-      {theme.device.isDesktop && (
-        <Container className={marketClasses.heroStats}>
-          <MarketFooter market={market} />
-        </Container>
-      )}
+      <Container className={marketClasses.heroStats}>
+        <MarketFooter market={market} showStateOnMobile />
+      </Container>
     </Container>
   );
 }
