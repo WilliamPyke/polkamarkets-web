@@ -139,7 +139,7 @@ function MarketNewComment() {
                   size="md"
                   className={styles.newCommentBoxFooterSigninIcon}
                 />
-                Sign in
+                Sign In
               </ProfileSignin>
             ) : null}
             {isLoadingUser || (!isLoadingUser && isLoggedIn) ? (

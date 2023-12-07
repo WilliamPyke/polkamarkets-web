@@ -14,7 +14,7 @@ export default function Profile({ isLoggedIn }: ProfileProps) {
     <ProfileSignin variant="normal" color="primary" size="xs">
       <Icon name="Profile" size="md" />
       <Text as="span" scale="caption">
-        Sign in
+        Sign In
       </Text>
     </ProfileSignin>
   );

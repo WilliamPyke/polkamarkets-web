@@ -60,7 +60,7 @@ export default function HomeHero() {
           ) : null}
           {!hasCta && features.fantasy.enabled && !isLoggedIn && (
             <ProfileSignin variant="normal" color="primary">
-              Sign in
+              Sign In
             </ProfileSignin>
           )}
         </div>
