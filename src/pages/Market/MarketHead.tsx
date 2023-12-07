@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import getMarketColors from 'helpers/getMarketColors';
 import isNull from 'lodash/isNull';
-import { Container, Hero, useTheme } from 'ui';
+import { Container, useTheme } from 'ui';
 
 import {
   Button,
@@ -25,15 +24,6 @@ export default function MarketHead() {
   const market = useAppSelector(state => state.market.market);
   const theme = useTheme();
   const location = useLocation<{ from?: string }>();
-
-  const marketColors = useMemo(
-    () =>
-      getMarketColors({
-        network: market.network.id,
-        market: market.id
-      }),
-    [market.id, market.network.id]
-  );
 
   const marketTournament = useMemo(() => {
     if (market.tournaments.length === 0) {
@@ -87,13 +77,7 @@ export default function MarketHead() {
           />
         </div>
       </div>
-      <Hero
-        className={marketClasses.hero}
-        $backdrop={marketColors.market}
-        {...(!isNull(market.imageUrl) && {
-          $image: market.imageUrl
-        })}
-      >
+      <div className={marketClasses.hero}>
         <Container
           $enableGutters={!theme.device.isDesktop}
           className={marketClasses.heroInfo}
@@ -122,7 +106,7 @@ export default function MarketHead() {
             </Text>
           </div>
         </Container>
-      </Hero>
+      </div>
       {theme.device.isDesktop && (
         <Container className={marketClasses.heroStats}>
           <MarketFooter market={market} />
