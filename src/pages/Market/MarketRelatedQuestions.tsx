@@ -74,6 +74,7 @@ function MarketRelatedQuestions({ markets }: MarketRelatedQuestionsProps) {
                 ? styles.relatedQuestionsItem
                 : undefined
             }
+            showCategory={false}
             readonly
           />
         ))

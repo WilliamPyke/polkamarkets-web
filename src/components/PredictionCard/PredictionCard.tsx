@@ -12,6 +12,7 @@ interface PredictionCardProps
   market: MarketInterface;
   $gutter?: boolean;
   readonly?: boolean;
+  showCategory?: boolean;
 }
 
 function PredictionCard({
@@ -19,7 +20,8 @@ function PredictionCard({
   $gutter,
   itemID,
   className,
-  readonly = false
+  readonly = false,
+  showCategory = true
 }: PredictionCardProps) {
   return (
     <div
@@ -31,7 +33,7 @@ function PredictionCard({
       )}
     >
       <div className="prediction-card__body">
-        <Market market={market} />
+        <Market market={market} showCategory={showCategory} />
         <Market.Outcomes market={market} readonly={readonly} />
       </div>
       <div className="prediction-card__footer">

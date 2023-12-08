@@ -17,9 +17,10 @@ import MarketOutcomes from './MarketOutcomes';
 
 type MarketCardProps = {
   market: MarketInterface;
+  showCategory?: boolean;
 };
 
-function Market({ market }: MarketCardProps) {
+function Market({ market, showCategory = true }: MarketCardProps) {
   const dispatch = useAppDispatch();
   const theme = useTheme();
   const location = useLocation();
@@ -60,11 +61,13 @@ function Market({ market }: MarketCardProps) {
         />
       )}
       <div className="pm-c-market__body-details">
-        <MarketCategory
-          category={market.category}
-          subcategory={market.subcategory}
-          verified={theme.device.isDesktop && market.verified}
-        />
+        {showCategory ? (
+          <MarketCategory
+            category={market.category}
+            subcategory={market.subcategory}
+            verified={theme.device.isDesktop && market.verified}
+          />
+        ) : null}
         <Text as="p" scale="body" fontWeight="medium">
           {market.title}
         </Text>
