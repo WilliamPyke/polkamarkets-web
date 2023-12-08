@@ -6,7 +6,7 @@ import { ui } from 'config';
 import { Tournament } from 'types/tournament';
 import { Avatar, Container, Hero, useTheme } from 'ui';
 
-import { Button, ButtonText, Icon, Share } from 'components';
+import { Button, ButtonText, Icon, Share, Tooltip } from 'components';
 
 import { useTruncatedText } from 'hooks';
 
@@ -201,7 +201,7 @@ export default function TournamentHero({
                       styles.rootFooterStatsDivider
                     )}
                   />
-                  <a href={rules} target="_blank" rel="noreferrer">
+                  <Tooltip text={rules}>
                     <span className={styles.rootFooterStatsItem}>
                       <Icon
                         name="Todo"
@@ -209,7 +209,7 @@ export default function TournamentHero({
                       />{' '}
                       <strong>Rules</strong>
                     </span>
-                  </a>
+                  </Tooltip>
                 </>
               ) : null}
             </div>
