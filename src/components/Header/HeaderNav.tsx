@@ -168,6 +168,27 @@ export default function HeaderNav() {
   const showLeftMenu =
     theme.device.isDesktop && !theme.device.isTv && !!headerNavMenu.length;
 
+  const headerLogo = () => {
+    if (LogoDesktopComponent && !LogoMobileComponent) {
+      return <LogoDesktopComponent />;
+    }
+
+    if (theme.device.isDesktop && LogoDesktopComponent) {
+      return <LogoDesktopComponent />;
+    }
+
+    if (!theme.device.isDesktop && LogoMobileComponent) {
+      return <LogoMobileComponent />;
+    }
+
+    return (
+      <>
+        <Logos.PolkamarketsLogo />
+        <V2Badge className={headerNavClasses.logosBadge} />
+      </>
+    );
+  };
+
   return (
     <nav className={headerNavClasses.root}>
       {showLeftMenu && <HeaderNavMenuModal />}
@@ -178,20 +199,7 @@ export default function HeaderNav() {
           [headerNavClasses.logosGutter]: showLeftMenu
         })}
       >
-        {LogoDesktopComponent && LogoMobileComponent ? (
-          <>
-            {theme.device.isDesktop ? (
-              <LogoDesktopComponent />
-            ) : (
-              <LogoMobileComponent />
-            )}
-          </>
-        ) : (
-          <>
-            <Logos.PolkamarketsLogo />
-            <V2Badge className={headerNavClasses.logosBadge} />
-          </>
-        )}
+        {headerLogo()}
       </Link>
       {theme.device.isTv && <HeaderNavMenu />}
       {!theme.device.isDesktop && ui.layout.header.networkSelector.enabled && (
