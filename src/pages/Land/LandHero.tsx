@@ -22,7 +22,6 @@ export default function LandHero({
   return (
     <Container className={styles.header}>
       <Hero
-        $backdrop="main"
         $rounded
         $image={bannerUrl || ui.hero.image}
         className={classNames('pm-p-home__hero', styles.headerHero)}
