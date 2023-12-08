@@ -147,61 +147,72 @@ export default function TournamentHero({
         </Hero>
         <div className={styles.rootFooter}>
           <div className={styles.rootFooterStats}>
-            <span className={styles.rootFooterStatsItem}>
-              Questions: <strong>{questions}</strong>
-            </span>
-            {members ? (
-              <>
-                <span
-                  className={classNames(
-                    'pm-c-divider--circle',
-                    styles.rootFooterStatsDivider
-                  )}
-                />
-                <span className={styles.rootFooterStatsItem}>
-                  Members: <strong>{members}</strong>
-                </span>
-              </>
-            ) : null}
+            <div className={styles.rootFooterStatsGroup}>
+              <span className={styles.rootFooterStatsItem}>
+                Questions: <strong>{questions}</strong>
+              </span>
+              {members ? (
+                <>
+                  <span
+                    className={classNames(
+                      'pm-c-divider--circle',
+                      styles.rootFooterStatsDivider
+                    )}
+                  />
+                  <span className={styles.rootFooterStatsItem}>
+                    Members: <strong>{members}</strong>
+                  </span>
+                </>
+              ) : null}
+            </div>
             {rewards ? (
               <>
-                <span
+                {theme.device.isDesktop ? (
+                  <span
+                    className={classNames(
+                      'pm-c-divider--circle',
+                      styles.rootFooterStatsDivider
+                    )}
+                  />
+                ) : null}
+                <p
                   className={classNames(
-                    'pm-c-divider--circle',
-                    styles.rootFooterStatsDivider
+                    styles.rootFooterStatsItem,
+                    styles.rootFooterStatsRewards
                   )}
-                />
-                <span className={styles.rootFooterStatsItem}>
+                >
                   Rewards: <strong>{rewards}</strong>
-                </span>
+                </p>
               </>
             ) : null}
           </div>
           <div className={styles.rootFooterStats}>
-            {criteria ? (
-              <span className={styles.rootFooterStatsItem}>
-                Criteria: <strong>{criteria}</strong>
-              </span>
-            ) : null}
-            {rules ? (
-              <>
-                <span
-                  className={classNames(
-                    'pm-c-divider--circle',
-                    styles.rootFooterStatsDivider
-                  )}
-                />
-                <a href={rules} target="_blank" rel="noreferrer">
-                  <span className={styles.rootFooterStatsItem}>
-                    <Icon
-                      name="Todo"
-                      className={styles.rootFooterStatsItemIcon}
-                    />{' '}
-                    <strong>Rules</strong>
-                  </span>
-                </a>
-              </>
-            ) : null}
+            <div className={styles.rootFooterStatsGroup}>
+              {criteria ? (
+                <span className={styles.rootFooterStatsItem}>
+                  Criteria: <strong>{criteria}</strong>
+                </span>
+              ) : null}
+              {rules ? (
+                <>
+                  <span
+                    className={classNames(
+                      'pm-c-divider--circle',
+                      styles.rootFooterStatsDivider
+                    )}
+                  />
+                  <a href={rules} target="_blank" rel="noreferrer">
+                    <span className={styles.rootFooterStatsItem}>
+                      <Icon
+                        name="Todo"
+                        className={styles.rootFooterStatsItemIcon}
+                      />{' '}
+                      <strong>Rules</strong>
+                    </span>
+                  </a>
+                </>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

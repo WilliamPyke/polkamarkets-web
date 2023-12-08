@@ -170,18 +170,34 @@
 
   &Footer {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--size-24);
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
 
     padding: var(--size-12) var(--size-16);
 
-    &Stats {
-      display: flex;
+    @media (min-width: 1024px) {
       flex-direction: row;
       align-items: center;
+      justify-content: space-between;
+      gap: var(--size-8);
+      flex-wrap: wrap;
+    }
+
+    &Stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      @media (min-width: 1024px) {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      &Group {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
 
       &Divider {
         margin: 0 var(--size-12);
@@ -200,7 +216,6 @@
         line-height: normal;
         letter-spacing: 0.012em;
         text-transform: uppercase;
-        text-align: center;
 
         strong {
           margin-left: 0.3rem;
@@ -208,19 +223,15 @@
           font-weight: 600;
         }
 
-        &Avatar {
-          height: var(--size-16);
-          width: var(--size-16);
-
-          aspect-ratio: 1 / 1;
-          flex-shrink: 0;
-
-          margin-right: 10px;
-        }
-
         &Icon {
           margin-right: var(--size-4);
         }
+      }
+
+      &Rewards {
+        margin: var(--size-8) 0;
+
+        display: inline;
       }
     }
   }
