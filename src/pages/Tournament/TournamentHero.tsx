@@ -23,7 +23,7 @@ type TournamentHeroProps = {
   tournamentImageUrl?: string | null;
   topUsers?: ReactNode;
   questions: number;
-  members?: number;
+  users?: number;
   rewards?: Tournament['rewards'];
   criteria?: 'Won predictions' | 'Earnings';
   rules?: Tournament['rules'];
@@ -40,7 +40,7 @@ export default function TournamentHero({
   tournamentImageUrl,
   topUsers,
   questions,
-  members,
+  users,
   rewards,
   criteria,
   rules
@@ -151,7 +151,7 @@ export default function TournamentHero({
               <span className={styles.rootFooterStatsItem}>
                 Questions: <strong>{questions}</strong>
               </span>
-              {members ? (
+              {users ? (
                 <>
                   <span
                     className={classNames(
@@ -160,7 +160,7 @@ export default function TournamentHero({
                     )}
                   />
                   <span className={styles.rootFooterStatsItem}>
-                    Members: <strong>{members}</strong>
+                    Users: <strong>{users}</strong>
                   </span>
                 </>
               ) : null}

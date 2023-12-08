@@ -113,7 +113,7 @@ export default function Tournament() {
             />
           }
           questions={marketsIds.length}
-          members={data?.users}
+          users={data?.users}
           rewards={data?.rewards}
           criteria={tournamentCriteria}
           rules={data?.rules}
