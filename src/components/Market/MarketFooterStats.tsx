@@ -19,6 +19,8 @@ type MarketFooterStatsProps = {
 };
 
 export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
+  const theme = useTheme();
+
   const {
     users,
     volume,
@@ -30,17 +32,19 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
     token,
     network
   } = market;
+
   const expiresAt = dayjs(market.expiresAt).utc(true);
 
   const currentYear = dayjs().utc(true).year();
   const showYear = currentYear !== expiresAt.year();
   const showTime = currentYear === expiresAt.year();
 
-  const formatedExpiresAt = expiresAt.format(
-    `MMM D,${showYear ? ' YYYY' : ''}${showTime ? ' H:mm' : ''}`
-  );
+  const formatedExpiresAt = theme.device.isDesktop
+    ? expiresAt.format('MMM D, YYYY H:mm')
+    : expiresAt.format(
+        `MMM D,${showYear ? ' YYYY' : ''}${showTime ? ' H:mm' : ''}`
+      );
 
-  const theme = useTheme();
   const fantasyTokenTicker = useFantasyTokenTicker();
 
   return (
