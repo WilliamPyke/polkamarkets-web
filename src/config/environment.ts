@@ -38,6 +38,7 @@ const environmentConfigVariables = [
   'UI_FILTERS_CATEGORIES',
   'UI_TOKEN_BLACKLIST',
   'UI_LOGO',
+  'UI_LOGO_MOBILE',
   'UI_FOOTER_TEXT',
   'UI_HELP_URL',
   'UI_FOOTER_TEXT',
