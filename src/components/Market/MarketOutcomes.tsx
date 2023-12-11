@@ -37,8 +37,15 @@ export default function MarketOutcomes({
   const location = useLocation();
   const dispatch = useAppDispatch();
   const trade = useAppSelector(state => state.trade);
+  const portfolio = useAppSelector(state => state.polkamarkets.portfolio);
   const theme = useTheme();
   const { trade: tradeState, status } = useTrade();
+
+  const isPredictedOutcome = useCallback(
+    (outcomeId: string | number) =>
+      portfolio[market.id]?.outcomes[outcomeId]?.shares >= 0.0005,
+    [market.id, portfolio]
+  );
 
   const [tradeVisible, setTradeVisible] = useState(false);
 
@@ -224,6 +231,7 @@ export default function MarketOutcomes({
               value={outcome.id}
               data={outcome.data}
               primary={outcome.title}
+              isPredicted={isPredictedOutcome(outcome.id)}
               isActive={getOutcomeActive(outcome.id)}
               onClick={handleOutcomeClick}
               secondary={{
@@ -246,6 +254,9 @@ export default function MarketOutcomes({
           <OutcomeItem
             $size="sm"
             $variant="dashed"
+            isPredicted={expandableOutcomes.off.some(outcome =>
+              isPredictedOutcome(outcome.id)
+            )}
             value={expandableOutcomes.onseted[0].id}
             onClick={handleOutcomeClick}
             {...expandableOutcomes.offseted}

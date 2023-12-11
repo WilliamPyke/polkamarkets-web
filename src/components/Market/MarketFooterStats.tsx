@@ -19,6 +19,8 @@ type MarketFooterStatsProps = {
 };
 
 export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
+  const theme = useTheme();
+
   const {
     users,
     volume,
@@ -30,10 +32,19 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
     token,
     network
   } = market;
-  const expiresAt = dayjs(market.expiresAt)
-    .utc(true)
-    .format('MMM D, YYYY H:mm');
-  const theme = useTheme();
+
+  const expiresAt = dayjs(market.expiresAt).utc(true);
+
+  const currentYear = dayjs().utc(true).year();
+  const showYear = currentYear !== expiresAt.year();
+  const showTime = currentYear === expiresAt.year();
+
+  const formatedExpiresAt = theme.device.isDesktop
+    ? expiresAt.format('MMM D, YYYY H:mm')
+    : expiresAt.format(
+        `MMM D,${showYear ? ' YYYY' : ''}${showTime ? ' H:mm' : ''}`
+      );
+
   const fantasyTokenTicker = useFantasyTokenTicker();
 
   return (
@@ -192,7 +203,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
         <Text as="span" scale="tiny-uppercase" fontWeight="semibold">
           <Tooltip
             className={marketClasses.footerStatsTooltip}
-            text={`Expires on ${expiresAt}`}
+            text={`Expires on ${formatedExpiresAt}`}
           >
             <Icon
               name="Calendar"
@@ -205,7 +216,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
               fontWeight="semibold"
               className={marketClasses.footerStatsText}
             >
-              {expiresAt}
+              {formatedExpiresAt}
             </Text>
           </Tooltip>
         </Text>
