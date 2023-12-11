@@ -47,12 +47,20 @@ module.exports = {
             from: 'public/manifest.json',
             to: 'manifest.json',
             transform(content) {
-              return content
-                .toString()
-                .replace(
-                  /%\w+%/g,
-                  value => process.env[value.slice(1, value.length - 1)]
-                );
+              return content.toString().replace(/%\w+%/g, value => {
+                const envValue = process.env[value.slice(1, value.length - 1)];
+                const fallbacks = {
+                  REACT_APP_MANIFEST_SHORT_NAME: 'Polkamarkets',
+                  REACT_APP_MANIFEST_NAME: 'Polkamarkets',
+                  REACT_APP_MANIFEST_ICON192_URL: 'logo192.png',
+                  REACT_APP_MANIFEST_ICON512_URL: 'logo512.png',
+                  REACT_APP_FAVICON_URL: 'favicon.ico'
+                };
+
+                return typeof envValue === 'undefined'
+                  ? fallbacks[`%${value}%`]
+                  : envValue;
+              });
             }
           }
         ]
