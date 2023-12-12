@@ -13,6 +13,12 @@ interface PredictionCardProps
   $gutter?: boolean;
   readonly?: boolean;
   showCategory?: boolean;
+  statsVisibility?: {
+    volume?: {
+      desktop?: boolean;
+      mobile?: boolean;
+    };
+  };
 }
 
 function PredictionCard({
@@ -21,7 +27,8 @@ function PredictionCard({
   itemID,
   className,
   readonly = false,
-  showCategory = true
+  showCategory = true,
+  statsVisibility
 }: PredictionCardProps) {
   return (
     <div
@@ -37,7 +44,7 @@ function PredictionCard({
         <Market.Outcomes market={market} readonly={readonly} />
       </div>
       <div className="prediction-card__footer">
-        <Market.Footer market={market}>
+        <Market.Footer market={market} statsVisibility={statsVisibility}>
           <MarketFooterActions $variant="text" market={market} />
         </Market.Footer>
       </div>
