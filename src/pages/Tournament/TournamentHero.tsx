@@ -104,7 +104,10 @@ export default function TournamentHero({
                   />
                 ) : null}
                 <div>
-                  <div className={styles.rootHeroContentLand}>
+                  <Link
+                    className={styles.rootHeroContentLand}
+                    to={landSlug ? `/lands/${landSlug}` : '/tournaments'}
+                  >
                     {landImageUrl ? (
                       <Avatar
                         $radius="lg"
@@ -118,7 +121,7 @@ export default function TournamentHero({
                         {landName}
                       </h4>
                     ) : null}
-                  </div>
+                  </Link>
                   {tournamentName ? (
                     <h2 className={styles.rootHeroContentName}>
                       {tournamentName}
