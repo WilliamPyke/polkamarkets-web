@@ -73,18 +73,21 @@ function Land() {
       </div>
     );
 
-  const { title, description, imageUrl, bannerUrl, tournaments } = land;
+  const { slug: landSlug, title, bannerUrl, imageUrl, tournaments } = land;
 
   return (
-    <Container className={classNames('max-width-screen-xl', styles.root)}>
+    <>
       {land && (
         <SEO
           title={`${land.title} | Foreland Alpha`}
           description={`${land.description}\nStart now with $ALPHA`}
         />
       )}
-      <LandHero {...{ slug, title, description, imageUrl, bannerUrl }} />
-      <div className="width-full">
+      <LandHero
+        meta={{ slug: landSlug, title, bannerUrl, imageUrl }}
+        stats={{ tournaments: 10, members: 156, totalRewards: 11 }}
+      />
+      <Container className={classNames('max-width-screen-xl', styles.root)}>
         <div className={styles.upcoming}>
           <div className={styles.upcomingHeader}>
             <h2 className={styles.upcomingTitle}>Upcoming</h2>
@@ -98,8 +101,8 @@ function Land() {
           <TournamentsUpcomingMarkets markets={markets || []} />
         </div>
         <LandTournamentList tournaments={tournaments} />
-      </div>
-    </Container>
+      </Container>
+    </>
   );
 }
 
