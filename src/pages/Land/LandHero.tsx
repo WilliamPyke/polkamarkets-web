@@ -1,75 +1,96 @@
-import classNames from 'classnames';
-import { ui } from 'config';
-import { Land } from 'types/land';
-import { Avatar, Container, Hero } from 'ui';
+import { CSSProperties } from 'react';
 
-import { Share, Text } from 'components';
+import classNames from 'classnames';
+import { Land } from 'types/land';
+import { Avatar } from 'ui';
+
+import { InfoIcon } from 'assets/icons';
+
+import { Button, Share } from 'components';
 
 import styles from './LandHero.module.scss';
 
-type LandHeroProps = Pick<
-  Land,
-  'slug' | 'title' | 'description' | 'imageUrl' | 'bannerUrl'
->;
+type LandHeroProps = {
+  meta: Pick<Land, 'slug' | 'title' | 'bannerUrl' | 'imageUrl'>;
+  stats: {
+    tournaments: number;
+    members: number;
+    totalRewards: number;
+  };
+};
 
-export default function LandHero({
-  slug,
-  title,
-  description,
-  imageUrl,
-  bannerUrl
-}: LandHeroProps) {
+export default function LandHero({ meta, stats }: LandHeroProps) {
   return (
-    <Container className={styles.header}>
-      <Hero
-        $rounded
-        $image={bannerUrl || ui.hero.image}
-        className={classNames('pm-p-home__hero', styles.headerHero)}
+    <div className={styles.root}>
+      <div
+        className={styles.banner}
+        style={
+          { '--background-image': `url(${meta.bannerUrl})` } as CSSProperties
+        }
       >
-        <div className="pm-p-home__hero__content">
-          <div className={styles.meta}>
-            {imageUrl ? (
-              <Avatar
-                src={imageUrl}
-                alt={title}
-                $radius="md"
-                className={styles.metaAvatar}
-              />
-            ) : null}
-            <div className={styles.metaDetails}>
-              <Text
-                as="h2"
-                fontWeight="bold"
-                scale="heading-large"
-                color="light"
-                className={classNames(
-                  'pm-p-home__hero__heading',
-                  styles.metaDetailsTitle
-                )}
-              >
-                {title}
-              </Text>
-              <Text
-                as="span"
-                fontWeight="medium"
-                color="light"
-                className={styles.metaDetailsDescription}
-              >
-                {description}
-              </Text>
-              <div className={styles.headerHeroActions}>
-                <Share
-                  id={slug}
-                  size="xs"
-                  variant="normal"
-                  color="default"
-                  iconOnly={false}
-                />
-              </div>
-            </div>
-          </div>
+        {meta.imageUrl ? (
+          <Avatar
+            src={meta.imageUrl}
+            alt={meta.title}
+            $radius="lg"
+            className={styles.bannerAvatar}
+          />
+        ) : null}
+      </div>
+      <div className={styles.content}>
+        <div className={styles.contentActions}>
+          <Button
+            size="sm"
+            color="noborder"
+            className={styles.contentActionsButton}
+          >
+            <InfoIcon />
+            About
+          </Button>
+          <span
+            className={classNames(
+              'pm-c-divider--circle',
+              styles.footerStatsDivider
+            )}
+          />
+          <Share
+            id={meta.slug}
+            className={classNames(
+              styles.contentActionsButton,
+              styles.contentActionsButtonWithHover
+            )}
+          />
         </div>
-      </Hero>
-    </Container>
+        <h3 className={styles.contentTitle}>{meta.title}</h3>
+      </div>
+      <div className={styles.footer}>
+        <div className={styles.footerStats}>
+          <span className={styles.footerStatsItem}>
+            Tournaments:
+            <strong>{stats.tournaments}</strong>
+          </span>
+          <span
+            className={classNames(
+              'pm-c-divider--circle',
+              styles.footerStatsDivider
+            )}
+          />
+          <span className={styles.footerStatsItem}>
+            Members:
+            <strong>{stats.members}</strong>
+          </span>
+          <span
+            className={classNames(
+              'pm-c-divider--circle',
+              styles.footerStatsDivider
+            )}
+          />
+          <span className={styles.footerStatsItem}>
+            Total Rewards:
+            <strong>{stats.totalRewards}</strong>
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
