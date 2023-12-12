@@ -15,6 +15,12 @@ import MarketFooterStats from './MarketFooterStats';
 type MarketFooterProps = React.PropsWithChildren<{
   market: Market;
   showStateOnMobile?: boolean;
+  statsVisibility?: {
+    volume?: {
+      desktop?: boolean;
+      mobile?: boolean;
+    };
+  };
 }>;
 
 const tags = {
@@ -48,6 +54,7 @@ const tags = {
 export default function MarketFooter({
   market,
   showStateOnMobile = false,
+  statsVisibility,
   children
 }: MarketFooterProps) {
   const theme = useTheme();
@@ -64,7 +71,7 @@ export default function MarketFooter({
 
   return (
     <div className={`pm-c-market-footer ${marketClasses.footer}`}>
-      <MarketFooterStats market={market} />
+      <MarketFooterStats market={market} visibility={statsVisibility} />
       <div className="pm-c-market-footer__group--row">
         {children}
         {(showStateOnMobile || theme.device.isDesktop) && tag && (
