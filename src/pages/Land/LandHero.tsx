@@ -15,7 +15,7 @@ type LandHeroProps = {
   stats: {
     tournaments: number;
     members: number;
-    totalRewards: number;
+    // totalRewards: number;
   };
 };
 
@@ -79,7 +79,7 @@ export default function LandHero({ meta, stats }: LandHeroProps) {
             Members:
             <strong>{stats.members}</strong>
           </span>
-          <span
+          {/* <span
             className={classNames(
               'pm-c-divider--circle',
               styles.footerStatsDivider
@@ -88,7 +88,7 @@ export default function LandHero({ meta, stats }: LandHeroProps) {
           <span className={styles.footerStatsItem}>
             Total Rewards:
             <strong>{stats.totalRewards}</strong>
-          </span>
+          </span> */}
         </div>
       </div>
     </div>

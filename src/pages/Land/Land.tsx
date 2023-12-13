@@ -73,7 +73,14 @@ function Land() {
       </div>
     );
 
-  const { slug: landSlug, title, bannerUrl, imageUrl, tournaments } = land;
+  const {
+    slug: landSlug,
+    title,
+    bannerUrl,
+    imageUrl,
+    tournaments,
+    users
+  } = land;
 
   return (
     <>
@@ -85,7 +92,11 @@ function Land() {
       )}
       <LandHero
         meta={{ slug: landSlug, title, bannerUrl, imageUrl }}
-        stats={{ tournaments: 10, members: 156, totalRewards: 11 }}
+        stats={{
+          tournaments: tournaments.length,
+          members: users
+          // totalRewards: 11
+        }}
       />
       <Container className={classNames('max-width-screen-xl', styles.root)}>
         <div className={styles.upcoming}>
