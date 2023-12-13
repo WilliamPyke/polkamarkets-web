@@ -119,6 +119,13 @@
       }
 
       &WithHover {
+        svg {
+          height: var(--size-14);
+          width: var(--size-14);
+
+          fill: #59749b;
+        }
+
         &:hover {
           svg {
             fill: #f9fafb;
@@ -186,5 +193,11 @@
         font-weight: 600;
       }
     }
+  }
+
+  &Actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 }
