@@ -1,7 +1,6 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--size-24);
 }
 
 .upcoming {
@@ -9,44 +8,9 @@
   flex-direction: column;
   gap: var(--size-24);
 
-  margin-bottom: var(--size-32);
+  margin-bottom: var(--size-24);
 
-  &Header {
-    display: flex;
-    flex-direction: row;
-    gap: var(--size-12);
-    align-items: center;
-    padding: 0 var(--size-16);
-  }
-
-  &Title {
-    font-size: var(--size-20--rem);
-    font-weight: bold;
-    line-height: normal;
-    color: var(--color-text-1);
-
-    @media (min-width: 768px) {
-      font-size: var(--size-24--rem);
-    }
-  }
-
-  &Button {
-    height: 30px;
-    padding: var(--size-6) var(--size-16);
-
-    font-size: var(--size-14--rem);
-    line-height: normal;
-
-    color: #ffffff;
-    background: linear-gradient(#18192f, #18192f) padding-box,
-      linear-gradient(
-          to right,
-          hsla(243, 94%, 66%, 0.5),
-          hsla(270, 94%, 66%, 0.5)
-        )
-        border-box;
-
-    border: 1px solid transparent;
-    border-radius: var(--size-6);
+  @media (min-width: 1024px) {
+    margin-bottom: var(--size-32);
   }
 }

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
@@ -101,15 +101,6 @@ function Land() {
       />
       <Container className={classNames('max-width-screen-xl', styles.root)}>
         <div className={styles.upcoming}>
-          <div className={styles.upcomingHeader}>
-            <h2 className={styles.upcomingTitle}>Upcoming</h2>
-            <Link
-              to="/markets"
-              className={classNames('pm-c-button--xs', styles.upcomingButton)}
-            >
-              See All
-            </Link>
-          </div>
           <TournamentsUpcomingMarkets markets={markets || []} />
         </div>
         <LandTournamentList tournaments={tournaments} />

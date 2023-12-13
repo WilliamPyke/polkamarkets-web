@@ -6,7 +6,9 @@ import {
   WheelEvent
 } from 'react';
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
+import { Link } from 'react-router-dom';
 
+import classNames from 'classnames';
 import orderBy from 'lodash/orderBy';
 import type { Market } from 'models/market';
 import {
@@ -18,6 +20,27 @@ import {
 import { AlertMini, Icon, PredictionCard } from 'components';
 
 import styles from './TournamentsUpcomingMarkets.module.scss';
+
+type HeaderProps = {
+  children?: React.ReactNode;
+};
+
+function Header({ children }: HeaderProps) {
+  return (
+    <div className={styles.header}>
+      <div className={styles.headerGroup}>
+        <h2 className={styles.headerTitle}>Upcoming</h2>
+        <Link
+          to="/markets"
+          className={classNames('pm-c-button--xs', styles.headerButton)}
+        >
+          See All
+        </Link>
+      </div>
+      {children}
+    </div>
+  );
+}
 
 function LeftArrow() {
   const { isFirstItemVisible, scrollPrev } = useContext(VisibilityContext);
@@ -111,13 +134,16 @@ function TournamentsUpcomingMarkets({
 
   if (!marketsByVolume.length)
     return (
-      <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-medium">
-        <AlertMini
-          style={{ border: 'none' }}
-          styles="outline"
-          variant="information"
-          description="There are no available markets at the moment."
-        />
+      <div>
+        <Header />
+        <div className="padding-y-5 padding-x-4 width-full border-solid border-1 border-radius-medium">
+          <AlertMini
+            style={{ border: 'none' }}
+            styles="outline"
+            variant="information"
+            description="There are no available markets at the moment."
+          />
+        </div>
       </div>
     );
 
@@ -127,6 +153,14 @@ function TournamentsUpcomingMarkets({
       scrollContainerClassName={styles.predictionsWithImageScroll}
       itemClassName={styles.predictionsWithImageItem}
       onWheel={onWheel}
+      Header={
+        <Header>
+          <div className={styles.headerArrows}>
+            <LeftArrow />
+            <RightArrow />
+          </div>
+        </Header>
+      }
     >
       {marketsByVolume.map(market => (
         <PredictionCard
