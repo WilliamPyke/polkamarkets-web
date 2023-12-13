@@ -126,8 +126,6 @@ function TournamentsUpcomingMarkets({
       wrapperClassName={styles.predictionsWithImageWrapper}
       scrollContainerClassName={styles.predictionsWithImageScroll}
       itemClassName={styles.predictionsWithImageItem}
-      LeftArrow={LeftArrow}
-      RightArrow={RightArrow}
       onWheel={onWheel}
     >
       {marketsByVolume.map(market => (

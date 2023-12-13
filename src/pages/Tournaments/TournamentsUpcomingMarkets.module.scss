@@ -1,37 +1,6 @@
 .predictionsWithImage {
   width: 100vw;
 
-  &Wrapper {
-    margin: 0 -12px;
-
-    @media (min-width: 1024px) {
-      margin: 0;
-    }
-
-    :global {
-      .react-horizontal-scrolling-menu--inner-wrapper {
-        margin: 0 16px !important;
-
-        @media (min-width: 1024px) {
-          margin: 0 !important;
-        }
-
-        @media (min-width: 1200px) {
-          margin: 0 -16px !important;
-        }
-      }
-
-      .react-horizontal-scrolling-menu--arrow-left,
-      .react-horizontal-scrolling-menu--arrow-right {
-        display: none !important;
-
-        @media (min-width: 768px) {
-          display: flex !important;
-        }
-      }
-    }
-  }
-
   &Scroll {
     &::-webkit-scrollbar {
       display: none;
@@ -39,11 +8,6 @@
 
     -ms-overflow-style: none;
     scrollbar-width: none;
-
-    padding: var(--size-16);
-    margin: 0 var(--size-8);
-    border: 1px solid var(--color-border);
-    border-radius: var(--size-16);
   }
 
   &Item {
