@@ -105,7 +105,7 @@ function Land() {
             <h2 className={styles.upcomingTitle}>Upcoming</h2>
             <Link
               to="/markets"
-              className="pm-c-button-subtle--primary pm-c-button--xs"
+              className={classNames('pm-c-button--xs', styles.upcomingButton)}
             >
               See All
             </Link>
