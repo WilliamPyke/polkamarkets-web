@@ -76,6 +76,7 @@ function Land() {
   const {
     slug: landSlug,
     title,
+    description,
     bannerUrl,
     imageUrl,
     tournaments,
@@ -91,7 +92,7 @@ function Land() {
         />
       )}
       <LandHero
-        meta={{ slug: landSlug, title, bannerUrl, imageUrl }}
+        meta={{ slug: landSlug, title, description, bannerUrl, imageUrl }}
         stats={{
           tournaments: tournaments.length,
           members: users

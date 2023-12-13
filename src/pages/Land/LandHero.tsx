@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, useCallback, useState } from 'react';
 
 import classNames from 'classnames';
 import { Land } from 'types/land';
@@ -6,12 +6,22 @@ import { Avatar, useTheme } from 'ui';
 
 import { InfoIcon } from 'assets/icons';
 
-import { Button, Share } from 'components';
+import {
+  Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalHeaderHide,
+  ModalHeaderTitle,
+  ModalSection,
+  ModalSectionText,
+  Share
+} from 'components';
 
 import styles from './LandHero.module.scss';
 
 type LandHeroProps = {
-  meta: Pick<Land, 'slug' | 'title' | 'bannerUrl' | 'imageUrl'>;
+  meta: Pick<Land, 'slug' | 'title' | 'description' | 'bannerUrl' | 'imageUrl'>;
   stats: {
     tournaments: number;
     members: number;
@@ -21,6 +31,11 @@ type LandHeroProps = {
 
 export default function LandHero({ meta, stats }: LandHeroProps) {
   const theme = useTheme();
+
+  const [showAboutModal, setShowAboutModal] = useState(false);
+
+  const handleShowAboutModal = useCallback(() => setShowAboutModal(true), []);
+  const handleHideAboutModal = useCallback(() => setShowAboutModal(false), []);
 
   return (
     <div className={classNames('max-width-screen-xl', styles.container)}>
@@ -41,12 +56,24 @@ export default function LandHero({ meta, stats }: LandHeroProps) {
           ) : null}
         </div>
         <div className={styles.content}>
+          <Modal show={showAboutModal} size="sm" centered>
+            <ModalContent>
+              <ModalHeader>
+                <ModalHeaderTitle>{meta.title}</ModalHeaderTitle>
+                <ModalHeaderHide onClick={handleHideAboutModal} />
+              </ModalHeader>
+              <ModalSection>
+                <ModalSectionText>{meta.description}</ModalSectionText>
+              </ModalSection>
+            </ModalContent>
+          </Modal>
           {!theme.device.isDesktop ? (
             <div className={styles.contentActions}>
               <Button
                 size="sm"
                 color="noborder"
                 className={styles.contentActionsButton}
+                onClick={handleShowAboutModal}
               >
                 <InfoIcon />
                 About
@@ -101,6 +128,7 @@ export default function LandHero({ meta, stats }: LandHeroProps) {
                 size="sm"
                 color="noborder"
                 className={styles.contentActionsButton}
+                onClick={handleShowAboutModal}
               >
                 <InfoIcon />
                 About
