@@ -3,25 +3,25 @@
   "name": "%REACT_APP_MANIFEST_NAME%",
   "icons": [
     {
-      "src": "%REACT_APP_MANIFEST_ICON192_URL%",
+      "src": "%REACT_APP_MANIFEST_ICON_192_URL%",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "%REACT_APP_MANIFEST_ICON192_URL%",
+      "src": "%REACT_APP_MANIFEST_ICON_192_URL%",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "%REACT_APP_MANIFEST_ICON512_URL%",
+      "src": "%REACT_APP_MANIFEST_ICON_512_URL%",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "%REACT_APP_MANIFEST_ICON512_URL%",
+      "src": "%REACT_APP_MANIFEST_ICON_512_URL%",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
