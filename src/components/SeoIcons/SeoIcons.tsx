@@ -5,77 +5,77 @@ import { isUndefined } from 'lodash';
 
 const splashSizes = [
   {
-    dimension: '2048-2732',
+    dimension: '2048_2732',
     media:
       '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   },
   {
-    dimension: '1668-2388',
+    dimension: '1668_2388',
     media:
       '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   },
   {
-    dimension: '1536-2048',
+    dimension: '1536_2048',
     media:
       '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   },
   {
-    dimension: '1668-2224',
+    dimension: '1668_2224',
     media:
       '(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   },
   {
-    dimension: '1620-2160',
+    dimension: '1620_2160',
     media:
       '(device-width: 810px) and (device-height: 1080px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   },
   {
-    dimension: '1290-2796',
+    dimension: '1290_2796',
     media:
       '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
   },
   {
-    dimension: '1179-2556',
+    dimension: '1179_2556',
     media:
       '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
   },
   {
-    dimension: '1284-2778',
+    dimension: '1284_2778',
     media:
       '(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
   },
   {
-    dimension: '1170-2532',
+    dimension: '1170_2532',
     media:
       '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
   },
   {
-    dimension: '1125-2436',
+    dimension: '1125_2436',
     media:
       '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
   },
   {
-    dimension: '1242-2688',
+    dimension: '1242_2688',
     media:
       '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
   },
   {
-    dimension: '828-1792',
+    dimension: '828_1792',
     media:
       '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   },
   {
-    dimension: '1242-2208',
+    dimension: '1242_2208',
     media:
       '(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)'
   },
   {
-    dimension: '750-1334',
+    dimension: '750_1334',
     media:
       '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   },
   {
-    dimension: '640-1136',
+    dimension: '640_1136',
     media:
       '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)'
   }
@@ -90,18 +90,27 @@ export default function SeoIcons() {
         href={environment.FAVICON_URL ?? '/logo192.png'}
       />
       {splashSizes.map(({ dimension, media }) => {
-        const splashUrl = process.env[`REACT_APP_SPLASH_${dimension}`];
+        const splashConfig = process.env.REACT_APP_SPLASH_CONFIG;
+        if (isUndefined(splashConfig)) return null;
 
-        if (isUndefined(splashUrl)) return null;
+        try {
+          const splashUrl = JSON.parse(
+            process.env.REACT_APP_SPLASH_CONFIG as string
+          )[dimension];
 
-        return (
-          <link
-            key={dimension}
-            rel="apple-touch-startup-image"
-            href={splashUrl}
-            media={media}
-          />
-        );
+          if (isUndefined(splashUrl)) return null;
+
+          return (
+            <link
+              key={dimension}
+              rel="apple-touch-startup-image"
+              href={splashUrl}
+              media={media}
+            />
+          );
+        } catch (error) {
+          return null;
+        }
       })}
     </Helmet>
   );
