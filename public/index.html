@@ -2,18 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <script type="text/javascript">
-      '%REACT_APP_FAVICON_URL%'.includes('https')
-        ? document.write(
-            '<link rel="icon" href="%REACT_APP_FAVICON_URL%" \/><link rel="apple-touch-icon" href="%REACT_APP_FAVICON_URL%" />'
-          )
-        : document.write(
-            '<link rel="icon" href="%PUBLIC_URL%/favicon.ico" \/><link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" \/>'
-          );
-    </script>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#0E1016"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#FDFCFC"
+    />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
     <!-- Primary Meta Tags -->
@@ -37,7 +37,6 @@
       content="__META_TWITTER_DESCRIPTION__"
     />
     <meta property="twitter:image" content="__META_TWITTER_IMAGE__" />
-
     <link
       rel="preload"
       href="/assets/fonts/Gilroy-Regular.woff2"

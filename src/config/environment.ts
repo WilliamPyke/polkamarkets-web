@@ -59,7 +59,9 @@ const environmentConfigVariables = [
   'UI_TOURNAMENTS_UPCOMING_ENABLED',
   'UI_TOURNAMENTS_TABS_ENABLED',
   'UI_TWITTER_SHARE_INTENT',
-  'SENTRY_DSN'
+  'SENTRY_DSN',
+  'FAVICON_URL',
+  'TOUCHICON_URL'
 ] as const;
 
 export type EnvironmentConfigVariable =
