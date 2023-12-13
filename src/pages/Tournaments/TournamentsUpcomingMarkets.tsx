@@ -136,6 +136,11 @@ function TournamentsUpcomingMarkets({
           key={market.slug}
           market={market}
           className={styles.predictionCard}
+          statsVisibility={{
+            volume: {
+              desktop: false
+            }
+          }}
         />
       ))}
     </ScrollMenu>

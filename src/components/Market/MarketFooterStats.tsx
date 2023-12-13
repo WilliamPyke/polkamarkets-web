@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { features } from 'config';
 import dayjs from 'dayjs';
 import { roundNumber } from 'helpers/math';
@@ -16,9 +18,18 @@ import marketClasses from './Market.module.scss';
 
 type MarketFooterStatsProps = {
   market: Market;
+  visibility?: {
+    volume?: {
+      desktop?: boolean;
+      mobile?: boolean;
+    };
+  };
 };
 
-export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
+export default function MarketFooterStats({
+  market,
+  visibility = { volume: { desktop: true, mobile: false } }
+}: MarketFooterStatsProps) {
   const theme = useTheme();
 
   const {
@@ -46,6 +57,18 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
       );
 
   const fantasyTokenTicker = useFantasyTokenTicker();
+
+  const statsVisibility = useMemo(() => {
+    return {
+      volume: theme.device.isDesktop
+        ? visibility?.volume?.desktop
+        : visibility?.volume?.mobile
+    };
+  }, [
+    theme.device.isDesktop,
+    visibility?.volume?.desktop,
+    visibility?.volume?.mobile
+  ]);
 
   return (
     <div className="pm-c-market-footer__stats">
@@ -88,7 +111,7 @@ export default function MarketFooterStats({ market }: MarketFooterStatsProps) {
           {theme.device.isDesktop && <span className="pm-c-divider--circle" />}
         </>
       )}
-      {theme.device.isDesktop && !!volume && (
+      {statsVisibility.volume && !!volume && (
         <>
           <Text
             as="span"
