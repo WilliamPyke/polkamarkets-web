@@ -396,43 +396,46 @@ app.get('/leaderboard/:slug', async (request, response, next) => {
   response.redirect(`/clubs/${request.params.slug}`);
 });
 
-app.get('/lands/:slug', async (request, response, next) => {
-  if (!isTournamentsEnabled) {
-    next();
-    return;
-  }
-
-  fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
-    if (error) {
-      return response.status(404).end();
+app.get(
+  ['/lands/:slug', '/lands/:slug/markets'],
+  async (request, response, next) => {
+    if (!isTournamentsEnabled) {
+      next();
+      return;
     }
 
-    const landSlug = request.params.slug;
+    fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
+      if (error) {
+        return response.status(404).end();
+      }
 
-    try {
-      const land = await getLandBySlug(landSlug);
-      const { title, description, bannerUrl } = land.data;
+      const landSlug = request.params.slug;
 
-      return response.send(
-        replaceToMetadataTemplate({
-          htmlData,
-          url: `${request.headers['x-forwarded-proto'] || 'http'}://${
-            request.headers.host
-          }/lands/${request.params.slug}`,
-          title: `${title} | Foreland Alpha`,
-          description: `${description}\nStart now with $ALPHA`,
-          image:
-            bannerUrl ||
-            `${request.headers['x-forwarded-proto'] || 'http'}://${
+      try {
+        const land = await getLandBySlug(landSlug);
+        const { title, description, bannerUrl } = land.data;
+
+        return response.send(
+          replaceToMetadataTemplate({
+            htmlData,
+            url: `${request.headers['x-forwarded-proto'] || 'http'}://${
               request.headers.host
-            }${defaultMetadata.image}`
-        })
-      );
-    } catch (e) {
-      return response.send(defaultMetadataTemplate(request, htmlData));
-    }
-  });
-});
+            }/lands/${request.params.slug}`,
+            title: `${title} | Foreland Alpha`,
+            description: `${description}\nStart now with $ALPHA`,
+            image:
+              bannerUrl ||
+              `${request.headers['x-forwarded-proto'] || 'http'}://${
+                request.headers.host
+              }${defaultMetadata.image}`
+          })
+        );
+      } catch (e) {
+        return response.send(defaultMetadataTemplate(request, htmlData));
+      }
+    });
+  }
+);
 
 app.get('/user/:address', (request, response) => {
   fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
