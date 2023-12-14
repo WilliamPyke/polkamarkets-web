@@ -6,7 +6,7 @@ import {
   WheelEvent
 } from 'react';
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import classNames from 'classnames';
 import orderBy from 'lodash/orderBy';
@@ -26,14 +26,12 @@ type HeaderProps = {
 };
 
 function Header({ children }: HeaderProps) {
-  const location = useLocation();
-
   return (
     <div className={styles.header}>
       <div className={styles.headerGroup}>
         <h2 className={styles.headerTitle}>Upcoming</h2>
         <Link
-          to={`${location.pathname}/markets`}
+          to="/markets"
           className={classNames('pm-c-button--xs', styles.headerButton)}
         >
           See All
