@@ -46,14 +46,13 @@
 
   &Avatar {
     position: absolute;
-
     bottom: -30px;
-
-    aspect-ratio: 1 / 1;
 
     height: 60px;
     width: 60px;
+    aspect-ratio: 1 / 1;
 
+    background: rgba(255, 255, 255, 0.2);
     border: 2px solid hsla(223, 100%, 99%, 0.24);
 
     @media (min-width: 1024px) {
