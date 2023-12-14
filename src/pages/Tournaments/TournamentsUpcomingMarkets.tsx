@@ -116,7 +116,7 @@ function MarketList({ data }: MarketListProps) {
   );
 }
 
-const CAROUSEL_SIZE = 4;
+const CAROUSEL_SIZE = 8;
 
 type scrollVisibilityApiType = ContextType<typeof VisibilityContext>;
 
