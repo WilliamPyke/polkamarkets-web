@@ -121,21 +121,27 @@ function HeaderNavMenu({
 }>) {
   return (
     <ul className={headerNavClasses.list}>
-      {headerNavMenu.map(page => (
-        <li key={page.name} className={headerNavClasses.item}>
-          <NavLink
-            to={page.pathname}
-            className={headerNavClasses.link}
-            activeClassName={headerNavClasses.active}
-            onClick={onMenuItemClick}
-            isActive={(_, location) =>
-              !!location.pathname.match(getPathname(page.pathname))
-            }
-          >
-            {page.name}
-          </NavLink>
-        </li>
-      ))}
+      {headerNavMenu.map(page => {
+        const paths = Array.isArray(page.pathname)
+          ? page.pathname
+          : [page.pathname];
+
+        return paths.map(pathname => (
+          <li key={page.name} className={headerNavClasses.item}>
+            <NavLink
+              to={pathname}
+              className={headerNavClasses.link}
+              activeClassName={headerNavClasses.active}
+              onClick={onMenuItemClick}
+              isActive={(_, location) =>
+                !!location.pathname.match(getPathname(pathname))
+              }
+            >
+              {page.name}
+            </NavLink>
+          </li>
+        ));
+      })}
       {children}
     </ul>
   );
