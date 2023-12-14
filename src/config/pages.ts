@@ -154,7 +154,7 @@ const pages = {
   land: {
     pathname: '/lands/:slug',
     Component: lazy(() => import('pages/Land')),
-    exact: true,
+    exact: false,
     navigation: false,
     name: '',
     meta: null,
@@ -189,9 +189,7 @@ const pages = {
   },
   home: {
     pathname:
-      features.fantasy.enabled && ui.tournaments.enabled
-        ? ['/markets', '/lands/:slug/markets']
-        : '/',
+      features.fantasy.enabled && ui.tournaments.enabled ? '/markets' : '/',
     Component: lazy(() => import('pages/Home')),
     exact: false,
     navigation: !features.fantasy.enabled,
