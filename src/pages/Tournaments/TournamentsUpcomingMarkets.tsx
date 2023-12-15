@@ -221,7 +221,7 @@ function TournamentsUpcomingMarkets({
           expanded={expanded}
           onExpand={handleChangeExpanded}
         />
-        <MarketList data={openMarkets} />
+        <MarketList data={marketsByVolume} />
       </div>
     );
   }
