@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { ui } from 'config';
+import { environment, ui } from 'config';
 import isEmpty from 'lodash/isEmpty';
 import omit from 'lodash/omit';
 import orderBy from 'lodash/orderBy';
@@ -18,7 +18,14 @@ import styles from './TournamentsList.module.scss';
 import TournamentsUpcomingMarkets from './TournamentsUpcomingMarkets';
 
 function TournamentsList() {
-  const { data: tournaments, isFetching, isLoading } = useGetTournamentsQuery();
+  const {
+    data: tournaments,
+    isFetching,
+    isLoading
+  } = useGetTournamentsQuery({
+    token: environment.FEATURE_FANTASY_TOKEN_TICKER
+  });
+
   const isLoadingGetTournamentsQuery = isFetching || isLoading;
   const isEmptyTournaments = !tournaments || isEmpty(tournaments);
 
