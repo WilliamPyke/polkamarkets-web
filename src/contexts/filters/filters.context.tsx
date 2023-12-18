@@ -1,6 +1,6 @@
 import { createContext, useCallback, useMemo, useReducer } from 'react';
 
-import { ui } from 'config';
+import { environment, ui } from 'config';
 import merge from 'lodash/merge';
 import pickBy from 'lodash/pickBy';
 import { useGetTournamentsQuery } from 'services/Polkamarkets';
@@ -28,7 +28,7 @@ function FiltersProvider({ children }) {
   const { networks } = useNetworks();
 
   const { data: tournaments } = useGetTournamentsQuery(
-    {},
+    { token: environment.FEATURE_FANTASY_TOKEN_TICKER },
     {
       skip: !ui.filters.tournaments.enabled
     }
