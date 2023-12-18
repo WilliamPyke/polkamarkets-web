@@ -27,9 +27,12 @@ const FiltersContext = createContext<FiltersContextState>(
 function FiltersProvider({ children }) {
   const { networks } = useNetworks();
 
-  const { data: tournaments } = useGetTournamentsQuery(undefined, {
-    skip: !ui.filters.tournaments.enabled
-  });
+  const { data: tournaments } = useGetTournamentsQuery(
+    {},
+    {
+      skip: !ui.filters.tournaments.enabled
+    }
+  );
 
   const filtersWithNetworks = useMemo(() => addNetworks(networks), [networks]);
   const filtersWithTournaments = useMemo(
