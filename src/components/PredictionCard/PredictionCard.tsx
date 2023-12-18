@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import cn from 'classnames';
+import classNames from 'classnames';
 import { Market as MarketInterface } from 'models/market';
 
 import MarketFooterActions from 'components/Market/MarketFooterActions';
@@ -33,20 +33,18 @@ function PredictionCard({
   return (
     <div
       itemID={itemID}
-      className={cn(
-        'prediction-card',
-        { 'prediction-card--gutter': $gutter },
-        className
-      )}
+      className={classNames({ 'prediction-card--gutter': $gutter })}
     >
-      <div className="prediction-card__body">
-        <Market market={market} showCategory={showCategory} />
-        <Market.Outcomes market={market} readonly={readonly} />
-      </div>
-      <div className="prediction-card__footer">
-        <Market.Footer market={market} statsVisibility={statsVisibility}>
-          <MarketFooterActions $variant="text" market={market} />
-        </Market.Footer>
+      <div className={classNames('prediction-card', className)}>
+        <div className="prediction-card__body">
+          <Market market={market} showCategory={showCategory} />
+          <Market.Outcomes market={market} readonly={readonly} />
+        </div>
+        <div className="prediction-card__footer">
+          <Market.Footer market={market} statsVisibility={statsVisibility}>
+            <MarketFooterActions $variant="text" market={market} />
+          </Market.Footer>
+        </div>
       </div>
     </div>
   );
