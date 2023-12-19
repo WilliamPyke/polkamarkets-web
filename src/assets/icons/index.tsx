@@ -40,6 +40,8 @@ import MoonbeamIcon from './MoonbeamIcon';
 import MoonIcon from './MoonIcon';
 import MoonriverIcon from './MoonriverIcon';
 import NetworkCommunicationIcon from './NetworkCommunicationIcon';
+import ObservadorLogo from './ObservadorLogo';
+import ObservadorMobileLogo from './ObservadorMobileLogo';
 import PCLLogo from './PCLLogo';
 import PolkadotIcon from './PolkadotIcon';
 import PolkamarketsIcon from './PolkamarketsIcon';
@@ -113,6 +115,8 @@ export {
   MoonriverIcon,
   MoonIcon,
   NetworkCommunicationIcon,
+  ObservadorLogo,
+  ObservadorMobileLogo,
   PCLLogo,
   PolkadotIcon,
   PolkamarketsIcon,
