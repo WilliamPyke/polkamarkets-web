@@ -452,3 +452,11 @@
 .closed {
   padding: 40px;
 }
+
+.tooltip {
+  text-transform: initial;
+
+  &Icon {
+    fill: var(--color-text-secondary);
+  }
+}

@@ -1,6 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { roundNumber } from 'helpers/math';
 
+import Tooltip from 'components/Tooltip';
+
 import Icon from '../Icon';
 import Text from '../Text';
 import styles from './Trade.module.scss';
@@ -43,14 +45,34 @@ function formatTradeDetails({
   return [
     {
       key: 'probability',
-      title: 'Probability',
+      title: (
+        <>
+          Probability{' '}
+          <Tooltip
+            className={styles.tooltip}
+            text="How does the outcome's likelihood of occurring vary with your prediction."
+          >
+            <Icon name="Info" size="md" />
+          </Tooltip>
+        </>
+      ),
       value: { from: priceFrom, to: priceTo },
       render: probabilityRowRender
     },
     type === 'buy'
       ? {
           key: 'payout',
-          title: 'Max Payout',
+          title: (
+            <>
+              Max Payout{' '}
+              <Tooltip
+                className={styles.tooltip}
+                text="Maximum payout if your prediction is correct."
+              >
+                <Icon name="Info" size="md" />
+              </Tooltip>
+            </>
+          ),
           value: `${roundNumber(maxStake, 3)} ${ticker} (+${roundNumber(
             maxROI,
             2
