@@ -6,12 +6,12 @@ import { Container, useRect, useTheme } from 'ui';
 
 import { MarketList } from 'components';
 
-import homeClasses from './Home.module.scss';
-import HomeFilter from './HomeFilter';
-import HomeHero from './HomeHero';
-import HomeNav from './HomeNav';
+import styles from './Markets.module.scss';
+import MarketsFilter from './MarketsFilter';
+import MarketsHero from './MarketsHero';
+import MarketsNav from './MarketsNav';
 
-export default function Home() {
+export default function Markets() {
   const routeMatch = useRouteMatch();
   const theme = useTheme();
   const [ref, rect] = useRect();
@@ -24,14 +24,14 @@ export default function Home() {
     <Switch>
       <Route exact path={routeMatch.path}>
         <div className="max-width-screen-xl">
-          {ui.hero.enabled && <HomeHero />}
-          <Container ref={ref} className={homeClasses.nav}>
-            <HomeNav
+          {ui.hero.enabled && <MarketsHero />}
+          <Container ref={ref} className={styles.nav}>
+            <MarketsNav
               onFilterClick={theme.device.isDesktop ? handleToggle : handleShow}
             />
           </Container>
-          <div className={homeClasses.root}>
-            <HomeFilter onFilterHide={handleHide} rect={rect} show={show} />
+          <div className={styles.root}>
+            <MarketsFilter onFilterHide={handleHide} rect={rect} show={show} />
             <MarketList filtersVisible={show} />
           </div>
         </div>
