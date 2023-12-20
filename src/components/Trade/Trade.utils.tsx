@@ -1,6 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import { roundNumber } from 'helpers/math';
 
+import { InfoIcon } from 'assets/icons';
+
 import Tooltip from 'components/Tooltip';
 
 import Icon from '../Icon';
@@ -52,7 +54,7 @@ function formatTradeDetails({
             className={styles.tooltip}
             text="How does the outcome's likelihood of occurring vary with your prediction."
           >
-            <Icon name="Info" size="md" />
+            <InfoIcon className={styles.tooltipIcon} />
           </Tooltip>
         </>
       ),
@@ -69,7 +71,7 @@ function formatTradeDetails({
                 className={styles.tooltip}
                 text="Maximum payout if your prediction is correct."
               >
-                <Icon name="Info" size="md" />
+                <InfoIcon className={styles.tooltipIcon} />
               </Tooltip>
             </>
           ),
