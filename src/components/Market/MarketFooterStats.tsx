@@ -91,7 +91,6 @@ export default function MarketFooterStats({
             <Tooltip
               className={marketClasses.footerStatsTooltip}
               text={`Users: ${users}`}
-              disabled={features.fantasy.enabled}
             >
               <Icon
                 name="User"
@@ -125,7 +124,6 @@ export default function MarketFooterStats({
                 volumeEur,
                 features.fantasy.enabled ? 0 : 3
               )} EUR`}
-              disabled={features.fantasy.enabled}
             >
               <Icon
                 name="Stats"
