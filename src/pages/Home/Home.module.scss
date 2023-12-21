@@ -17,11 +17,16 @@
       color: var(--color-text-1);
     }
 
+    :global(.pm-c-tooltip__wrapper) {
+      margin-left: 4px;
+    }
+
     svg {
       height: var(--size-12);
       width: var(--size-12);
 
       fill: #9da3ae;
+      vertical-align: middle;
     }
 
     margin-bottom: var(--size-16);
