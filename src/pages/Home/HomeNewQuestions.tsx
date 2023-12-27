@@ -89,6 +89,7 @@ function HomeNewQuestions({ questions, getMarketLand }: HomeNewQuestionsProps) {
           }}
           showCategory={false}
           showLand
+          showFooter={false}
           compact
         />
       ))}
