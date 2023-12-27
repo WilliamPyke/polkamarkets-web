@@ -21,40 +21,47 @@ type HomeNewQuestionsProps = {
 };
 
 function HomeNewQuestions({ questions, getMarketLand }: HomeNewQuestionsProps) {
-  const newQuestions = useMemo(
-    () =>
-      orderBy(
-        questions.map(question => {
-          const network = getNetworkById(question.networkId);
-          const ticker = question.token.wrapped
-            ? network.currency.ticker
-            : question.token.symbol;
-
-          const tokenByTicker = getTokenByTicker(ticker);
-          const currencyByTicker = getCurrencyByTicker(ticker);
-          const land = getMarketLand(question.id);
-
-          return {
-            ...question,
-            network,
-            currency: network.currency,
-            token: {
-              ...question.token,
-              ticker,
-              iconName: (tokenByTicker || currencyByTicker).iconName
-            },
-            outcomes: question.outcomes.map(outcome => ({
-              ...outcome,
-              price: Number(outcome.price.toFixed(3))
-            })),
-            land
-          } as Market;
-        }),
+  const newQuestions = useMemo(() => {
+    const questionsByState = [
+      ...orderBy(
+        questions.filter(question => question.state === 'open'),
         'createdAt',
         'desc'
       ),
-    [getMarketLand, questions]
-  );
+      ...orderBy(
+        questions.filter(question => question.state !== 'open'),
+        'createdAt',
+        'desc'
+      )
+    ];
+
+    return questionsByState.map(question => {
+      const network = getNetworkById(question.networkId);
+      const ticker = question.token.wrapped
+        ? network.currency.ticker
+        : question.token.symbol;
+
+      const tokenByTicker = getTokenByTicker(ticker);
+      const currencyByTicker = getCurrencyByTicker(ticker);
+      const land = getMarketLand(question.id);
+
+      return {
+        ...question,
+        network,
+        currency: network.currency,
+        token: {
+          ...question.token,
+          ticker,
+          iconName: (tokenByTicker || currencyByTicker).iconName
+        },
+        outcomes: question.outcomes.map(outcome => ({
+          ...outcome,
+          price: Number(outcome.price.toFixed(3))
+        })),
+        land
+      } as Market;
+    });
+  }, [getMarketLand, questions]);
 
   return (
     <Carousel
