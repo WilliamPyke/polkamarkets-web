@@ -172,6 +172,7 @@ function TournamentsUpcomingMarkets({
           key={market.slug}
           market={market}
           className={styles.predictionCard}
+          wrapperClassName="height-full"
           statsVisibility={{
             volume: {
               desktop: false
