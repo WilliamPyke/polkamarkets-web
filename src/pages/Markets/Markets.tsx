@@ -36,7 +36,7 @@ export default function Markets() {
           </div>
         </div>
       </Route>
-      {Object.values(pages.home.pages).map(page => (
+      {Object.values(pages.markets.pages).map(page => (
         <Route
           key={page.name}
           exact={page.exact}
