@@ -56,7 +56,8 @@ import {
   GetLandBySlugData,
   GetLandBySlugArgs,
   GetTournamentsArgs,
-  GetLandsData
+  GetLandsData,
+  GetLandsArgs
 } from './types';
 
 function camelize<T extends object>(response: T): T {
@@ -272,8 +273,8 @@ const polkamarketsApi = createApi({
       query: ({ slug }) => `/lands/${slug}`,
       transformResponse: (response: GetLandBySlugData) => camelize(response)
     }),
-    getLands: builder.query<GetLandsData, void>({
-      query: () => `/lands`,
+    getLands: builder.query<GetLandsData, GetLandsArgs>({
+      query: ({ token }) => `/lands${token ? `?token=${token}` : ''}`,
       transformResponse: (response: GetLandsData) => camelize(response)
     })
   })

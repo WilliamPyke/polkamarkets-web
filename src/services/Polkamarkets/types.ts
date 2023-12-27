@@ -206,3 +206,6 @@ export type GetLandBySlugArgs = {
 
 // getLands
 export type GetLandsData = Land[];
+export type GetLandsArgs = {
+  token?: string;
+};
