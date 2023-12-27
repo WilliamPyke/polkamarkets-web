@@ -12,6 +12,7 @@ import { Container } from 'ui';
 import styles from './Home.module.scss';
 import HomeCommunityLands from './HomeCommunityLands';
 import HomeNewQuestions from './HomeNewQuestions';
+import HomeOngoingEvents from './HomeOngoingEvents';
 
 function Home() {
   const {
@@ -23,18 +24,20 @@ function Home() {
   const isLoadingGetLandsQuery = isLoadingLands || isFetchingLands;
   const isEmptyLands = !lands || isEmpty(lands);
 
+  const tournaments = useMemo(() => {
+    if (isLoadingGetLandsQuery || isEmptyLands) return [];
+
+    return uniqBy(lands.map(land => land.tournaments).flat(), 'slug');
+  }, [isEmptyLands, isLoadingGetLandsQuery, lands]);
+
   const marketsIds = useMemo(() => {
     if (isLoadingGetLandsQuery || isEmptyLands) return [];
 
     return uniqBy(
-      lands
-        .map(land => land.tournaments)
-        .flat()
-        .map(tournament => tournament.markets || [])
-        .flat(),
+      tournaments.map(tournament => tournament.markets || []).flat(),
       'slug'
     ).map(market => market.id);
-  }, [isEmptyLands, isLoadingGetLandsQuery, lands]);
+  }, [isEmptyLands, isLoadingGetLandsQuery, tournaments]);
 
   const marketsIdsByLand = useMemo(() => {
     if (isLoadingGetLandsQuery || isEmptyLands) return [];
@@ -92,6 +95,7 @@ function Home() {
         questions={markets || []}
         getMarketLand={getMarketLand}
       />
+      <HomeOngoingEvents tournaments={tournaments || []} />
       <HomeCommunityLands lands={lands || []} />
     </Container>
   );
