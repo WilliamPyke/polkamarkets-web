@@ -33,7 +33,10 @@ function HomeOngoingEvents({ tournaments }: HomeOngoingEventsProps) {
       Header={
         <div className={styles.ongoingEventsHeader}>
           <h3 className={styles.ongoingEventsHeaderTitle}>Ongoing Events</h3>
-          <Tooltip text="Help" position="top">
+          <Tooltip
+            text="Prediction Contests featured by Lands that are live and open to participation"
+            position="top"
+          >
             <InfoIcon />
           </Tooltip>
         </div>
