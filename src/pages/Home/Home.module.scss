@@ -1,6 +1,120 @@
 .root {
   display: flex;
   flex-direction: column;
+  gap: var(--size-24);
+
+  @media (min-width: 1024px) {
+    gap: var(--size-40);
+  }
+
+  padding-top: var(--size-24);
+  padding-bottom: var(--size-24);
+
+  @media (min-width: 1024px) {
+    padding-top: var(--size-32);
+    padding-bottom: var(--size-32);
+  }
+}
+
+.newQuestions {
+  &Header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--size-12);
+
+    &Title {
+      font-size: var(--size-20--rem);
+      font-weight: bold;
+      color: var(--color-text-1);
+    }
+
+    &Button {
+      height: 30px;
+      padding: var(--size-6) var(--size-16);
+
+      font-size: var(--size-14--rem);
+      line-height: normal;
+
+      color: #ffffff;
+      background: linear-gradient(#18192f, #18192f) padding-box,
+        linear-gradient(
+            to right,
+            hsla(243, 94%, 66%, 0.5),
+            hsla(270, 94%, 66%, 0.5)
+          )
+          border-box;
+
+      border: 1px solid transparent;
+      border-radius: var(--size-6);
+    }
+  }
+
+  &Item {
+    width: 338px;
+    height: 100%;
+
+    :global {
+      .prediction-card__body {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+
+        @media (min-width: 1024px) {
+          gap: var(--size-16);
+        }
+
+        height: 100%;
+        padding: var(--size-16);
+      }
+
+      .pm-c-market__body {
+        align-items: center !important;
+
+        &-details {
+          .breadcrumb,
+          p {
+            text-overflow: ellipsis;
+            overflow: hidden;
+
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            word-break: break-word;
+          }
+
+          .breadcrumb {
+            -webkit-line-clamp: 1;
+          }
+
+          p {
+            -webkit-line-clamp: 2;
+          }
+        }
+      }
+
+      .pm-c-market-outcomes {
+        @media (min-width: 576px) {
+          width: 100% !important;
+        }
+
+        li {
+          button {
+            @media (min-width: 1024px) {
+              width: 100% !important;
+            }
+          }
+        }
+      }
+
+      .pm-c-market-footer__group--row {
+        .pm-c-market-footer__divider--circle,
+        .pm-c-market-footer__tags {
+          display: none;
+        }
+      }
+    }
+  }
 }
 
 .communityLands {
