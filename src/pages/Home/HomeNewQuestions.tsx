@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import classNames from 'classnames';
+import orderBy from 'lodash/orderBy';
 import { Market } from 'models/market';
 import {
   getCurrencyByTicker,
@@ -22,32 +23,36 @@ type HomeNewQuestionsProps = {
 function HomeNewQuestions({ questions, getMarketLand }: HomeNewQuestionsProps) {
   const newQuestions = useMemo(
     () =>
-      questions.map(question => {
-        const network = getNetworkById(question.networkId);
-        const ticker = question.token.wrapped
-          ? network.currency.ticker
-          : question.token.symbol;
+      orderBy(
+        questions.map(question => {
+          const network = getNetworkById(question.networkId);
+          const ticker = question.token.wrapped
+            ? network.currency.ticker
+            : question.token.symbol;
 
-        const tokenByTicker = getTokenByTicker(ticker);
-        const currencyByTicker = getCurrencyByTicker(ticker);
-        const land = getMarketLand(question.id);
+          const tokenByTicker = getTokenByTicker(ticker);
+          const currencyByTicker = getCurrencyByTicker(ticker);
+          const land = getMarketLand(question.id);
 
-        return {
-          ...question,
-          network,
-          currency: network.currency,
-          token: {
-            ...question.token,
-            ticker,
-            iconName: (tokenByTicker || currencyByTicker).iconName
-          },
-          outcomes: question.outcomes.map(outcome => ({
-            ...outcome,
-            price: Number(outcome.price.toFixed(3))
-          })),
-          land
-        } as Market;
-      }),
+          return {
+            ...question,
+            network,
+            currency: network.currency,
+            token: {
+              ...question.token,
+              ticker,
+              iconName: (tokenByTicker || currencyByTicker).iconName
+            },
+            outcomes: question.outcomes.map(outcome => ({
+              ...outcome,
+              price: Number(outcome.price.toFixed(3))
+            })),
+            land
+          } as Market;
+        }),
+        'createdAt',
+        'desc'
+      ),
     [getMarketLand, questions]
   );
 
@@ -84,7 +89,6 @@ function HomeNewQuestions({ questions, getMarketLand }: HomeNewQuestionsProps) {
           }}
           showCategory={false}
           showLand
-          showFooter={false}
           compact
         />
       ))}
