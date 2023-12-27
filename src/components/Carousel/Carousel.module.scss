@@ -34,10 +34,6 @@
     padding: 0 var(--size-16);
     margin-bottom: var(--size-16);
 
-    @media (min-width: 768px) {
-      margin-bottom: var(--size-24);
-    }
-
     &Arrows {
       display: flex;
       flex-direction: row;
