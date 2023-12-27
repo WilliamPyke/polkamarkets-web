@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
+import { environment } from 'config';
 import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
 import {
@@ -19,7 +20,7 @@ function Home() {
     data: lands,
     isLoading: isLoadingLands,
     isFetching: isFetchingLands
-  } = useGetLandsQuery();
+  } = useGetLandsQuery({ token: environment.FEATURE_FANTASY_TOKEN_TICKER });
 
   const isLoadingGetLandsQuery = isLoadingLands || isFetchingLands;
   const isEmptyLands = !lands || isEmpty(lands);
