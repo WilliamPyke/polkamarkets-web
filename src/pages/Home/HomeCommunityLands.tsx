@@ -79,7 +79,10 @@ function HomeCommunityLands({ lands }: HomeCommunityLandsProps) {
     <div className={styles.communityLands}>
       <div className={styles.communityLandsHeader}>
         <h3 className={styles.communityLandsHeaderTitle}>Community Lands</h3>
-        <Tooltip text="Help" position="top">
+        <Tooltip
+          text="Foreland Communities that you can join to play their prediction contests for a chance to win rewards."
+          position="top"
+        >
           <InfoIcon />
         </Tooltip>
       </div>
