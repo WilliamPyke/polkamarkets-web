@@ -31,9 +31,7 @@ function Header({
   return (
     <>
       <div className={styles.headerGroup}>
-        <h2 className={styles.headerTitle}>
-          {expanded ? 'Markets' : 'Upcoming'}
-        </h2>
+        <h2 className={styles.headerTitle}>Questions</h2>
         {expandable && !expanded ? (
           <button
             type="button"
@@ -96,48 +94,52 @@ function TournamentsUpcomingMarkets({
     [setExpanded]
   );
 
-  const openMarkets = useMemo(
-    () =>
-      markets
-        .map(market => {
-          const network = getNetworkById(market.networkId);
-          const ticker = market.token.wrapped
-            ? network.currency.ticker
-            : market.token.symbol;
+  const newMarkets = useMemo(() => {
+    const marketsByState = [
+      ...orderBy(
+        markets.filter(question => question.state === 'open'),
+        'createdAt',
+        'desc'
+      ),
+      ...orderBy(
+        markets.filter(question => question.state !== 'open'),
+        'createdAt',
+        'desc'
+      )
+    ];
 
-          const tokenByTicker = getTokenByTicker(ticker);
-          const currencyByTicker = getCurrencyByTicker(ticker);
+    return marketsByState.map(market => {
+      const network = getNetworkById(market.networkId);
+      const ticker = market.token.wrapped
+        ? network.currency.ticker
+        : market.token.symbol;
 
-          return {
-            ...market,
-            network,
-            currency: network.currency,
-            token: {
-              ...market.token,
-              ticker,
-              iconName: (tokenByTicker || currencyByTicker).iconName
-            },
-            outcomes: market.outcomes.map(outcome => ({
-              ...outcome,
-              price: Number(outcome.price.toFixed(3))
-            }))
-          } as Market;
-        })
-        .filter(market => market.state === 'open'),
-    [markets]
-  );
+      const tokenByTicker = getTokenByTicker(ticker);
+      const currencyByTicker = getCurrencyByTicker(ticker);
 
-  const marketsByVolume = useMemo(
-    () => orderBy(openMarkets, 'volume', 'desc'),
-    [openMarkets]
-  );
+      return {
+        ...market,
+        network,
+        currency: network.currency,
+        token: {
+          ...market.token,
+          ticker,
+          iconName: (tokenByTicker || currencyByTicker).iconName
+        },
+        outcomes: market.outcomes.map(outcome => ({
+          ...outcome,
+          price: Number(outcome.price.toFixed(3))
+        }))
+      } as Market;
+    });
+  }, [markets]);
 
   const marketsVisibleInCarousel = useMemo(
-    () => marketsByVolume.slice(0, CAROUSEL_SIZE),
-    [marketsByVolume]
+    () => newMarkets.slice(0, CAROUSEL_SIZE),
+    [newMarkets]
   );
 
-  const expandable = openMarkets.length > CAROUSEL_SIZE;
+  const expandable = newMarkets.length > CAROUSEL_SIZE;
 
   if (expandable && expanded) {
     return (
@@ -149,7 +151,7 @@ function TournamentsUpcomingMarkets({
             onExpand={handleChangeExpanded}
           />
         </div>
-        <MarketList data={marketsByVolume} />
+        <MarketList data={newMarkets} />
       </div>
     );
   }
