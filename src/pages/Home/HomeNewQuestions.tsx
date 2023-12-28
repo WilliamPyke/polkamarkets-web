@@ -67,7 +67,7 @@ function HomeNewQuestions({ questions, getMarketLand }: HomeNewQuestionsProps) {
     <Carousel
       Header={
         <div className={styles.newQuestionsHeader}>
-          <h3 className={styles.newQuestionsHeaderTitle}>New Questions</h3>
+          <h3 className={styles.newQuestionsHeaderTitle}>Questions</h3>
           <Link
             to="/markets"
             className={classNames(
