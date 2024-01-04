@@ -130,7 +130,8 @@ export default function Tournament() {
           rect={rect}
           show={show}
           resetStatesDropdown={
-            !isLoadingTournamentBySlugQuery && isTournamentEnded
+            !ui.filters.enabled ||
+            (!isLoadingTournamentBySlugQuery && isTournamentEnded)
           }
         />
         {isLoadingTournamentBySlugQuery ? (
