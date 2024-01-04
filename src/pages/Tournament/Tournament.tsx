@@ -141,11 +141,7 @@ export default function Tournament() {
             </div>
           </div>
         ) : (
-          <MarketList
-            filtersVisible={show}
-            fetchByIds={fetchByIds}
-            showOpenMarketsAtTheTop
-          />
+          <MarketList filtersVisible={show} fetchByIds={fetchByIds} />
         )}
       </div>
     </div>
