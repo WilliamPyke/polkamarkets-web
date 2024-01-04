@@ -97,7 +97,7 @@ export default function MarketsNav({ onFilterClick }: MarketsNavProps) {
       />
       <Filter
         description="Sort by"
-        defaultOption={features.fantasy.enabled ? 'expiresAt' : 'liquidityEur'}
+        defaultOption={features.fantasy.enabled ? 'createdAt' : 'liquidityEur'}
         options={filters}
         onChange={handleSelectedFilter}
       />
