@@ -484,6 +484,22 @@ export const marketsSelector = ({ state, filters }: MarketsSelectorArgs) => {
       //     )
       //   ];
       // }
+
+      if (state.sorter.value === 'createdAt') {
+        return [
+          ...orderBy(
+            markets.filter(market => market.state === 'open'),
+            [state.sorter.value],
+            [state.sorter.sortBy]
+          ),
+          ...orderBy(
+            markets.filter(market => market.state !== 'open'),
+            [state.sorter.value],
+            [state.sorter.sortBy]
+          )
+        ];
+      }
+
       return orderBy(markets, [state.sorter.value], [state.sorter.sortBy]);
     }
 
