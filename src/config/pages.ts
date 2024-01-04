@@ -154,7 +154,7 @@ const pages = {
   land: {
     pathname: '/:slug',
     Component: lazy(() => import('pages/Land')),
-    exact: true,
+    exact: false,
     navigation: false,
     name: '',
     meta: null,
@@ -163,7 +163,7 @@ const pages = {
   leaderboard: {
     pathname: '/leaderboard',
     Component: Leaderboard,
-    exact: false,
+    exact: true,
     navigation: true,
     name: 'Leaderboard',
     meta: metadataByPage.leaderboard,
@@ -172,7 +172,7 @@ const pages = {
   achievements: {
     pathname: '/achievements',
     Component: lazy(() => import('pages/Achievements')),
-    exact: false,
+    exact: true,
     navigation: true,
     name: 'Achievements',
     meta: metadataByPage.achievements,
@@ -181,7 +181,7 @@ const pages = {
   portfolio: {
     pathname: '/portfolio',
     Component: lazy(() => import('pages/Portfolio')),
-    exact: false,
+    exact: true,
     navigation: true,
     name: 'Portfolio',
     meta: metadataByPage.portfolio,
