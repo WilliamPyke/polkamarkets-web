@@ -113,5 +113,7 @@
 }
 
 .customItem {
-  color: var(--color-text-primary) !important;
+  &:hover {
+    color: var(--color-text-primary) !important;
+  }
 }

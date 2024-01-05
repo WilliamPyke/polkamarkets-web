@@ -136,6 +136,18 @@ function HeaderNavMenu({
           </NavLink>
         </li>
       ))}
+      {ui.layout.navbar.items.map(item => (
+        <li key={item.title} className={headerNavClasses.item}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            className={cn(headerNavClasses.link, headerNavClasses.customItem)}
+            href={item.href}
+          >
+            {item.title}
+          </a>
+        </li>
+      ))}
       {children}
     </ul>
   );
@@ -147,23 +159,6 @@ function HeaderNavMenuModal() {
     <HeaderNavModal>
       {handleHide => (
         <HeaderNavMenu onMenuItemClick={handleHide}>
-          {ui.layout.navbar.items.map(item => (
-            <li key={item.title} className={headerNavClasses.item}>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                className={cn(
-                  'pm-c-button--sm',
-                  headerNavClasses.customItem,
-                  'pm-c-button-outline--primary',
-                  'pm-c-button--fullwidth'
-                )}
-                href={item.href}
-              >
-                {item.title}
-              </a>
-            </li>
-          ))}
           {features.fantasy.enabled && !isLoggedIn && ui.layout.header.helpUrl && (
             <li className={headerNavClasses.item}>
               <HelpButton
