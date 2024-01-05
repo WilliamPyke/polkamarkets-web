@@ -133,6 +133,9 @@ const ui = {
   achievements: {
     enabled: isTrue(environment.FEATURE_ACHIEVEMENTS)
   },
+  comments: {
+    enabled: !isTrue(environment.UI_COMMENTS_DISABLED)
+  },
   profile: {
     summary: {
       liquidityProvided: {
