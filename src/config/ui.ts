@@ -9,7 +9,7 @@ import {
 
 import environment from './environment';
 import features from './features';
-import { parseFiltersFromEnv } from './ui.utils';
+import { parseFiltersFromEnv, parseNavbarItemsFromEnv } from './ui.utils';
 
 const providers = [
   'Google',
@@ -33,6 +33,9 @@ export type Providers = typeof providers[number];
 
 const ui = {
   layout: {
+    navbar: {
+      items: parseNavbarItemsFromEnv(environment.UI_NAVBAR_ITEMS)
+    },
     header: {
       networkSelector: {
         enabled: features.regular.enabled
