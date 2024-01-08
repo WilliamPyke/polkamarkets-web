@@ -17,13 +17,18 @@ import embedClasses from './Embed.module.scss';
 /**
  * Example
  * 
-  <a href="https://alpha.foreland.io/markets/${marketSlug}">
+  <a
+    href="http://localhost:3000/markets/pe-leve-vs-aqa-quem-vai-ganhar-este-jogo"
+    target="_blank"
+    style="display: inline-block;"
+  >
     <iframe
-      src="https://alpha.foreland.io/embed/${marketSlug}"
+      src="http://localhost:3000/embed/pe-leve-vs-aqa-quem-vai-ganhar-este-jogo"
       width="336"
       height="200"
-      style="border-radius: 8px; border: 1px solid #252C3B"
+      style="border-radius: 8px; border: 1px solid #252C3B; pointer-events: none;"
     >
+    </iframe>
   </a>
  */
 
