@@ -46,6 +46,7 @@ export default function Embed() {
     outcomes: sortedOutcomes,
     max: 1
   });
+  const needExpandOutcomes = sortedOutcomes.length > 2;
 
   useEffect(() => {
     (async function handleMarket() {
@@ -82,29 +83,31 @@ export default function Embed() {
         {market.title}
       </Text>
       <ul className="pm-c-market-outcomes">
-        {expandableOutcomes.onseted.map(outcome => (
-          <li key={outcome.id}>
-            <OutcomeItem
-              $size="sm"
-              image={outcome.imageUrl}
-              value={outcome.id}
-              data={outcome.data}
-              primary={outcome.title}
-              secondary={{
-                price: outcome.price,
-                ticker: market.token.ticker,
-                isPriceUp: outcome.isPriceUp
-              }}
-              resolved={(() => {
-                if (market.voided) return 'voided';
-                if (market.resolvedOutcomeId === outcome.id) return 'won';
-                if (market.state === 'resolved') return 'lost';
-                return undefined;
-              })()}
-            />
-          </li>
-        ))}
-        {!expandableOutcomes.isExpanded && (
+        {(needExpandOutcomes ? expandableOutcomes.onseted : sortedOutcomes).map(
+          outcome => (
+            <li key={outcome.id}>
+              <OutcomeItem
+                $size="sm"
+                image={outcome.imageUrl}
+                value={outcome.id}
+                data={outcome.data}
+                primary={outcome.title}
+                secondary={{
+                  price: outcome.price,
+                  ticker: market.token.ticker,
+                  isPriceUp: outcome.isPriceUp
+                }}
+                resolved={(() => {
+                  if (market.voided) return 'voided';
+                  if (market.resolvedOutcomeId === outcome.id) return 'won';
+                  if (market.state === 'resolved') return 'lost';
+                  return undefined;
+                })()}
+              />
+            </li>
+          )
+        )}
+        {needExpandOutcomes && !expandableOutcomes.isExpanded && (
           <li>
             <OutcomeItem
               $size="sm"
