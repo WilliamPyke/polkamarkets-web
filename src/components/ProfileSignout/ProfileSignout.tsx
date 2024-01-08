@@ -11,6 +11,7 @@ import { Avatar, Skeleton } from 'ui';
 import BankruptBadge from 'components/BankruptBadge';
 import { Button } from 'components/Button';
 import Icon from 'components/Icon';
+import InfoTooltip from 'components/InfoTooltip';
 import Text from 'components/Text';
 
 import {
@@ -151,6 +152,7 @@ export default function ProfileSignout() {
               >
                 {formatNumberToString(polkBalance)}{' '}
                 {fantasyTokenTicker || 'POLK'}
+                <InfoTooltip text="How does the outcome's likelihood of occurring vary with your prediction." />
               </Text>
               <BankruptBadge bankrupt={bankrupt} />
             </div>
