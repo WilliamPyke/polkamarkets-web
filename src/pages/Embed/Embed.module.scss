@@ -32,3 +32,9 @@
   padding-bottom: 16px;
   margin-bottom: auto;
 }
+
+.outcomes {
+  &Item {
+    width: 100%;
+  }
+}

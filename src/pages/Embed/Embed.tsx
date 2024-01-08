@@ -18,14 +18,14 @@ import embedClasses from './Embed.module.scss';
  * Example
  * 
   <a
-    href="http://localhost:3000/markets/pe-leve-vs-aqa-quem-vai-ganhar-este-jogo"
+    href="https://alpha.foreland.io/markets/${marketSlug}"
     target="_blank"
     style="display: inline-block;"
   >
     <iframe
-      src="http://localhost:3000/embed/pe-leve-vs-aqa-quem-vai-ganhar-este-jogo"
+      src="https://alpha.foreland.io/embed/${marketSlug}"
       width="336"
-      height="200"
+      height="204"
       style="border-radius: 8px; border: 1px solid #252C3B; pointer-events: none;"
     >
     </iframe>
@@ -59,7 +59,6 @@ export default function Embed() {
   if (isLoading) return <Spinner />;
 
   return (
-    // TODO: root padding bottom is broken layout
     <div className={embedClasses.root}>
       {!isNull(land) && (
         <div className={embedClasses.category}>
@@ -92,6 +91,7 @@ export default function Embed() {
                 value={outcome.id}
                 data={outcome.data}
                 primary={outcome.title}
+                className={embedClasses.outcomesItem}
                 secondary={{
                   price: outcome.price,
                   ticker: market.token.ticker,
@@ -113,6 +113,7 @@ export default function Embed() {
               $size="sm"
               $variant="dashed"
               value={expandableOutcomes.onseted[0].id}
+              className={embedClasses.outcomesItem}
               {...expandableOutcomes.offseted}
             />
           </li>
