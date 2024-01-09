@@ -506,16 +506,10 @@ app.get('/markets/:slug', async (request, response) => {
       const { title, category, subcategory, expiresAt, bannerUrl } =
         market.data;
 
-      const tournamentSlug =
+      const tournament =
         market.data.tournaments && market.data.tournaments.length > 0
-          ? market.data.tournaments[0].slug
+          ? market.data.tournaments[0]
           : null;
-
-      let tournament = null;
-
-      if (!bannerUrl && tournamentSlug) {
-        tournament = await getTournamentBySlug(tournamentSlug);
-      }
 
       const marketMetadata = formatMarketMetadata({
         title,
