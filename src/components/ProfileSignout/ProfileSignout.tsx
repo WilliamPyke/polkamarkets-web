@@ -153,7 +153,7 @@ export default function ProfileSignout() {
               >
                 {formatNumberToString(polkBalance)} {ticker}
                 <InfoTooltip
-                  text={`${ticker} is the token used to make prediction and rank on the leaderboard.`}
+                  text={`${ticker} is the token used to place predictions and rank on the leaderboard.`}
                 />
               </Text>
               <BankruptBadge bankrupt={bankrupt} />

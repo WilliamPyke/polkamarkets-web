@@ -27,7 +27,7 @@ function ProfilePredictionStatistics({
         title: (
           <>
             Volume
-            <InfoTooltip text={`Total ${ticker} place in predictions.`} />
+            <InfoTooltip text={`Total ${ticker} placed in predictions.`} />
           </>
         )
       },
