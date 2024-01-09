@@ -58,6 +58,7 @@ export default function ProfileSignout() {
   const [slug, setSlug] = useState(null);
   const [hasUpdatedSocialLoginInfo, setHasUpdatedSocialLoginInfo] =
     useState(false);
+  const ticker = fantasyTokenTicker || 'POLK';
 
   useEffect(() => {
     async function handleSocialLogin() {
@@ -150,9 +151,10 @@ export default function ProfileSignout() {
                 fontWeight="semibold"
                 className="pm-c-wallet-info__profile__ticker"
               >
-                {formatNumberToString(polkBalance)}{' '}
-                {fantasyTokenTicker || 'POLK'}
-                <InfoTooltip text="How does the outcome's likelihood of occurring vary with your prediction." />
+                {formatNumberToString(polkBalance)} {ticker}
+                <InfoTooltip
+                  text={`${ticker} is the token used to make prediction and rank on the leaderboard.`}
+                />
               </Text>
               <BankruptBadge bankrupt={bankrupt} />
             </div>
