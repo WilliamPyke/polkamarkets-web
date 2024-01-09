@@ -33,7 +33,8 @@ export default function AppRoutes() {
         />
         {environment.HOMEPAGE_URL && (
           <Route exact path="/">
-            <Redirect to={environment.HOMEPAGE_URL} />
+            {/* removing the trailing slash, if existent */}
+            <Redirect to={environment.HOMEPAGE_URL.replace(/\/$/, '')} />
           </Route>
         )}
         <Route
