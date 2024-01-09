@@ -208,6 +208,8 @@ export { default as NumberInput } from './NumberInput';
 
 export { default as OutcomeItem } from './OutcomeItem';
 
+export { default as Onboarding } from './Onboarding';
+
 export { default as Profile } from './Profile';
 
 export { default as ProfileSignin } from './ProfileSignin';
