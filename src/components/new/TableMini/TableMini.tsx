@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
@@ -13,7 +13,7 @@ export type TableMiniColumn = {
   /**
    * Title of this column
    */
-  title: string;
+  title: React.ReactNode;
   /**
    * Custom title render function
    */
