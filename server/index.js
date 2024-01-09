@@ -529,7 +529,7 @@ app.get('/markets/:slug', async (request, response) => {
           description:
             marketMetadata.description || defaultMetadata.description,
           image: buildImageUrl(
-            tournament ? tournament.data.land.bannerUrl : marketMetadata.image,
+            marketMetadata.image || tournament.land.bannerUrl,
             defaultMetadata.image,
             request
           )
