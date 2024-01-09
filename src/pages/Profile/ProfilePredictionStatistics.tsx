@@ -37,14 +37,7 @@ function ProfilePredictionStatistics({
       },
       {
         key: 'wonPredictions',
-        title: (
-          <>
-            Won Predictions
-            <InfoTooltip
-              text={`Total ${ticker} earned in active and finished questions.`}
-            />
-          </>
-        )
+        title: 'Won Predictions'
       },
       {
         key: 'liquidityAdded',
@@ -52,7 +45,14 @@ function ProfilePredictionStatistics({
       },
       {
         key: 'earnings',
-        title: 'Earnings'
+        title: (
+          <>
+            Earnings
+            <InfoTooltip
+              text={`Total ${ticker} earned in active and finished questions.`}
+            />
+          </>
+        )
       }
     ],
     [ticker]
