@@ -343,7 +343,7 @@ app.get('/tournaments/:slug', async (request, response, next) => {
           description:
             metadataByPage.tournaments.description ||
             defaultMetadata.description,
-          image: buildImageUrl(land.bannerUrl, defaultMetadata.image, request)
+          image: buildImageUrl(land?.bannerUrl, defaultMetadata.image, request)
         })
       );
     } catch (e) {
@@ -529,7 +529,7 @@ app.get('/markets/:slug', async (request, response) => {
           description:
             marketMetadata.description || defaultMetadata.description,
           image: buildImageUrl(
-            marketMetadata.image || tournament.land.bannerUrl,
+            marketMetadata.image || tournament?.land?.bannerUrl,
             defaultMetadata.image,
             request
           )
