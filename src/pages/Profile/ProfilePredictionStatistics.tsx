@@ -20,40 +20,43 @@ function ProfilePredictionStatistics({
   ticker,
   isLoading
 }: ProfilePredictionStatisticsProps) {
-  const columns: PredictionStatisticsColumn[] = [
-    {
-      key: 'volume',
-      title: (
-        <>
-          Volume
-          <InfoTooltip text={`Total ${ticker} place in predictions.`} />
-        </>
-      )
-    },
-    {
-      key: 'marketsCreated',
-      title: 'Markets Created'
-    },
-    {
-      key: 'wonPredictions',
-      title: (
-        <>
-          Won Predictions
-          <InfoTooltip
-            text={`Total ${ticker} earned in active and finished questions.`}
-          />
-        </>
-      )
-    },
-    {
-      key: 'liquidityAdded',
-      title: 'Liquidity Added'
-    },
-    {
-      key: 'earnings',
-      title: 'Earnings'
-    }
-  ];
+  const columns: PredictionStatisticsColumn[] = useMemo(
+    () => [
+      {
+        key: 'volume',
+        title: (
+          <>
+            Volume
+            <InfoTooltip text={`Total ${ticker} place in predictions.`} />
+          </>
+        )
+      },
+      {
+        key: 'marketsCreated',
+        title: 'Markets Created'
+      },
+      {
+        key: 'wonPredictions',
+        title: (
+          <>
+            Won Predictions
+            <InfoTooltip
+              text={`Total ${ticker} earned in active and finished questions.`}
+            />
+          </>
+        )
+      },
+      {
+        key: 'liquidityAdded',
+        title: 'Liquidity Added'
+      },
+      {
+        key: 'earnings',
+        title: 'Earnings'
+      }
+    ],
+    [ticker]
+  );
   const row = useMemo(
     () => preparePredictionStatisticsRow({ statistics, ticker }),
     [statistics, ticker]
@@ -66,7 +69,7 @@ function ProfilePredictionStatistics({
             column => !['marketsCreated', 'liquidityAdded'].includes(column.key)
           )
         : columns,
-    []
+    [columns]
   );
 
   const filteredRow = useMemo(
