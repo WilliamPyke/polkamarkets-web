@@ -227,7 +227,7 @@ const pages = {
     enabled: ui.tournaments.enabled
   },
   embed: {
-    pathname: '/embed/:marketSlug',
+    pathname: '/embed/markets/:marketSlug',
     Component: lazy(() => import('pages/Embed')),
     exact: true,
     navigation: false,

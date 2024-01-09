@@ -16,14 +16,14 @@ import embedClasses from './Embed.module.scss';
 
 /**
  * Example
- * 
+ *
   <a
     href="https://alpha.foreland.io/markets/${marketSlug}"
     target="_blank"
     style="display: inline-block;"
   >
     <iframe
-      src="https://alpha.foreland.io/embed/${marketSlug}"
+      src="https://alpha.foreland.io/embed/markets/${marketSlug}"
       width="336"
       height="204"
       style="border-radius: 8px; border: 1px solid #252C3B; pointer-events: none;"
