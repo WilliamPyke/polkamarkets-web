@@ -47,7 +47,10 @@ function TradeFormInput() {
   );
 
   const type = useAppSelector(state => state.trade.type);
-  const label = `Amount`;
+  const label =
+    type === 'buy'
+      ? `How much ${ticker} you want to predict?`
+      : `How much ${ticker} you want to sell?`;
 
   const selectedMarketId = useAppSelector(
     state => state.trade.selectedMarketId
