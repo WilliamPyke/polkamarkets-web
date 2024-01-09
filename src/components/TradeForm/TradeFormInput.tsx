@@ -13,6 +13,8 @@ import {
 
 import { TokenIcon, WalletIcon } from 'assets/icons';
 
+import InfoTooltip from 'components/InfoTooltip';
+
 import {
   useAppSelector,
   useAppDispatch,
@@ -194,12 +196,17 @@ function TradeFormInput() {
         return [];
     }
   }, [balance]);
+  const tooltips = {
+    buy: `The more ${token.ticker} you use the more it will influence the outcome probability.`,
+    sell: `To change your answer you'll need to sell your entire ${token.ticker} position.`
+  };
 
   return (
     <form className="pm-c-amount-input">
       <div className="pm-c-amount-input__header">
         <label className="pm-c-amount-input__header-title" htmlFor={label}>
           {label}
+          <InfoTooltip text={tooltips[type]} />
         </label>
         {!isWrongNetwork ? (
           <div className="pm-c-amount-input__header-wallet">
