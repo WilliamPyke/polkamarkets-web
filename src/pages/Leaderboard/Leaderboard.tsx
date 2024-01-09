@@ -28,6 +28,7 @@ import {
   buildLeaderboardData,
   sanitizePreviousCreateLeaderboardFormValues
 } from './Leaderboard.util';
+import LeaderboardHeader from './LeaderboardHeader';
 import LeaderboardMarkets from './LeaderboardMarkets';
 import LeaderboardMyLeaderboards from './LeaderboardMyLeaderboards';
 import LeaderboardTable from './LeaderboardTable';
@@ -407,6 +408,10 @@ function Leaderboard() {
               defaultMetadata.description
             : defaultMetadata.description
         }
+      />
+      <LeaderboardHeader
+        imageUrl={leaderboardImageUrl}
+        slug={tournamentBySlug?.slug}
       />
       <div className="pm-p-leaderboard__header">
         <div className="flex-row gap-5 align-start">
