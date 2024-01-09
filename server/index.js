@@ -513,7 +513,7 @@ app.get('/markets/:slug', async (request, response) => {
 
       let tournament = null;
 
-      if (tournamentSlug) {
+      if (!bannerUrl && tournamentSlug) {
         tournament = await getTournamentBySlug(tournamentSlug);
       }
 
