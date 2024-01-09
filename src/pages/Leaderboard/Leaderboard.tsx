@@ -455,17 +455,6 @@ function Leaderboard() {
               <Text scale="heading-large" fontWeight="regular" as="h2">
                 {leaderboardTitle}
               </Text>
-              {leaderboardType.club &&
-              createGroupState.visible &&
-              createGroupState.mode === 'edit' ? (
-                <CreateLeaderboardGroup
-                  mode={createGroupState.mode}
-                  previousValues={createGroupState.previousValues}
-                  slug={slug}
-                  disabled={isLoadingQuery}
-                  size="xs"
-                />
-              ) : null}
             </div>
             {leaderboardType.club ? (
               <p className="tiny medium text-2">
@@ -480,9 +469,29 @@ function Leaderboard() {
               </p>
             ) : null}
             {leaderboardType.tournament && tournamentBySlug ? (
-              <Text scale="caption" as="p" className="whitespace-pre-line">
+              <Text
+                scale="caption"
+                as="p"
+                className={cn('whitespace-pre-line', {
+                  'pm-p-leaderboard__content-description--gutter-bottom':
+                    leaderboardType.club &&
+                    createGroupState.visible &&
+                    createGroupState.mode === 'edit'
+                })}
+              >
                 {tournamentBySlug.description}
               </Text>
+            ) : null}
+            {leaderboardType.club &&
+            createGroupState.visible &&
+            createGroupState.mode === 'edit' ? (
+              <CreateLeaderboardGroup
+                mode={createGroupState.mode}
+                previousValues={createGroupState.previousValues}
+                slug={slug}
+                disabled={isLoadingQuery}
+                size="xs"
+              />
             ) : null}
           </div>
         </div>

@@ -41,7 +41,7 @@
     display: flex;
     gap: 24px;
     border-radius: 8px;
-    border: 1px solid rgb(99 112 132 / var(--border-alpha, 0.4));
+    border: 1px solid #252c3b;
     margin: -1px;
 
     &-image {
@@ -50,6 +50,12 @@
 
     &-caption {
       color: var(--color-text-secondary);
+    }
+
+    &-description {
+      &--gutter-bottom {
+        margin-bottom: 16px;
+      }
     }
   }
 }
