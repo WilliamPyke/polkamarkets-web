@@ -37,6 +37,7 @@ import {
 } from './Leaderboard.util';
 import LeaderboardMarkets from './LeaderboardMarkets';
 import LeaderboardMyLeaderboards from './LeaderboardMyLeaderboards';
+import LeaderboardPrizes from './LeaderboardPrizes';
 import LeaderboardTable from './LeaderboardTable';
 import LeaderboardTopWallets from './LeaderboardTopWallets';
 import LeaderboardYourStats from './LeaderboardYourStats';
@@ -404,6 +405,24 @@ function Leaderboard() {
     userEthAddress
   ]);
 
+  const prizes = [
+    {
+      primary: '1º Lugar:',
+      secondary:
+        '500€ em cartão + estadia de duas noites para duas pessoas pela Small Portuguese Hotels'
+    },
+    {
+      primary: '2º Lugar:',
+      secondary:
+        '200€ em cartão + estadia de duas noites para duas pessoas pela Small Portuguese Hotels'
+    },
+    {
+      primary: '3º Lugar:',
+      secondary:
+        '100€ em cartão + estadia de duas noites para duas pessoas pela Small Portuguese Hotels'
+    }
+  ];
+
   return (
     <Container className="pm-p-leaderboard max-width-screen-xl">
       <SEO
@@ -538,14 +557,13 @@ function Leaderboard() {
             ticker={ticker}
             isLoading={isLoadingQuery}
           />
-
           <div
             className={cn('flex-column gap-6 justify-start align-start', {
               'width-min-content': theme.device.isDesktop,
               'width-full': !theme.device.isDesktop
             })}
           >
-            {theme.device.isDesktop ? (
+            {features.regular.enabled && theme.device.isDesktop ? (
               <>
                 {walletConnected ? (
                   <LeaderboardYourStats
@@ -561,10 +579,13 @@ function Leaderboard() {
                 ) : null}
               </>
             ) : null}
-            <LeaderboardMarkets
-              data={tournamentBySlug?.markets}
-              isLoading={isLoadingTournamentBySlugQuery}
-            />
+            {features.regular.enabled && theme.device.isDesktop && (
+              <LeaderboardMarkets
+                data={tournamentBySlug?.markets}
+                isLoading={isLoadingTournamentBySlugQuery}
+              />
+            )}
+            {features.fantasy.enabled && <LeaderboardPrizes prizes={prizes} />}
           </div>
         </div>
       ) : (
