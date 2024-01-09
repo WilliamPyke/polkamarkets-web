@@ -164,6 +164,22 @@
         line-height: normal;
 
         align-self: stretch;
+
+        &Item {
+          &Link {
+            &Default {
+              color: var(--color-text-1);
+            }
+
+            &Primary {
+              color: #5d55fa;
+            }
+
+            &Underline {
+              text-decoration: underline;
+            }
+          }
+        }
       }
     }
   }
