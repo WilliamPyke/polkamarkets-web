@@ -1,14 +1,56 @@
 .pm-p-leaderboard {
+  @include flex-column($gap: 5);
   width: 100%;
 
   &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--size-24);
+    background-color: #171b23;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    border: 1px solid #252c3b;
+  }
 
-    width: 100%;
-    margin-bottom: var(--size-12);
+  &__nav {
+    height: 44px;
+    padding-left: 16px;
+    padding-right: 16px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__back {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    border: 1px solid rgb(99 112 132 / var(--border-alpha, 0.4));
+    border-radius: 8px;
+    margin-right: 12px;
+
+    &:hover {
+      --border-alpha: 1;
+      background-color: rgba(99, 112, 132, 0.16);
+    }
+
+    &-icon {
+      margin: auto;
+    }
+  }
+
+  &__content {
+    padding: 32px;
+    background-color: #101218;
+    display: flex;
+    gap: 24px;
+    border-radius: 8px;
+    border: 1px solid rgb(99 112 132 / var(--border-alpha, 0.4));
+    margin: -1px;
+
+    &-image {
+      flex-shrink: 0;
+    }
+
+    &-caption {
+      color: var(--color-text-secondary);
+    }
   }
 }
 

@@ -18,7 +18,14 @@ import {
 } from 'services/Polkamarkets';
 import { Container, Image, useTheme } from 'ui';
 
-import { CreateLeaderboardGroup, Link, SEO, Tabs } from 'components';
+import {
+  CreateLeaderboardGroup,
+  Icon,
+  Link,
+  SEO,
+  Tabs,
+  Text
+} from 'components';
 import { ButtonLoading } from 'components/Button';
 import { Dropdown } from 'components/new';
 
@@ -28,7 +35,6 @@ import {
   buildLeaderboardData,
   sanitizePreviousCreateLeaderboardFormValues
 } from './Leaderboard.util';
-import LeaderboardHeader from './LeaderboardHeader';
 import LeaderboardMarkets from './LeaderboardMarkets';
 import LeaderboardMyLeaderboards from './LeaderboardMyLeaderboards';
 import LeaderboardTable from './LeaderboardTable';
@@ -409,31 +415,46 @@ function Leaderboard() {
             : defaultMetadata.description
         }
       />
-      <LeaderboardHeader
-        imageUrl={leaderboardImageUrl}
-        slug={tournamentBySlug?.slug}
-      />
-      <div className="pm-p-leaderboard__header">
-        <div className="flex-row gap-5 align-start">
+      <header className="pm-p-leaderboard__header">
+        <nav className="pm-p-leaderboard__nav">
+          {features.fantasy.enabled && leaderboardType.tournament ? (
+            <ReactRouterLink to={`/tournaments/${tournamentBySlug?.slug}`}>
+              <span className="pm-p-leaderboard__back">
+                <Icon
+                  name="Arrow"
+                  title="Back to Tournament"
+                  size="sm"
+                  className="pm-p-leaderboard__back-icon"
+                />
+              </span>
+              <Text as="span" scale="tiny-uppercase">
+                Voltar
+              </Text>
+            </ReactRouterLink>
+          ) : null}
+        </nav>
+        <div className="pm-p-leaderboard__content">
           {!isNull(leaderboardImageUrl) && (
             <Image
-              $size="md"
-              $radius="sm"
+              $size="lg"
+              $radius="md"
+              className="pm-p-leaderboard__content-image"
               alt={leaderboardTitle}
               src={leaderboardImageUrl}
             />
           )}
-          <div className="flex-column gap-3">
-            <div className="flex-row gap-5 align-center">
-              <h1 className="heading semibold text-1">{leaderboardTitle}</h1>
-              {features.fantasy.enabled && leaderboardType.tournament ? (
-                <ReactRouterLink
-                  to={`/tournaments/${tournamentBySlug?.slug}`}
-                  className="pm-c-button-subtle--primary pm-c-button--xs"
-                >
-                  Back to Tournament
-                </ReactRouterLink>
-              ) : null}
+          <div>
+            <div className="align-center">
+              <Text
+                scale="caption"
+                as="p"
+                className="pm-p-leaderboard__content-caption"
+              >
+                Rank table
+              </Text>
+              <Text scale="heading-large" fontWeight="regular" as="h2">
+                {leaderboardTitle}
+              </Text>
               {leaderboardType.club &&
               createGroupState.visible &&
               createGroupState.mode === 'edit' ? (
@@ -459,9 +480,9 @@ function Leaderboard() {
               </p>
             ) : null}
             {leaderboardType.tournament && tournamentBySlug ? (
-              <p className="tiny medium text-2 whitespace-pre-line">
+              <Text scale="caption" as="p" className="whitespace-pre-line">
                 {tournamentBySlug.description}
-              </p>
+              </Text>
             ) : null}
           </div>
         </div>
@@ -486,7 +507,7 @@ function Leaderboard() {
             {joinGroupState.joined ? 'Joined' : 'Join Club'}
           </ButtonLoading>
         ) : null}
-      </div>
+      </header>
       {leaderboardType.tournament ? (
         <div
           className={cn('gap-6 justify-space-between align-start width-full', {
