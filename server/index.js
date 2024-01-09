@@ -150,7 +150,7 @@ const metadataByPageTemplate = (page, request, htmlData) => {
 const buildImageUrl = (imageUrl, defaultImage, request) => {
   let url;
 
-  if (imageUrl.startsWith('http')) {
+  if (imageUrl && imageUrl.startsWith('http')) {
     url = imageUrl;
   } else if (defaultImage.startsWith('http')) {
     url = defaultImage;
@@ -506,6 +506,17 @@ app.get('/markets/:slug', async (request, response) => {
       const { title, category, subcategory, expiresAt, bannerUrl } =
         market.data;
 
+      const tournamentSlug =
+        market.data.tournaments && market.data.tournaments.length > 0
+          ? market.data.tournaments[0].slug
+          : null;
+
+      let tournament = null;
+
+      if (tournamentSlug) {
+        tournament = await getTournamentBySlug(tournamentSlug);
+      }
+
       const marketMetadata = formatMarketMetadata({
         title,
         category,
@@ -524,7 +535,7 @@ app.get('/markets/:slug', async (request, response) => {
           description:
             marketMetadata.description || defaultMetadata.description,
           image: buildImageUrl(
-            marketMetadata.image,
+            tournament ? tournament.data.land.bannerUrl : marketMetadata.image,
             defaultMetadata.image,
             request
           )
