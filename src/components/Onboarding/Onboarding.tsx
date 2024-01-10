@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import classNames from 'classnames';
 import { ui } from 'config';
@@ -26,11 +26,16 @@ const ARIA = {
 } as const;
 
 function Onboarding() {
+  const [show, setShow] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+
   const [onboardingCompleted, setOnboardingCompleted] =
     useLocalStorage<boolean>('onboardingCompleted', false);
 
-  const [show, setShow] = useState(onboardingCompleted === false);
-  const [currentStep, setCurrentStep] = useState(0);
+  useEffect(() => {
+    setShow(!onboardingCompleted);
+    setCurrentStep(0);
+  }, [onboardingCompleted]);
 
   const onboardingSteps = useMemo(
     () => buildOnboardingSteps(ui.layout.onboarding.steps),
