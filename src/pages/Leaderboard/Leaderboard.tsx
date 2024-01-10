@@ -1,10 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import {
-  useLocation,
-  useParams,
-  matchPath,
-  Link as ReactRouterLink
-} from 'react-router-dom';
+import { useLocation, useParams, matchPath } from 'react-router-dom';
 
 import cn from 'classnames';
 import { ui, pages, features } from 'config';
@@ -18,14 +13,7 @@ import {
 } from 'services/Polkamarkets';
 import { Container, Image, useTheme } from 'ui';
 
-import {
-  CreateLeaderboardGroup,
-  Icon,
-  Link,
-  SEO,
-  Tabs,
-  Text
-} from 'components';
+import { CreateLeaderboardGroup, Link, SEO, Tabs } from 'components';
 import { ButtonLoading } from 'components/Button';
 import { Dropdown } from 'components/new';
 
@@ -35,6 +23,7 @@ import {
   buildLeaderboardData,
   sanitizePreviousCreateLeaderboardFormValues
 } from './Leaderboard.util';
+import LeaderboardHeader from './LeaderboardHeader';
 import LeaderboardMarkets from './LeaderboardMarkets';
 import LeaderboardMyLeaderboards from './LeaderboardMyLeaderboards';
 import LeaderboardPrizes from './LeaderboardPrizes';
@@ -434,108 +423,84 @@ function Leaderboard() {
             : defaultMetadata.description
         }
       />
-      <header className="pm-p-leaderboard__header">
-        <nav className="pm-p-leaderboard__nav">
-          {features.fantasy.enabled && leaderboardType.tournament ? (
-            <ReactRouterLink to={`/tournaments/${tournamentBySlug?.slug}`}>
-              <span className="pm-p-leaderboard__back">
-                <Icon
-                  name="Arrow"
-                  title="Back to Tournament"
-                  size="sm"
-                  className="pm-p-leaderboard__back-icon"
-                />
-              </span>
-              <Text as="span" scale="tiny-uppercase">
-                Voltar
-              </Text>
-            </ReactRouterLink>
-          ) : null}
-        </nav>
-        <div className="pm-p-leaderboard__content">
-          {!isNull(leaderboardImageUrl) && (
-            <Image
-              $size="lg"
-              $radius="md"
-              className="pm-p-leaderboard__content-image"
-              alt={leaderboardTitle}
-              src={leaderboardImageUrl}
-            />
-          )}
-          <div>
-            <div className="align-center">
-              <Text
-                scale="caption"
-                as="p"
-                className="pm-p-leaderboard__content-caption"
-              >
-                Rank table
-              </Text>
-              <Text scale="heading-large" fontWeight="regular" as="h2">
-                {leaderboardTitle}
-              </Text>
-            </div>
-            {leaderboardType.club ? (
-              <p className="tiny medium text-2">
-                {`Play with your friends, coworkers and community. `}
-                <Link
-                  title="Learn more"
-                  scale="tiny"
-                  fontWeight="medium"
-                  href="https://docs.v2.polkamarkets.com/"
-                  target="_blank"
-                />
-              </p>
-            ) : null}
-            {leaderboardType.tournament && tournamentBySlug ? (
-              <Text
-                scale="caption"
-                as="p"
-                className={cn('whitespace-pre-line', {
-                  'pm-p-leaderboard__content-description--gutter-bottom':
-                    leaderboardType.club &&
-                    createGroupState.visible &&
-                    createGroupState.mode === 'edit'
-                })}
-              >
-                {tournamentBySlug.description}
-              </Text>
-            ) : null}
-            {leaderboardType.club &&
-            createGroupState.visible &&
-            createGroupState.mode === 'edit' ? (
-              <CreateLeaderboardGroup
-                mode={createGroupState.mode}
-                previousValues={createGroupState.previousValues}
-                slug={slug}
-                disabled={isLoadingQuery}
-                size="xs"
+      {features.fantasy.enabled ? (
+        <LeaderboardHeader
+          imageUrl={leaderboardImageUrl}
+          title={leaderboardTitle}
+          slug={tournamentBySlug?.slug}
+          isTournament={leaderboardType.tournament}
+          description={
+            leaderboardType.tournament ? tournamentBySlug?.description : ''
+          }
+        />
+      ) : (
+        <div className="pm-p-leaderboard__header">
+          <div className="flex-row gap-5 align-start">
+            {!isNull(leaderboardImageUrl) && (
+              <Image
+                $size="md"
+                $radius="sm"
+                alt={leaderboardTitle}
+                src={leaderboardImageUrl}
               />
-            ) : null}
+            )}
+            <div className="flex-column gap-3">
+              <div className="flex-row gap-5 align-center">
+                <h1 className="heading semibold text-1">{leaderboardTitle}</h1>
+                {leaderboardType.club &&
+                createGroupState.visible &&
+                createGroupState.mode === 'edit' ? (
+                  <CreateLeaderboardGroup
+                    mode={createGroupState.mode}
+                    previousValues={createGroupState.previousValues}
+                    slug={slug}
+                    disabled={isLoadingQuery}
+                    size="xs"
+                  />
+                ) : null}
+              </div>
+              {leaderboardType.club ? (
+                <p className="tiny medium text-2">
+                  {`Play with your friends, coworkers and community. `}
+                  <Link
+                    title="Learn more"
+                    scale="tiny"
+                    fontWeight="medium"
+                    href="https://docs.v2.polkamarkets.com/"
+                    target="_blank"
+                  />
+                </p>
+              ) : null}
+              {leaderboardType.tournament && tournamentBySlug ? (
+                <p className="tiny medium text-2 whitespace-pre-line">
+                  {tournamentBySlug.description}
+                </p>
+              ) : null}
+            </div>
           </div>
+          {leaderboardType.club &&
+          createGroupState.visible &&
+          !joinGroupState.visible ? (
+            <CreateLeaderboardGroup
+              mode={createGroupState.mode}
+              previousValues={createGroupState.previousValues}
+              slug={slug}
+              disabled={isLoadingQuery}
+            />
+          ) : null}
+          {leaderboardType.club && joinGroupState.visible ? (
+            <ButtonLoading
+              size="sm"
+              color="default"
+              onClick={handleJoinLeaderboardGroup}
+              loading={isLoadingJoinLeaderboardGroupMutation}
+              disabled={joinGroupState.disabled}
+            >
+              {joinGroupState.joined ? 'Joined' : 'Join Club'}
+            </ButtonLoading>
+          ) : null}
         </div>
-        {leaderboardType.club &&
-        createGroupState.visible &&
-        !joinGroupState.visible ? (
-          <CreateLeaderboardGroup
-            mode={createGroupState.mode}
-            previousValues={createGroupState.previousValues}
-            slug={slug}
-            disabled={isLoadingQuery}
-          />
-        ) : null}
-        {leaderboardType.club && joinGroupState.visible ? (
-          <ButtonLoading
-            size="sm"
-            color="default"
-            onClick={handleJoinLeaderboardGroup}
-            loading={isLoadingJoinLeaderboardGroupMutation}
-            disabled={joinGroupState.disabled}
-          >
-            {joinGroupState.joined ? 'Joined' : 'Join Club'}
-          </ButtonLoading>
-        ) : null}
-      </header>
+      )}
       {leaderboardType.tournament ? (
         <div
           className={cn('gap-6 justify-space-between align-start width-full', {
