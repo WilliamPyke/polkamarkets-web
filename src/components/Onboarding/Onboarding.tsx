@@ -15,6 +15,8 @@ import ModalHeaderTitle from 'components/ModalHeaderTitle';
 import ModalSection from 'components/ModalSection';
 import ModalSectionText from 'components/ModalSectionText';
 
+import { useLocalStorage } from 'hooks';
+
 import styles from './Onboarding.module.scss';
 import { buildOnboardingSteps } from './Onboarding.utils';
 
@@ -24,7 +26,10 @@ const ARIA = {
 } as const;
 
 function Onboarding() {
-  const [show, setShow] = useState(true);
+  const [onboardingCompleted, setOnboardingCompleted] =
+    useLocalStorage<boolean>('onboardingCompleted', false);
+
+  const [show, setShow] = useState(onboardingCompleted === false);
   const [currentStep, setCurrentStep] = useState(0);
 
   const onboardingSteps = useMemo(
@@ -33,8 +38,9 @@ function Onboarding() {
   );
 
   const handleHide = useCallback(() => {
+    setOnboardingCompleted(true);
     setShow(false);
-  }, []);
+  }, [setOnboardingCompleted]);
 
   const handleChangeStep = useCallback(
     (step: number) => {
