@@ -27,13 +27,25 @@ function Onboarding() {
   const [show, setShow] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
 
+  const onboardingSteps = useMemo(
+    () => buildOnboardingSteps(ui.layout.onboarding.steps),
+    []
+  );
+
   const handleHide = useCallback(() => {
     setShow(false);
   }, []);
 
-  const onboardingSteps = useMemo(
-    () => buildOnboardingSteps(ui.layout.onboarding.steps),
-    []
+  const handleChangeStep = useCallback(
+    (step: number) => {
+      if (step > onboardingSteps.length - 1) {
+        handleHide();
+        return;
+      }
+
+      setCurrentStep(step);
+    },
+    [handleHide, onboardingSteps.length]
   );
 
   if (isEmpty(onboardingSteps)) return null;
@@ -107,7 +119,7 @@ function Onboarding() {
             size="sm"
             color="primary"
             fullwidth
-            onClick={() => setCurrentStep(currentStep + 1)}
+            onClick={() => handleChangeStep(currentStep + 1)}
           >
             {isLastStep ? "Let's Go" : 'Next'}
           </Button>
