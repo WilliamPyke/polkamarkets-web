@@ -59,7 +59,7 @@ export default function LeaderboardHeader({
               scale="tiny-uppercase"
               className={classes.navBackLabel}
             >
-              Back to Tournament
+              Back
             </Text>
           </RouterLink>
         )}
@@ -76,7 +76,7 @@ export default function LeaderboardHeader({
         <div>
           <div className="align-center">
             <Text scale="caption" as="p" className={classes.contentCaption}>
-              Rank table
+              Leaderboard
             </Text>
             <Text scale="heading-large" fontWeight="regular" as="h2">
               {title}

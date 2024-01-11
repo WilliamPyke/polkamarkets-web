@@ -224,6 +224,8 @@ function Leaderboard() {
     isLoadingTournamentBySlug || isFetchingTournamentBySlug;
 
   let tournamentCriteria: string | null = null;
+  let rewards: Array<Record<'title' | 'description', string>> = [];
+
   if (tournamentBySlug?.rankBy) {
     tournamentCriteria =
       tournamentBySlug?.rankBy === 'claim_winnings_count,earnings_eur'
@@ -239,6 +241,17 @@ function Leaderboard() {
       const [column] = columns.splice(index, 1);
       columns.splice(1, 0, column);
     }
+  }
+
+  if (tournamentBySlug?.rewards && tournamentBySlug?.rewards.length > 0) {
+    rewards = tournamentBySlug?.rewards.map(reward => ({
+      // cardinal numbering
+      title:
+        reward.from === reward.to
+          ? `#${reward.from} Place`
+          : `#${reward.from} to #${reward.to} Place`,
+      description: reward.reward
+    }));
   }
 
   // Default
@@ -393,24 +406,6 @@ function Leaderboard() {
     userEthAddress
   ]);
 
-  const prizes = [
-    {
-      primary: '1º Lugar:',
-      secondary:
-        '500€ em cartão + estadia de duas noites para duas pessoas pela Small Portuguese Hotels'
-    },
-    {
-      primary: '2º Lugar:',
-      secondary:
-        '200€ em cartão + estadia de duas noites para duas pessoas pela Small Portuguese Hotels'
-    },
-    {
-      primary: '3º Lugar:',
-      secondary:
-        '100€ em cartão + estadia de duas noites para duas pessoas pela Small Portuguese Hotels'
-    }
-  ];
-
   return (
     <Container className="pm-p-leaderboard max-width-screen-xl">
       <SEO
@@ -535,7 +530,9 @@ function Leaderboard() {
                 isLoading={isLoadingQuery}
               />
             )}
-            {features.fantasy.enabled && <LeaderboardPrizes prizes={prizes} />}
+            {features.fantasy.enabled && rewards && rewards.length > 0 && (
+              <LeaderboardPrizes rewards={rewards} />
+            )}
           </div>
         </div>
       ) : (
