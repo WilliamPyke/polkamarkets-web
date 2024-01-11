@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import cn from 'classnames';
 import { ui } from 'config';
 import { defaultMetadata, metadataByPage } from 'config/pages';
+import isError404 from 'helpers/isError404';
 import {
   useGetLeaderboardByTimeframeQuery,
   useGetTournamentBySlugQuery
@@ -12,6 +13,7 @@ import { Container, useRect, useTheme } from 'ui';
 
 import LeaderboardRewardsList from 'pages/Leaderboard/LeaderboardRewardsList';
 import { tournamentRewards } from 'pages/Leaderboard/utils';
+import Error404 from 'pages/Error404';
 
 import { MarketList, SEO } from 'components';
 
@@ -33,7 +35,8 @@ export default function Tournament() {
   const [ref, rect] = useRect();
   const [show, setShow] = useState(false);
 
-  const { data, isLoading, isFetching } = useGetTournamentBySlugQuery({ slug });
+  const { data, isLoading, isFetching, ...tournamentBySlug } =
+    useGetTournamentBySlugQuery({ slug });
   const isLoadingTournamentBySlugQuery = isLoading || isFetching;
 
   const {
@@ -86,6 +89,8 @@ export default function Tournament() {
         <span className="spinner--primary" />
       </div>
     );
+
+  if (isError404(tournamentBySlug.error)) return <Error404 />;
 
   return (
     <div className="max-width-screen-xl">
