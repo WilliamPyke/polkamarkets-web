@@ -528,7 +528,7 @@ function Leaderboard() {
               'width-full': !theme.device.isDesktop
             })}
           >
-            {features.regular.enabled && theme.device.isDesktop ? (
+            {theme.device.isDesktop ? (
               <>
                 {walletConnected ? (
                   <LeaderboardYourStats
@@ -538,18 +538,8 @@ function Leaderboard() {
                     isLoading={isLoadingQuery}
                   />
                 ) : null}
-                <LeaderboardTopWallets rows={data} isLoading={isLoadingQuery} />
-                {leaderboardType.club && walletConnected ? (
-                  <LeaderboardMyLeaderboards loggedInUser={userEthAddress} />
-                ) : null}
               </>
             ) : null}
-            {features.regular.enabled && theme.device.isDesktop && (
-              <LeaderboardMarkets
-                data={tournamentBySlug?.markets}
-                isLoading={isLoadingTournamentBySlugQuery}
-              />
-            )}
             {features.fantasy.enabled && <LeaderboardPrizes prizes={prizes} />}
           </div>
         </div>
