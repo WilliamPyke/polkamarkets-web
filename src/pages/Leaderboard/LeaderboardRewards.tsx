@@ -1,22 +1,24 @@
 import { Text } from 'components';
 
-import classes from './LeaderboardPrizes.module.scss';
+import classes from './LeaderboardRewards.module.scss';
 
-type LeaderboardPrizesProps = {
+type LeaderboardRewardsProps = {
   rewards: Array<Record<'title' | 'description', string>>;
 };
 
-export default function LeaderboardPrizes({ rewards }: LeaderboardPrizesProps) {
+export default function LeaderboardRewards({
+  rewards
+}: LeaderboardRewardsProps) {
   return (
     <div className="pm-c-leaderboard-stats bg-3 border-radius-medium border-solid border-1">
       <h3 className="body semibold text-1">Rewards</h3>
       <ul>
         {rewards.map(reward => (
-          <li key={reward.title} className={classes.prizesPrize}>
+          <li key={reward.title} className={classes.rewardsReward}>
             <Text
               scale="caption"
               fontWeight="medium"
-              className={classes.prizesPrizePrimary}
+              className={classes.rewardsRewardPrimary}
             >
               {reward.title}
             </Text>

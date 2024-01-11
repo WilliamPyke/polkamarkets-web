@@ -25,7 +25,7 @@ import {
 } from './Leaderboard.util';
 import LeaderboardHeader from './LeaderboardHeader';
 import LeaderboardMyLeaderboards from './LeaderboardMyLeaderboards';
-import LeaderboardPrizes from './LeaderboardPrizes';
+import LeaderboardRewards from './LeaderboardRewards';
 import LeaderboardTable from './LeaderboardTable';
 import LeaderboardTopWallets from './LeaderboardTopWallets';
 import LeaderboardYourStats from './LeaderboardYourStats';
@@ -531,7 +531,7 @@ function Leaderboard() {
               />
             )}
             {features.fantasy.enabled && rewards && rewards.length > 0 && (
-              <LeaderboardPrizes rewards={rewards} />
+              <LeaderboardRewards rewards={rewards} />
             )}
           </div>
         </div>
