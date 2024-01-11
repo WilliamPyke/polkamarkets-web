@@ -1,7 +1,15 @@
+import { Fragment } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
+import classNames from 'classnames';
+import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
 import { Image, useTheme } from 'ui';
+
+import {
+  getDescriptionItems,
+  matchesDynamicDescription
+} from 'pages/Tournament/TournamentHero.utils';
 
 import { Icon, Text } from 'components';
 
@@ -23,6 +31,12 @@ export default function LeaderboardHeader({
   description
 }: LeaderboardHeaderProps) {
   const theme = useTheme();
+
+  const isDynamicDescription = matchesDynamicDescription(description || '');
+
+  const dynamicDescriptionItems = isDynamicDescription
+    ? getDescriptionItems(description || '')
+    : [];
 
   return (
     <header className={classes.root}>
@@ -68,9 +82,35 @@ export default function LeaderboardHeader({
               {title}
             </Text>
           </div>
-          {description && (
+          {isEmpty(dynamicDescriptionItems) ? (
+            <>
+              {description ? (
+                <Text scale="caption" as="p" className="whitespace-pre-line">
+                  {description}
+                </Text>
+              ) : null}
+            </>
+          ) : (
             <Text scale="caption" as="p" className="whitespace-pre-line">
-              {description}
+              {dynamicDescriptionItems.map(item => (
+                <Fragment key={item.text}>
+                  {item.isLink ? (
+                    <a
+                      className={classNames({
+                        'text-primary': item.color === 'primary',
+                        underline: item.underline
+                      })}
+                      href={item.url!}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {item.text}
+                    </a>
+                  ) : (
+                    item.text
+                  )}
+                </Fragment>
+              ))}
             </Text>
           )}
         </div>
