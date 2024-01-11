@@ -51,6 +51,9 @@ const ui = {
         github: environment.UI_COMMUNITY_GITHUB_URL
       }
     },
+    onboarding: {
+      steps: environment.UI_ONBOARDING
+    },
     disclaimer: {
       enabled: features.regular.enabled
     },
