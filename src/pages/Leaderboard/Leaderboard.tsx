@@ -24,7 +24,6 @@ import {
   sanitizePreviousCreateLeaderboardFormValues
 } from './Leaderboard.util';
 import LeaderboardHeader from './LeaderboardHeader';
-import LeaderboardMarkets from './LeaderboardMarkets';
 import LeaderboardMyLeaderboards from './LeaderboardMyLeaderboards';
 import LeaderboardPrizes from './LeaderboardPrizes';
 import LeaderboardTable from './LeaderboardTable';
@@ -528,18 +527,14 @@ function Leaderboard() {
               'width-full': !theme.device.isDesktop
             })}
           >
-            {theme.device.isDesktop ? (
-              <>
-                {walletConnected ? (
-                  <LeaderboardYourStats
-                    loggedInUser={userEthAddress}
-                    rows={data}
-                    ticker={ticker}
-                    isLoading={isLoadingQuery}
-                  />
-                ) : null}
-              </>
-            ) : null}
+            {walletConnected && theme.device.isDesktop && (
+              <LeaderboardYourStats
+                loggedInUser={userEthAddress}
+                rows={data}
+                ticker={ticker}
+                isLoading={isLoadingQuery}
+              />
+            )}
             {features.fantasy.enabled && <LeaderboardPrizes prizes={prizes} />}
           </div>
         </div>
