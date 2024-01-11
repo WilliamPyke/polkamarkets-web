@@ -28,7 +28,10 @@ export default function LeaderboardHeader({
     <header className={classes.root}>
       <nav className={classes.nav}>
         {isTournament && (
-          <RouterLink to={`/tournaments/${slug}`}>
+          <RouterLink
+            to={`/tournaments/${slug}`}
+            className={classes.navBackLink}
+          >
             <span className={classes.navBack}>
               <Icon
                 name="Arrow"
@@ -37,7 +40,11 @@ export default function LeaderboardHeader({
                 className={classes.navBackIcon}
               />
             </span>
-            <Text as="span" scale="tiny-uppercase">
+            <Text
+              as="span"
+              scale="tiny-uppercase"
+              className={classes.navBackLabel}
+            >
               Back to Tournament
             </Text>
           </RouterLink>
