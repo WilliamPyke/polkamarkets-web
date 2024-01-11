@@ -38,7 +38,7 @@ export default function LeaderboardHeader({
               />
             </span>
             <Text as="span" scale="tiny-uppercase">
-              Voltar
+              Back to Tournament
             </Text>
           </RouterLink>
         )}
