@@ -115,6 +115,7 @@ function walletColumnRender({
         to={`/user/${slug || username || address}`}
         className="pm-c-leaderboard-table__wallet"
       >
+        {`#${place}`}
         {walletPlace.icon}
         {(() => {
           if (userImageUrl)
