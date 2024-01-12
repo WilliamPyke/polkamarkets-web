@@ -33,7 +33,7 @@ import {
   balanceColumnRender,
   liquidityColumnRender,
   earningsColumnRender,
-  rankColumnRender,
+  // rankColumnRender,
   volumeColumnRender,
   walletColumnRender
 } from './prepare';
@@ -145,16 +145,20 @@ const columns: LeaderboardTableColumn[] = [
     align: 'right',
     width: 140,
     render: earningsColumnRender
-  },
-  {
-    title: 'Rank',
-    key: 'rank',
-    align: 'right',
-    width: 100,
-    render: rankColumnRender
   }
+  // {
+  //   title: 'Rank',
+  //   key: 'rank',
+  //   align: 'right',
+  //   width: 100,
+  //   render: rankColumnRender
+  // }
 ].filter(column =>
-  ['wallet', 'rank', ...ui.leaderboard.columns].includes(column.key)
+  [
+    'wallet',
+    // 'rank',
+    ...ui.leaderboard.columns
+  ].includes(column.key)
 ) as LeaderboardTableColumn[];
 
 type LeaderboardURLParams = {
