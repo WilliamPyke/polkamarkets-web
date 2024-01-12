@@ -70,7 +70,7 @@ export default function Profile() {
     [language, portfolioFeed]
   );
 
-  if ([portfolio, activity].some(({ error }) => isError404(error))) {
+  if (isError404(portfolio.error) || isError404(activity.error)) {
     return <ProfileError username={address} />;
   }
 
