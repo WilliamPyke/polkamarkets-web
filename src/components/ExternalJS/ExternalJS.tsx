@@ -7,7 +7,7 @@ function ExternalJS() {
 
   return (
     <Helmet>
-      <script src={environment.EXTERNAL_JS_URL} type="text/javascript" />
+      <script type="text/javascript" src={environment.EXTERNAL_JS_URL} />
     </Helmet>
   );
 }
