@@ -24,7 +24,6 @@
       align-items: center;
       gap: var(--size-4);
 
-      padding: 0 var(--size-4);
       vertical-align: bottom;
 
       &Image {
@@ -37,14 +36,6 @@
       line-height: 1.6;
       font-weight: 500;
       color: var(--color-market-shares-description);
-
-      text-overflow: ellipsis;
-      overflow: hidden;
-
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      word-break: break-all;
 
       strong {
         color: var(--color-market-shares-description--bold);

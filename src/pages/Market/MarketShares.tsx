@@ -92,7 +92,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
             {language === 'tr' ? (
               <>
                 Şu anda <strong>{`${roundNumber(outcome.shares, 3)}`}</strong>{' '}
-                adet
+                adet{' '}
                 <div className={styles.rootItemTitleGroup}>
                   {outcome.imageUrl ? (
                     <Image
@@ -104,7 +104,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
                     />
                   ) : null}
                   <strong>{outcome.title}</strong>
-                </div>
+                </div>{' '}
                 hissesine sahipsiniz ve bunun değeri{' '}
                 <strong>
                   {outcome.value.toFixed(3)} {token.symbol}
@@ -117,7 +117,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
                 <strong>
                   {outcome.value.toFixed(1)} {token.symbol}{' '}
                 </strong>
-                de
+                de{' '}
                 <div className={styles.rootItemTitleGroup}>
                   {outcome.imageUrl ? (
                     <Image
@@ -129,7 +129,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
                     />
                   ) : null}
                   <strong>{outcome.title}</strong>
-                </div>
+                </div>{' '}
                 com um desempenho de{' '}
                 <strong>
                   {outcome.value > outcome.buyValue ? '+' : ''}
@@ -148,7 +148,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
                 <strong>
                   {outcome.value.toFixed(1)} {token.symbol}{' '}
                 </strong>
-                of
+                of{' '}
                 <div className={styles.rootItemTitleGroup}>
                   {outcome.imageUrl ? (
                     <Image
@@ -160,7 +160,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
                     />
                   ) : null}
                   <strong>{outcome.title}</strong>
-                </div>
+                </div>{' '}
                 performing{' '}
                 <strong>
                   {outcome.value > outcome.buyValue ? '+' : ''}
