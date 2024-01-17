@@ -12,13 +12,11 @@
   border-radius: var(--size-4);
 
   &Item {
-    @media (min-width: 768px) {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      gap: var(--size-24);
-    }
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--size-24);
 
     &TitleGroup {
       display: inline-flex;
@@ -39,23 +37,9 @@
       font-weight: 500;
       color: var(--color-market-shares-description);
 
-      @media (max-width: 767px) {
-        margin-bottom: 16px;
-      }
-
       strong {
         color: var(--color-market-shares-description--bold);
       }
     }
   }
-}
-
-.loading {
-  padding: var(--size-16);
-}
-
-.spinner {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
 }

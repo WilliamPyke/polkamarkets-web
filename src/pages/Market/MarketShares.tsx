@@ -1,13 +1,12 @@
 /* eslint-disable no-nested-ternary */
 import { useCallback, useMemo } from 'react';
 
-import classNames from 'classnames';
 import { roundNumber } from 'helpers/math';
 import isEmpty from 'lodash/isEmpty';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
-import { Image, Spinner, useTheme } from 'ui';
+import { Image } from 'ui';
 
-import { Button, Text } from 'components';
+import { Button } from 'components';
 
 import { useAppDispatch, useAppSelector, useLanguage, useNetwork } from 'hooks';
 
@@ -30,7 +29,6 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
   const { portfolio: isLoadingPortfolio } = useAppSelector(
     state => state.polkamarkets.isLoading
   );
-  const theme = useTheme();
 
   const language = useLanguage();
 
@@ -84,128 +82,104 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
 
   const isWrongNetwork = network.id !== networkId.toString();
 
-  const isLoading = isWrongNetwork || isEmpty(outcomesWithShares);
+  if (isWrongNetwork || isEmpty(outcomesWithShares)) return null;
 
   return (
-    <ul
-      className={classNames(styles.root, {
-        [styles.loading]: isLoading
-      })}
-    >
-      {isLoading ? (
-        <div className={styles.spinner}>
-          <Spinner $size="md" />
-          <Text
-            as="span"
-            scale="caption"
-            fontWeight="medium"
-            color="lighter-gray"
-          >
-            Loading shares...
-          </Text>
-        </div>
-      ) : (
-        outcomesWithShares.map(outcome => (
-          <li key={outcome.id} className={styles.rootItem}>
-            <p className={`${styles.rootItemDescription} notranslate`}>
-              {language === 'tr' ? (
-                <>
-                  Şu anda <strong>{`${roundNumber(outcome.shares, 3)}`}</strong>{' '}
-                  adet{' '}
-                  <div className={styles.rootItemTitleGroup}>
-                    {outcome.imageUrl ? (
-                      <Image
-                        className={styles.rootItemTitleGroupImage}
-                        $radius="lg"
-                        alt={outcome.title}
-                        $size="x2s"
-                        src={outcome.imageUrl}
-                      />
-                    ) : null}
-                    <strong>{outcome.title}</strong>
-                  </div>{' '}
-                  hissesine sahipsiniz ve bunun değeri{' '}
-                  <strong>
-                    {outcome.value.toFixed(3)} {token.symbol}
-                  </strong>{' '}
-                  denk geliyor
-                </>
-              ) : language === 'pt' ? (
-                <>
-                  Tens{' '}
-                  <strong>
-                    {outcome.value.toFixed(1)} {token.symbol}{' '}
-                  </strong>
-                  de{' '}
-                  <div className={styles.rootItemTitleGroup}>
-                    {outcome.imageUrl ? (
-                      <Image
-                        className={styles.rootItemTitleGroupImage}
-                        $radius="xs"
-                        alt={outcome.title}
-                        $size="x2s"
-                        src={outcome.imageUrl}
-                      />
-                    ) : null}
-                    <strong>{outcome.title}</strong>
-                  </div>{' '}
-                  com um desempenho de{' '}
-                  <strong>
-                    {outcome.value > outcome.buyValue ? '+' : ''}
-                    {(outcome.value - outcome.buyValue).toFixed(1)}{' '}
-                    {token.symbol}{' '}
-                  </strong>
-                  ({outcome.value > outcome.buyValue ? '+' : ''}
-                  {(
-                    ((outcome.value - outcome.buyValue) / outcome.buyValue) *
-                    100
-                  ).toFixed(1)}
-                  %)
-                </>
-              ) : (
-                <>
-                  You hold{' '}
-                  <strong>
-                    {outcome.value.toFixed(1)} {token.symbol}{' '}
-                  </strong>
-                  of{' '}
-                  <div className={styles.rootItemTitleGroup}>
-                    {outcome.imageUrl ? (
-                      <Image
-                        className={styles.rootItemTitleGroupImage}
-                        $radius="xs"
-                        alt={outcome.title}
-                        $size="x2s"
-                        src={outcome.imageUrl}
-                      />
-                    ) : null}
-                    <strong>{outcome.title}</strong>
-                  </div>{' '}
-                  performing{' '}
-                  <strong>
-                    {outcome.value > outcome.buyValue ? '+' : ''}
-                    {(outcome.value - outcome.buyValue).toFixed(1)}{' '}
-                    {token.symbol}{' '}
-                  </strong>
-                  ({outcome.value > outcome.buyValue ? '+' : ''}
-                  {(
-                    ((outcome.value - outcome.buyValue) / outcome.buyValue) *
-                    100
-                  ).toFixed(1)}
-                  %)
-                </>
-              )}
-            </p>
-            <Button
-              size="sm"
-              fullwidth={!theme.device.isTablet}
-              onClick={() => handleSell(outcome.id)}
-            >
-              Sell Position
-            </Button>
-          </li>
-        ))
-      )}
+    <ul className={styles.root}>
+      {outcomesWithShares.map(outcome => (
+        <li key={outcome.id} className={styles.rootItem}>
+          <p className={`${styles.rootItemDescription} notranslate`}>
+            {language === 'tr' ? (
+              <>
+                Şu anda <strong>{`${roundNumber(outcome.shares, 3)}`}</strong>{' '}
+                adet{' '}
+                <div className={styles.rootItemTitleGroup}>
+                  {outcome.imageUrl ? (
+                    <Image
+                      className={styles.rootItemTitleGroupImage}
+                      $radius="lg"
+                      alt={outcome.title}
+                      $size="x2s"
+                      src={outcome.imageUrl}
+                    />
+                  ) : null}
+                  <strong>{outcome.title}</strong>
+                </div>{' '}
+                hissesine sahipsiniz ve bunun değeri{' '}
+                <strong>
+                  {outcome.value.toFixed(3)} {token.symbol}
+                </strong>{' '}
+                denk geliyor
+              </>
+            ) : language === 'pt' ? (
+              <>
+                Tens{' '}
+                <strong>
+                  {outcome.value.toFixed(1)} {token.symbol}{' '}
+                </strong>
+                de{' '}
+                <div className={styles.rootItemTitleGroup}>
+                  {outcome.imageUrl ? (
+                    <Image
+                      className={styles.rootItemTitleGroupImage}
+                      $radius="xs"
+                      alt={outcome.title}
+                      $size="x2s"
+                      src={outcome.imageUrl}
+                    />
+                  ) : null}
+                  <strong>{outcome.title}</strong>
+                </div>{' '}
+                com um desempenho de{' '}
+                <strong>
+                  {outcome.value > outcome.buyValue ? '+' : ''}
+                  {(outcome.value - outcome.buyValue).toFixed(1)} {token.symbol}{' '}
+                </strong>
+                ({outcome.value > outcome.buyValue ? '+' : ''}
+                {(
+                  ((outcome.value - outcome.buyValue) / outcome.buyValue) *
+                  100
+                ).toFixed(1)}
+                %)
+              </>
+            ) : (
+              <>
+                You hold{' '}
+                <strong>
+                  {outcome.value.toFixed(1)} {token.symbol}{' '}
+                </strong>
+                of{' '}
+                <div className={styles.rootItemTitleGroup}>
+                  {outcome.imageUrl ? (
+                    <Image
+                      className={styles.rootItemTitleGroupImage}
+                      $radius="xs"
+                      alt={outcome.title}
+                      $size="x2s"
+                      src={outcome.imageUrl}
+                    />
+                  ) : null}
+                  <strong>{outcome.title}</strong>
+                </div>{' '}
+                performing{' '}
+                <strong>
+                  {outcome.value > outcome.buyValue ? '+' : ''}
+                  {(outcome.value - outcome.buyValue).toFixed(1)} {token.symbol}{' '}
+                </strong>
+                ({outcome.value > outcome.buyValue ? '+' : ''}
+                {(
+                  ((outcome.value - outcome.buyValue) / outcome.buyValue) *
+                  100
+                ).toFixed(1)}
+                %)
+              </>
+            )}
+          </p>
+          <Button size="sm" onClick={() => handleSell(outcome.id)}>
+            Sell Position
+          </Button>
+        </li>
+      ))}
     </ul>
   );
 }
