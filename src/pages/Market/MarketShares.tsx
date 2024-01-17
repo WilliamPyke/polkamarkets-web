@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react';
 import { roundNumber } from 'helpers/math';
 import isEmpty from 'lodash/isEmpty';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
-import { Image } from 'ui';
+import { Image, useTheme } from 'ui';
 
 import { Button } from 'components';
 
@@ -29,6 +29,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
   const { portfolio: isLoadingPortfolio } = useAppSelector(
     state => state.polkamarkets.isLoading
   );
+  const theme = useTheme();
 
   const language = useLanguage();
 
@@ -175,7 +176,11 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
               </>
             )}
           </p>
-          <Button size="sm" onClick={() => handleSell(outcome.id)}>
+          <Button
+            size="sm"
+            fullwidth={!theme.device.isTablet}
+            onClick={() => handleSell(outcome.id)}
+          >
             Sell Position
           </Button>
         </li>
