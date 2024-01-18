@@ -36,7 +36,7 @@ export default function ProfileSignout() {
     state => state.polkamarkets.isLoading.polk
   );
   const bankrupt = useAppSelector(state => state.polkamarkets.bankrupt);
-  const polkClaimed = false; // useAppSelector(state => state.polkamarkets.polkClaimed);
+  const polkClaimed = useAppSelector(state => state.polkamarkets.polkClaimed);
   const network = useNetwork();
   const leaderboard = useGetLeaderboardByAddressQuery({
     address,
@@ -52,6 +52,11 @@ export default function ProfileSignout() {
     polkamarketsService.logoutSocialLogin();
     dispatch(logout());
   }, [dispatch, polkamarketsService]);
+  const handleClaim = useCallback(async () => {
+    const { claim } = await import('redux/ducks/polkamarkets');
+
+    dispatch(claim(polkamarketsService));
+  }, [dispatch, polkamarketsService]);
 
   const [username, setUserName] = useState(
     socialLoginInfo?.name?.includes('#')
@@ -66,8 +71,6 @@ export default function ProfileSignout() {
     language === 'pt'
       ? `${ticker} é a “moeda” usada para fazer previsões e para ordenar a classificação de cada jogador.`
       : `${ticker} is the token used to place predictions and rank on the leaderboard.`;
-
-  console.log(polkClaimed);
 
   useEffect(() => {
     async function handleSocialLogin() {
@@ -156,7 +159,11 @@ export default function ProfileSignout() {
               return <Skeleton style={{ height: 16, width: 52 }} />;
             if (!polkClaimed)
               return (
-                <button type="button" className={profileSignoutClasses.claim}>
+                <button
+                  type="button"
+                  className={profileSignoutClasses.claim}
+                  onClick={handleClaim}
+                >
                   Claim {ticker}
                 </button>
               );
