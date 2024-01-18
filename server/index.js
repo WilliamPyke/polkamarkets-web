@@ -197,9 +197,15 @@ app.get('/', (request, response) => {
 });
 
 app.get('/embed/markets/:slug', async (request, response) => {
-  const marketSlug = request.params.slug;
+  // adding X-Frame-Options header to allow embedding
+  response.set('X-Frame-Options', 'ALLOWALL');
 
-  const cachedData = cache.get(marketSlug);
+  const marketSlug = request.params.slug;
+  const maxVisibleOutcomes = parseFloat(request.query.outcomes);
+
+  const cacheKey = maxVisibleOutcomes ? `${marketSlug}-${maxVisibleOutcomes}` : marketSlug;
+
+  const cachedData = cache.get(cacheKey);
 
   if (cachedData) {
     response.render('markets/index', cachedData);
@@ -219,8 +225,6 @@ app.get('/embed/markets/:slug', async (request, response) => {
 
         return compareB.price - compareA.price;
       });
-
-      const maxVisibleOutcomes = parseFloat(request.query.outcomes);
 
       const isValidMax =
         !Number.isNaN(maxVisibleOutcomes) &&
@@ -269,7 +273,7 @@ app.get('/embed/markets/:slug', async (request, response) => {
         localizeConfig
       };
 
-      cache.set(marketSlug, data);
+      cache.set(cacheKey, data);
 
       response.render('markets/index', data);
     } catch (e) {
@@ -637,19 +641,6 @@ app.get('/markets/:slug', async (request, response) => {
     } catch (e) {
       return response.send(defaultMetadataTemplate(request, htmlData));
     }
-  });
-});
-
-app.get('/embed/markets/:slug', async (request, response) => {
-  // adding X-Frame-Options header to allow embedding
-  response.set('X-Frame-Options', 'ALLOWALL');
-
-  fs.readFile(indexPath, 'utf8', async (error, htmlData) => {
-    if (error) {
-      return response.status(404).end();
-    }
-
-    return response.send(defaultMetadataTemplate(request, htmlData));
   });
 });
 
