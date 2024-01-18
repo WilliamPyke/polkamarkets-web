@@ -157,7 +157,7 @@ export default function ProfileSignout() {
             if (!polkClaimed)
               return (
                 <button type="button" className={profileSignoutClasses.claim}>
-                  Receber {ticker}
+                  Claim {ticker}
                 </button>
               );
 
