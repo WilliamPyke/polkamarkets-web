@@ -194,7 +194,7 @@ const {
 // fetching initial wallet details
 function login(
   polkamarketsService: PolkamarketsService,
-  autoClaimAllowed = true
+  autoClaimAllowed = false
 ) {
   return async dispatch => {
     const isLoggedIn = await polkamarketsService.isLoggedIn();
