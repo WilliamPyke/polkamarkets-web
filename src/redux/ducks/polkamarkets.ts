@@ -257,6 +257,7 @@ function login(
             claim(polkamarketsService)(dispatch);
           }
 
+          dispatch(changePolkClaimed(polkClaimed));
           dispatch(
             changeLoading({
               key: 'login',
