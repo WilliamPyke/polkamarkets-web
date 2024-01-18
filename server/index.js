@@ -3,8 +3,10 @@
 require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
+const NodeCache = require('node-cache');
 
 const app = express();
+const cache = new NodeCache();
 app.use(helmet.frameguard({ action: 'deny' }));
 
 app.use((request, response, next) => {
@@ -197,64 +199,72 @@ app.get('/', (request, response) => {
 app.get('/embed/markets/:slug', async (request, response) => {
   const marketSlug = request.params.slug;
 
-  try {
-    const market = await getMarket(marketSlug);
-    const { outcomes: marketOutcomes, tournaments } = market.data;
+  const cachedData = cache.get(marketSlug);
 
-    const outcomes = marketOutcomes.sort((compareA, compareB) => {
-      if (outcomesSortingAlphabeticallyEnabled) {
-        const exclude = outcomesSortingAlphabeticallyExclude || [];
+  if (cachedData) {
+    response.render('markets/index', cachedData);
+  } else {
+    try {
+      const market = await getMarket(marketSlug);
+      const { outcomes: marketOutcomes, tournaments } = market.data;
 
-        if (exclude.includes(compareA.title.toLowerCase())) return 1;
+      const outcomes = marketOutcomes.sort((compareA, compareB) => {
+        if (outcomesSortingAlphabeticallyEnabled) {
+          const exclude = outcomesSortingAlphabeticallyExclude || [];
 
-        return compareA.title.localeCompare(compareB.title);
-      }
+          if (exclude.includes(compareA.title.toLowerCase())) return 1;
 
-      return compareB.price - compareA.price;
-    });
-
-    const multipleOutcomes = outcomes.length > 2;
-    const on = multipleOutcomes ? outcomes.slice(0, 2) : outcomes;
-    const off = multipleOutcomes ? outcomes.slice(2) : [];
-
-    const tournament =
-      tournaments && tournaments.length > 0 ? tournaments[0] : null;
-
-    const land = tournament?.land;
-
-    const data = {
-      market: {
-        ...market.data,
-        outcomes: {
-          on: on.map(outcome => {
-            const priceChart = outcome.priceCharts?.find(
-              chart => chart.timeframe === '24h'
-            );
-
-            return {
-              ...outcome,
-              percentage: `${roundNumber(+outcome.price * 100, 1)} %`,
-              isPriceUp:
-                !priceChart?.changePercent || priceChart?.changePercent > 0
-            };
-          }),
-          off: off.length > 0 && {
-            title: `${off.length}+ Outcomes`,
-            subtitle: `${off.map(outcome => outcome.title).join(', ')}`,
-            price: roundNumber(
-              +off.reduce((prices, outcome) => outcome.price + prices, 0),
-              1
-            )
-          }
+          return compareA.title.localeCompare(compareB.title);
         }
-      },
-      land,
-      localizeConfig
-    };
 
-    response.render('markets/index', data);
-  } catch (e) {
-    return response.status(404).end();
+        return compareB.price - compareA.price;
+      });
+
+      const multipleOutcomes = outcomes.length > 2;
+      const on = multipleOutcomes ? outcomes.slice(0, 2) : outcomes;
+      const off = multipleOutcomes ? outcomes.slice(2) : [];
+
+      const tournament =
+        tournaments && tournaments.length > 0 ? tournaments[0] : null;
+
+      const land = tournament?.land;
+
+      const data = {
+        market: {
+          ...market.data,
+          outcomes: {
+            on: on.map(outcome => {
+              const priceChart = outcome.priceCharts?.find(
+                chart => chart.timeframe === '24h'
+              );
+
+              return {
+                ...outcome,
+                percentage: `${roundNumber(+outcome.price * 100, 1)} %`,
+                isPriceUp:
+                  !priceChart?.changePercent || priceChart?.changePercent > 0
+              };
+            }),
+            off: off.length > 0 && {
+              title: `${off.length}+ Outcomes`,
+              subtitle: `${off.map(outcome => outcome.title).join(', ')}`,
+              price: roundNumber(
+                +off.reduce((prices, outcome) => outcome.price + prices, 0),
+                1
+              )
+            }
+          }
+        },
+        land,
+        localizeConfig
+      };
+
+      cache.set(marketSlug, data);
+
+      response.render('markets/index', data);
+    } catch (e) {
+      return response.status(404).end();
+    }
   }
 });
 
