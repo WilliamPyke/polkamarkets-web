@@ -25,6 +25,7 @@ app.use((request, response, next) => {
 const fs = require('fs');
 const path = require('path');
 const { isTrue } = require('./helpers/boolean');
+const { roundNumber } = require('./helpers/number');
 
 const { getMarket } = require('./api/market');
 const { getLeaderboardGroupBySlug } = require('./api/group_leaderboards');
@@ -34,6 +35,10 @@ const {
   formatMarketMetadata,
   replaceToMetadataTemplate
 } = require('./helpers/string');
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, './embed'));
+app.use('/public', express.static(path.resolve(__dirname, '..', 'public')));
 
 const port = process.env.PORT || 5000;
 
@@ -46,6 +51,16 @@ const isAchievementsEnabled = isTrue(
 );
 const isTournamentsEnabled = isTrue(process.env.REACT_APP_FEATURE_TOURNAMENTS);
 const isClubsEnabled = isTrue(process.env.REACT_APP_FEATURE_CLUBS);
+
+const outcomesSortingAlphabeticallyEnabled = isTrue(
+  process.env.REACT_APP_UI_MARKET_OUTCOMES_SORTING_ALPHABETICALLY
+);
+const outcomesSortingAlphabeticallyExclude =
+  process.env.REACT_APP_UI_MARKET_OUTCOMES_SORTING_ALPHABETICALLY_EXCLUDE?.split(
+    ','
+  );
+
+const localizeConfig = process.env.REACT_APP_LOCALIZE_CONFIG;
 
 const indexPath = path.resolve(__dirname, '..', 'build', 'index.html');
 
@@ -177,6 +192,70 @@ app.get('/', (request, response) => {
 
     return response.send(defaultMetadataTemplate(request, htmlData));
   });
+});
+
+app.get('/embed/markets/:slug', async (request, response) => {
+  const marketSlug = request.params.slug;
+
+  try {
+    const market = await getMarket(marketSlug);
+    const { outcomes: marketOutcomes, tournaments } = market.data;
+
+    const outcomes = marketOutcomes.sort((compareA, compareB) => {
+      if (outcomesSortingAlphabeticallyEnabled) {
+        const exclude = outcomesSortingAlphabeticallyExclude || [];
+
+        if (exclude.includes(compareA.title.toLowerCase())) return 1;
+
+        return compareA.title.localeCompare(compareB.title);
+      }
+
+      return compareB.price - compareA.price;
+    });
+
+    const multipleOutcomes = outcomes.length > 2;
+    const on = multipleOutcomes ? outcomes.slice(0, 2) : outcomes;
+    const off = multipleOutcomes ? outcomes.slice(2) : [];
+
+    const tournament =
+      tournaments && tournaments.length > 0 ? tournaments[0] : null;
+
+    const land = tournament?.land;
+
+    const data = {
+      market: {
+        ...market.data,
+        outcomes: {
+          on: on.map(outcome => {
+            const priceChart = outcome.priceCharts?.find(
+              chart => chart.timeframe === '24h'
+            );
+
+            return {
+              ...outcome,
+              percentage: `${roundNumber(+outcome.price * 100, 1)} %`,
+              isPriceUp:
+                !priceChart?.changePercent || priceChart?.changePercent > 0
+            };
+          }),
+          off: off.length > 0 && {
+            title: `${off.length}+ Outcomes`,
+            subtitle: `${off.map(outcome => outcome.title).join(', ')}`,
+            price: roundNumber(
+              +off.reduce((prices, outcome) => outcome.price + prices, 0),
+              1
+            )
+          }
+        }
+      },
+      land,
+      localizeConfig
+    };
+
+    response.render('markets/index', data);
+  } catch (e) {
+    return response.status(404).end();
+  }
 });
 
 app.get('/blocked', (request, response) => {
