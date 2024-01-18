@@ -36,6 +36,7 @@ export default function ProfileSignout() {
     state => state.polkamarkets.isLoading.polk
   );
   const bankrupt = useAppSelector(state => state.polkamarkets.bankrupt);
+  const polkClaimed = false; // useAppSelector(state => state.polkamarkets.polkClaimed);
   const network = useNetwork();
   const leaderboard = useGetLeaderboardByAddressQuery({
     address,
@@ -65,6 +66,8 @@ export default function ProfileSignout() {
     language === 'pt'
       ? `${ticker} é a “moeda” usada para fazer previsões e para ordenar a classificação de cada jogador.`
       : `${ticker} is the token used to place predictions and rank on the leaderboard.`;
+
+  console.log(polkClaimed);
 
   useEffect(() => {
     async function handleSocialLogin() {
@@ -148,21 +151,44 @@ export default function ProfileSignout() {
           >
             {username || shortenAddress(address)}
           </Text>
-          {isPolkLoading ? (
-            <Skeleton style={{ height: 16, width: 52 }} />
-          ) : (
-            <div className="flex-row gap-3 align-center">
-              <Text
-                scale="tiny-uppercase"
-                fontWeight="semibold"
-                className="pm-c-wallet-info__profile__ticker"
-              >
-                {formatNumberToString(polkBalance)} {ticker}
-                <InfoTooltip text={tooltipText} />
-              </Text>
-              <BankruptBadge bankrupt={bankrupt} />
-            </div>
-          )}
+          {(() => {
+            if (isPolkLoading)
+              return <Skeleton style={{ height: 16, width: 52 }} />;
+            if (!polkClaimed)
+              return (
+                <button
+                  type="button"
+                  style={{
+                    backgroundColor: '#5D55FA',
+                    borderRadius: 4,
+                    height: 24,
+                    paddingLeft: 8,
+                    paddingRight: 8,
+                    border: 0,
+                    fontSize: 14,
+                    textTransform: 'uppercase',
+                    fontWeight: 500,
+                    marginTop: 2
+                  }}
+                >
+                  Receber {ticker}
+                </button>
+              );
+
+            return (
+              <div className="flex-row gap-3 align-center">
+                <Text
+                  scale="tiny-uppercase"
+                  fontWeight="semibold"
+                  className="pm-c-wallet-info__profile__ticker"
+                >
+                  {formatNumberToString(polkBalance)} {ticker}
+                  <InfoTooltip text={tooltipText} />
+                </Text>
+                <BankruptBadge bankrupt={bankrupt} />
+              </div>
+            );
+          })()}
         </div>
       </div>
     </div>
