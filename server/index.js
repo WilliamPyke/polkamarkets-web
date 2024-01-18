@@ -220,9 +220,19 @@ app.get('/embed/markets/:slug', async (request, response) => {
         return compareB.price - compareA.price;
       });
 
-      const multipleOutcomes = outcomes.length > 2;
-      const on = multipleOutcomes ? outcomes.slice(0, 2) : outcomes;
-      const off = multipleOutcomes ? outcomes.slice(2) : [];
+      const maxVisibleOutcomes = parseFloat(request.query.outcomes);
+
+      const isValidMax =
+        !Number.isNaN(maxVisibleOutcomes) &&
+        Number.isFinite(maxVisibleOutcomes) &&
+        maxVisibleOutcomes >= 2 &&
+        maxVisibleOutcomes <= outcomes.length;
+
+      const max = isValidMax ? maxVisibleOutcomes - 1 : 2;
+
+      const multipleOutcomes = outcomes.length > max;
+      const on = multipleOutcomes ? outcomes.slice(0, max) : outcomes;
+      const off = multipleOutcomes ? outcomes.slice(max) : [];
 
       const tournament =
         tournaments && tournaments.length > 0 ? tournaments[0] : null;
