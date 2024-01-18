@@ -200,24 +200,17 @@ function claim(polkamarketsService: PolkamarketsService) {
       })
     );
 
-    polkamarketsService
-      .claimPolk()
-      .then(_polkClaimed => {
-        // balance is updated after claim
-        polkamarketsService
-          .getPolkBalance()
-          .then(polkBalance => {
-            dispatch(changePolkBalance(polkBalance));
-            dispatch(
-              changeLoading({
-                key: 'polk',
-                value: false
-              })
-            );
-          })
-          .catch(() => {});
+    const claimPolk = await polkamarketsService.claimPolk();
+    const polkBalance = await polkamarketsService.getPolkBalance();
+
+    dispatch(changePolkBalance(polkBalance));
+    dispatch(changePolkClaimed(claimPolk));
+    dispatch(
+      changeLoading({
+        key: 'polk',
+        value: false
       })
-      .catch(() => {});
+    );
   };
 }
 
@@ -260,10 +253,10 @@ function login(
       polkamarketsService
         .isPolkClaimed()
         .then(polkClaimed => {
-          if (autoClaimAllowed && !polkClaimed)
+          if (autoClaimAllowed && !polkClaimed) {
             claim(polkamarketsService)(dispatch);
+          }
 
-          dispatch(changePolkClaimed(polkClaimed));
           dispatch(
             changeLoading({
               key: 'login',
