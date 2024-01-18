@@ -191,6 +191,36 @@ const {
   changeLoading
 } = polkamarketsSlice.actions;
 
+function claim(polkamarketsService: PolkamarketsService) {
+  return async dispatch => {
+    dispatch(
+      changeLoading({
+        key: 'polk',
+        value: true
+      })
+    );
+
+    polkamarketsService
+      .claimPolk()
+      .then(_polkClaimed => {
+        // balance is updated after claim
+        polkamarketsService
+          .getPolkBalance()
+          .then(polkBalance => {
+            dispatch(changePolkBalance(polkBalance));
+            dispatch(
+              changeLoading({
+                key: 'polk',
+                value: false
+              })
+            );
+          })
+          .catch(() => {});
+      })
+      .catch(() => {});
+  };
+}
+
 // fetching initial wallet details
 function login(
   polkamarketsService: PolkamarketsService,
@@ -230,33 +260,8 @@ function login(
       polkamarketsService
         .isPolkClaimed()
         .then(polkClaimed => {
-          if (autoClaimAllowed && !polkClaimed) {
-            dispatch(
-              changeLoading({
-                key: 'polk',
-                value: true
-              })
-            );
-
-            polkamarketsService
-              .claimPolk()
-              .then(_polkClaimed => {
-                // balance is updated after claim
-                polkamarketsService
-                  .getPolkBalance()
-                  .then(polkBalance => {
-                    dispatch(changePolkBalance(polkBalance));
-                    dispatch(
-                      changeLoading({
-                        key: 'polk',
-                        value: false
-                      })
-                    );
-                  })
-                  .catch(() => {});
-              })
-              .catch(() => {});
-          }
+          if (autoClaimAllowed && !polkClaimed)
+            claim(polkamarketsService)(dispatch);
 
           dispatch(changePolkClaimed(polkClaimed));
           dispatch(
@@ -452,5 +457,6 @@ export {
   changeCreateMarketToken,
   login,
   logout,
-  fetchAditionalData
+  fetchAditionalData,
+  claim
 };
