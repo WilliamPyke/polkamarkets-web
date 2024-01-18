@@ -156,21 +156,7 @@ export default function ProfileSignout() {
               return <Skeleton style={{ height: 16, width: 52 }} />;
             if (!polkClaimed)
               return (
-                <button
-                  type="button"
-                  style={{
-                    backgroundColor: '#5D55FA',
-                    borderRadius: 4,
-                    height: 24,
-                    paddingLeft: 8,
-                    paddingRight: 8,
-                    border: 0,
-                    fontSize: 14,
-                    textTransform: 'uppercase',
-                    fontWeight: 500,
-                    marginTop: 2
-                  }}
-                >
+                <button type="button" className={profileSignoutClasses.claim}>
                   Receber {ticker}
                 </button>
               );
