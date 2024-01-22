@@ -87,7 +87,7 @@ function LeaderboardYourStats({
       ].filter(column =>
         ['rank', ...ui.leaderboard.columns].includes(column.key)
       ) as TableMiniColumn[],
-    []
+    [earningsColumnRender]
   );
 
   const preparedRows = useMemo(
