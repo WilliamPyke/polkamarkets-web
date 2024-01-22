@@ -47,14 +47,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
-  const {
-    isLoggedIn,
-    ethAddress,
-    ethBalance,
-    polkBalance,
-    actions,
-    portfolio
-  } = useAppSelector(state => state.polkamarkets);
+  const { isLoggedIn, ethAddress, polkBalance, actions, portfolio } =
+    useAppSelector(state => state.polkamarkets);
 
   const wrapped = useAppSelector(state => state.trade.wrapped);
   const marketId = useAppSelector(state => state.trade.selectedMarketId);
@@ -69,8 +63,6 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const maxAmount = useAppSelector(state => state.trade.maxAmount);
   const token = useAppSelector(state => state.market.market.token);
   const { wrapped: tokenWrapped, address } = token;
-
-  const { balance: erc20Balance } = useERC20Balance(address);
 
   const polkClaimed = useAppSelector(state => state.polkamarkets.polkClaimed);
   const isLoadingPolk = useAppSelector(
@@ -405,7 +397,9 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           ) : null}
           {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
             <div className="flex-column gap-6 width-full">
-              {isValidAmount && preventBankruptcy && (amount >= polkBalance / 2) ? (
+              {isValidAmount &&
+              preventBankruptcy &&
+              amount >= polkBalance / 2 ? (
                 <AlertMinimal
                   variant="warning"
                   description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}

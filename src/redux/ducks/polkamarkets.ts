@@ -200,11 +200,20 @@ function claim(polkamarketsService: PolkamarketsService) {
       })
     );
 
-    const claimPolk = await polkamarketsService.claimPolk();
-    const polkBalance = await polkamarketsService.getPolkBalance();
+    try {
+      const polkClaimed = await polkamarketsService.claimPolk();
+      dispatch(changePolkClaimed(polkClaimed));
+    } catch (error) {
+      // it should be non-blocking
+    }
 
-    dispatch(changePolkBalance(polkBalance));
-    dispatch(changePolkClaimed(claimPolk));
+    try {
+      const polkBalance = await polkamarketsService.getPolkBalance();
+      dispatch(changePolkBalance(polkBalance));
+    } catch (error) {
+      // it should be non-blocking
+    }
+
     dispatch(
       changeLoading({
         key: 'polk',
