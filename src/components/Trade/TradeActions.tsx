@@ -72,7 +72,10 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   const { balance: erc20Balance } = useERC20Balance(address);
 
-  const balance = wrapped || !tokenWrapped ? erc20Balance : ethBalance;
+  const polkClaimed = useAppSelector(state => state.polkamarkets.polkClaimed);
+  const isLoadingPolk = useAppSelector(
+    state => state.polkamarkets.isLoading.polk
+  );
 
   // Derivated state
   const isWrongNetwork =
@@ -119,6 +122,12 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   async function updateWallet() {
     await dispatch(login(polkamarketsService));
     await dispatch(fetchAditionalData(polkamarketsService));
+  }
+
+  async function handleClaim() {
+    const { claim } = await import('redux/ducks/polkamarkets');
+
+    dispatch(claim(polkamarketsService));
   }
 
   async function handleBuy() {
@@ -344,8 +353,6 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
 
   const preventBankruptcy = features.fantasy.enabled && ui.socialLogin.enabled;
 
-  const amountOverHalfBalance = amount >= balance / 2;
-
   return (
     <div className="pm-c-trade-form-actions__group--column">
       <div className="pm-c-trade-form-actions">
@@ -398,13 +405,23 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
           ) : null}
           {type === 'buy' && !needsPricesRefresh && !isWrongNetwork ? (
             <div className="flex-column gap-6 width-full">
-              {isValidAmount && preventBankruptcy && amountOverHalfBalance ? (
+              {isValidAmount && preventBankruptcy && (amount >= polkBalance / 2) ? (
                 <AlertMinimal
                   variant="warning"
                   description={`Do you really want to place all this ${fantasyTokenTicker} in this prediction? Distribute your ${fantasyTokenTicker} by other questions in order to minimize bankruptcy risk.`}
                 />
               ) : null}
-              {!features.fantasy.enabled || isLoggedIn ? (
+              {isLoggedIn && !polkClaimed ? (
+                <ButtonLoading
+                  color="primary"
+                  fullwidth
+                  onClick={handleClaim}
+                  loading={isLoadingPolk}
+                >
+                  Claim {fantasyTokenTicker}
+                </ButtonLoading>
+              ) : null}
+              {!features.fantasy.enabled || (isLoggedIn && polkClaimed) ? (
                 <ApproveToken
                   fullwidth
                   address={token.address}
@@ -425,7 +442,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
                     Predict
                   </ButtonLoading>
                 </ApproveToken>
-              ) : (
+              ) : null}
+              {!isLoggedIn && features.fantasy.enabled ? (
                 <ProfileSignin
                   fullwidth
                   size="normal"
@@ -434,7 +452,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
                 >
                   Sign in to Predict
                 </ProfileSignin>
-              )}
+              ) : null}
             </div>
           ) : null}
           {type === 'sell' && !needsPricesRefresh && !isWrongNetwork ? (
