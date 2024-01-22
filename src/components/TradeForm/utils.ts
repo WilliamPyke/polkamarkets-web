@@ -207,6 +207,64 @@ function calculateEthAmountSold(
   };
 }
 
+function calculateSharesSold(
+  market: Market,
+  outcome: Outcome,
+  ethAmount: number
+): TradeDetails {
+  const fee = (market.fee + market.treasuryFee) * ethAmount;
+  const amount = ethAmount - fee;
+
+  // calculating product of all other outcome shares + amount
+  const product = market.outcomes.reduce((acc, cur) => {
+    if (cur.id === outcome.id) return acc;
+
+    return acc * (cur.shares - amount);
+  }, 1);
+
+  // calculating liquidity from n-root of product of all outcome shares
+  // eslint-disable-next-line no-restricted-properties
+  const liquidity = Math.pow(
+    market.outcomes.reduce((acc, cur) => {
+      return acc * cur.shares;
+    }, 1),
+    1 / market.outcomes.length
+  );
+
+  const newOutcomeShares = liquidity ** market.outcomes.length / product;
+
+  const shares = newOutcomeShares + amount - outcome.shares || 0;
+
+  const totalStake = amount;
+
+  const price = shares > 0 ? totalStake / shares : outcome.price;
+
+  // ROI is not relevant on sell
+  const maxROI = 1;
+  const maxStake = 0;
+  // calculation outcome final price after trade
+  const outcomeShares = outcome.shares + shares - totalStake;
+  const priceTo =
+    1 /
+    market.outcomes.reduce((acc, cur) => {
+      return (
+        acc +
+        outcomeShares /
+          (cur.id === outcome.id ? outcomeShares : cur.shares - totalStake)
+      );
+    }, 0);
+
+  return {
+    price,
+    priceTo,
+    shares,
+    maxROI,
+    totalStake,
+    maxStake,
+    fee
+  };
+}
+
 function calculateTradeDetails(action, market, outcome, amount): TradeDetails {
   if (action === 'sell') {
     return calculateEthAmountSold(market, outcome, amount);
