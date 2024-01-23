@@ -239,9 +239,17 @@ function TradeFormInput() {
               <Text as="strong" scale="tiny" fontWeight="semibold">
                 {max()}
               </Text>
-              <Text as="span" scale="tiny" fontWeight="semibold">
-                {type === 'buy' ? ticker : ' Shares'}
-              </Text>
+              {features.fantasy.enabled ? (
+                <Text as="span" scale="tiny" fontWeight="semibold">
+                  {' '}
+                  {fantasyTokenTicker || ticker}
+                </Text>
+              ) : (
+                <Text as="span" scale="tiny" fontWeight="semibold">
+                  {' '}
+                  {type === 'buy' ? ticker : 'Shares'}
+                </Text>
+              )}
             </Button>
           </div>
         ) : null}
