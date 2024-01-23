@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 
 import { features } from 'config';
 import { roundNumber } from 'helpers/math';
 import sortOutcomes from 'helpers/sortOutcomes';
+import maxBy from 'lodash/maxBy';
+import remove from 'lodash/remove';
 import { useTheme } from 'ui';
 
 import { ChartHeader, LineChart, Text } from 'components';
@@ -20,13 +22,27 @@ const intervals = [
 function MarketOverview() {
   const outcomes = useAppSelector(state => state.market.market.outcomes);
   const ticker = useAppSelector(state => state.market.market.token.ticker);
+
   const [currentInterval, setCurrentInterval] = useState(
     intervals[intervals.length - 1]
   );
-  const [highOutcome, ...restOutcomes] = sortOutcomes({
-    outcomes,
-    timeframe: currentInterval.id
-  });
+
+  const [highOutcome, ...restOutcomes] = useMemo(() => {
+    const sortedOutcomes = sortOutcomes({
+      outcomes,
+      timeframe: currentInterval.id
+    });
+
+    const highestPriceOutcome = maxBy(sortedOutcomes, 'price');
+
+    if (highestPriceOutcome) {
+      remove(sortedOutcomes, item => item === highestPriceOutcome);
+
+      sortedOutcomes.unshift(highestPriceOutcome);
+    }
+
+    return sortedOutcomes;
+  }, [outcomes, currentInterval]);
 
   return (
     <>
