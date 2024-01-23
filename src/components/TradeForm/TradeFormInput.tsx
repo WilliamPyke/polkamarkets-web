@@ -298,7 +298,9 @@ function TradeFormInput() {
           {type === 'sell' ? (
             <div className="pm-c-amount-input__logo">
               <Text as="span" scale="caption" fontWeight="bold">
-                Shares
+                {features.fantasy.enabled
+                  ? fantasyTokenTicker || ticker
+                  : 'Shares'}
               </Text>
             </div>
           ) : null}
