@@ -29,7 +29,7 @@ import StepSlider from '../StepSlider';
 import Text from '../Text';
 import ToggleSwitch from '../ToggleSwitch';
 import TradeFormClasses from './TradeForm.module.scss';
-import { calculateTradeDetails } from './utils';
+import { calculateEthAmountSold, calculateTradeDetails } from './utils';
 
 const SELL_STEPS = [10, 25, 50, 100];
 
@@ -97,8 +97,7 @@ function TradeFormInput() {
     // max for sell actions - number of outcome shares
     else if (type === 'sell') {
       if (features.fantasy.enabled) {
-        maxAmount = calculateTradeDetails(
-          'sell',
+        maxAmount = calculateEthAmountSold(
           market,
           outcome,
           portfolio[selectedMarketId]?.outcomes[selectedOutcomeId]?.shares || 0

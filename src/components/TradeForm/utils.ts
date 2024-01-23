@@ -277,4 +277,4 @@ function calculateTradeDetails(action, market, outcome, amount): TradeDetails {
   return calculateSharesBought(market, outcome, amount);
 }
 
-export { formatMiniTableItems, calculateTradeDetails };
+export { formatMiniTableItems, calculateTradeDetails, calculateEthAmountSold };

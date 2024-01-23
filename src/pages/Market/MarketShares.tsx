@@ -10,7 +10,7 @@ import { Button } from 'components';
 
 import { useAppDispatch, useAppSelector, useLanguage, useNetwork } from 'hooks';
 
-import { calculateTradeDetails } from '../../components/TradeForm/utils';
+import { calculateEthAmountSold } from '../../components/TradeForm/utils';
 import styles from './MarketShares.module.scss';
 
 type MarketSharesProps = {
@@ -67,12 +67,8 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
           : 0,
         value:
           outcomeShares && outcomeShares.shares > 0
-            ? calculateTradeDetails(
-                'sell',
-                market,
-                outcome,
-                outcomeShares.shares
-              ).totalStake
+            ? calculateEthAmountSold(market, outcome, outcomeShares.shares)
+                .totalStake
             : 0
       };
     });
