@@ -96,8 +96,17 @@ function TradeFormInput() {
     }
     // max for sell actions - number of outcome shares
     else if (type === 'sell') {
-      maxAmount =
-        portfolio[selectedMarketId]?.outcomes[selectedOutcomeId]?.shares || 0;
+      if (features.fantasy.enabled) {
+        maxAmount = calculateTradeDetails(
+          'sell',
+          market,
+          outcome,
+          portfolio[selectedMarketId]?.outcomes[selectedOutcomeId]?.shares || 0
+        ).totalStake;
+      } else {
+        maxAmount =
+          portfolio[selectedMarketId]?.outcomes[selectedOutcomeId]?.shares || 0;
+      }
     }
 
     // rounding (down) to 5 decimals
@@ -109,7 +118,9 @@ function TradeFormInput() {
     balance,
     portfolio,
     selectedMarketId,
-    selectedOutcomeId
+    selectedOutcomeId,
+    market,
+    outcome
   ]);
 
   const currentMax = max();
