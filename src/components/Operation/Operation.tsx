@@ -12,6 +12,7 @@ type OperationProps = Partial<UserOperation> & {
   cta?: React.ReactNode;
   dismissable?: boolean;
   onDismiss?: () => void;
+  style?: React.CSSProperties;
 };
 
 function Operation({
@@ -23,7 +24,8 @@ function Operation({
   ticker,
   cta,
   dismissable = false,
-  onDismiss
+  onDismiss,
+  style
 }: OperationProps) {
   return (
     <div
@@ -32,6 +34,7 @@ function Operation({
         [styles.success]: status === 'success',
         [styles.failed]: status === 'failed'
       })}
+      style={style}
     >
       {(dismissable || status === 'success') && (
         <Button
