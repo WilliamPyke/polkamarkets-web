@@ -156,6 +156,13 @@ export default function HeaderActions() {
               <HeaderActionComponent isLoggedIn={isLoggedIn} />
             )}
           </HeaderActionsGroupComponent>
+          {ui.layout.transactionsQueue && (
+            <TransactionsButton
+              className={cn({
+                [headerActionsClasses.transactions]: features.fantasy.enabled
+              })}
+            />
+          )}
           {!features.fantasy.enabled && <ThemeSelector />}
           {ui.layout.header.helpUrl && (
             <HelpButton
@@ -169,13 +176,6 @@ export default function HeaderActions() {
             <HowToPlayButton
               className={cn({
                 [headerActionsClasses.howToPlay]: features.fantasy.enabled
-              })}
-            />
-          )}
-          {ui.layout.transactionsQueue && (
-            <TransactionsButton
-              className={cn({
-                [headerActionsClasses.transactions]: features.fantasy.enabled
               })}
             />
           )}
