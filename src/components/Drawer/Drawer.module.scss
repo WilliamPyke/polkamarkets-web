@@ -1,3 +1,11 @@
+.wrapper {
+  width: 100% !important;
+
+  @media (min-width: 768px) {
+    width: 393px !important;
+  }
+}
+
 .content {
   padding: var(--size-24);
 
@@ -8,15 +16,31 @@
 
 .header {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
   align-items: center;
   gap: var(--size-16);
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 
   color: #a5abb6;
 
   &Close {
     padding: var(--size-8);
+
+    svg {
+      height: 20px;
+      width: 20px;
+    }
+
+    @media (max-width: 768px) {
+      svg {
+        transform: rotate(0deg);
+      }
+    }
   }
 
   margin-bottom: var(--size-24);

@@ -23,7 +23,7 @@ function Drawer({ isOpen = false, title, children }: DrawerProps) {
     <RCDrawer
       open={open}
       onClose={handleClose}
-      classNames={{ content: styles.content }}
+      classNames={{ wrapper: styles.wrapper, content: styles.content }}
       placement="right"
     >
       <div className={styles.header}>
