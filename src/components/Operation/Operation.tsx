@@ -45,7 +45,7 @@ function Operation({
   const history = useHistory();
   const location = useLocation();
 
-  const { open } = useDrawer(state => state);
+  const { open, close } = useDrawer(state => state);
 
   const handleRetry = useCallback(() => {
     trade?.set({
@@ -59,7 +59,9 @@ function Operation({
     });
 
     history.push(`/markets/${marketSlug}`, { from: location.pathname });
+    close();
   }, [
+    close,
     history,
     location.pathname,
     marketId,

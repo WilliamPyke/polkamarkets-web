@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useGetUserOperationsByAddressQuery } from 'services/Polkamarkets';
 import { Spinner } from 'ui';
 
-import { useAppSelector } from 'hooks';
+import { useAppSelector, useTrade } from 'hooks';
 
 import { AlertMini } from '../Alert';
 import Operation from '../Operation';
@@ -11,6 +11,8 @@ import VirtualizedList from '../VirtualizedList';
 import styles from './UserOperations.module.scss';
 
 function UserOperations() {
+  const trade = useTrade();
+
   const { login: isLoadingLogin } = useAppSelector(
     state => state.polkamarkets.isLoading
   );
@@ -55,7 +57,7 @@ function UserOperations() {
       data={userOperations}
       itemContent={(_index, operation) => (
         <div className={styles.item}>
-          <Operation {...operation} />
+          <Operation {...operation} trade={trade} />
         </div>
       )}
       useWindowScroll
