@@ -1,11 +1,11 @@
 import { PropsWithChildren } from 'react';
 
-import classNames from 'classnames';
 import RCDrawer from 'rc-drawer';
 import 'rc-drawer/assets/index.css';
 
 import { useDrawer } from 'hooks';
 
+import { Button } from '../Button';
 import Icon from '../Icon';
 import styles from './Drawer.module.scss';
 
@@ -25,17 +25,14 @@ function Drawer({ title, children }: DrawerProps) {
     >
       <div className={styles.header}>
         {title && <h1 className={styles.title}>{title}</h1>}
-        <button
-          type="button"
-          className={classNames(
-            'pm-c-button',
-            'pm-c-button-normal--noborder',
-            styles.headerClose
-          )}
+        <Button
+          variant="ghost"
+          className={styles.headerClose}
+          aria-label="Hide"
           onClick={close}
         >
           <Icon name="Arrow" dir="right" />
-        </button>
+        </Button>
       </div>
 
       {children}

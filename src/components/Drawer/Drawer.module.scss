@@ -29,7 +29,15 @@
   color: #a5abb6;
 
   &Close {
-    padding: var(--size-8);
+    width: 32px;
+    height: 32px !important;
+    padding: 0px !important;
+
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+    }
 
     svg {
       height: 20px;
