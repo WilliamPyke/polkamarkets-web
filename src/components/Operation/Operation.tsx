@@ -52,9 +52,9 @@ function Operation({
       status: 'error',
       trade: {
         ...trade.trade,
-        market: `${marketId || 231}`,
-        outcome: `${outcomeId || 0}`,
-        network: `${networkId || 80001}`
+        market: `${marketId}`,
+        outcome: `${outcomeId}`,
+        network: `${networkId}`
       }
     });
 
