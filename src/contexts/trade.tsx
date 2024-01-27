@@ -84,17 +84,20 @@ function TradeProvider({ children }) {
   return (
     <>
       {status === 'success' ? (
-        <ToastNotification id={`${type}-success`} duration={5000}>
+        <ToastNotification id={`${type}-success`} duration={7000}>
           <Operation
+            view="toast"
             status="pending"
             action={type as UserOperation['action']}
             marketTitle={trade.marketTitle}
             outcomeTitle={trade.outcomeTitle}
             value={trade.amount}
             ticker={trade.ticker}
+            showViewAll
             dismissable
             onDismiss={handleDissmiss}
             style={{ width: 297 }}
+            trade={state}
           />
         </ToastNotification>
       ) : null}

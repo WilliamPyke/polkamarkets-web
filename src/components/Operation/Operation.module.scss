@@ -6,13 +6,19 @@
 
   padding: var(--size-24);
 
-  background: var(--color-bg-1);
-
   border-radius: 2px 8px 8px 2px;
   border: 1px solid var(--color-border);
   border-left-width: 3px;
 
   box-shadow: 0px 4px 24px 0px rgba(0, 0, 0, 0.4);
+
+  &Card {
+    background: var(--color-bg-1);
+  }
+
+  &Toast {
+    background: #191b1f;
+  }
 }
 
 .dismiss {
@@ -98,4 +104,18 @@
 
 .footer {
   margin-top: var(--size-12);
+}
+
+.viewTransactions {
+  font-size: 1.4rem;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #fafafa;
+
+  background-color: transparent;
+  border-color: #414853;
+
+  &:hover {
+    background-color: #414853;
+  }
 }

@@ -8,16 +8,20 @@ import { CheckIcon, InfoIcon, RemoveOutlinedIcon } from 'assets/icons';
 
 import Icon from 'components/Icon';
 
-import { useTrade } from 'hooks';
+import type { TradeContextState } from 'contexts/trade';
+
+import { useDrawer } from 'hooks';
 
 import { Button } from '../Button';
 import styles from './Operation.module.scss';
 
 type OperationProps = Partial<UserOperation> & {
-  cta?: React.ReactNode;
+  view?: 'card' | 'toast';
+  showViewAll?: boolean;
   dismissable?: boolean;
   onDismiss?: () => void;
   style?: React.CSSProperties;
+  trade?: TradeContextState;
 };
 
 function Operation({
@@ -31,17 +35,20 @@ function Operation({
   networkId,
   value,
   ticker,
-  cta,
+  view = 'card',
+  showViewAll = false,
   dismissable = false,
   onDismiss,
-  style
+  style,
+  trade
 }: OperationProps) {
   const history = useHistory();
   const location = useLocation();
-  const trade = useTrade();
+
+  const { open } = useDrawer(state => state);
 
   const handleRetry = useCallback(() => {
-    trade.set({
+    trade?.set({
       status: 'error',
       trade: {
         ...trade.trade,
@@ -65,6 +72,8 @@ function Operation({
   return (
     <div
       className={classNames(styles.root, {
+        [styles.rootCard]: view === 'card',
+        [styles.rootToast]: view === 'toast',
         [styles.pending]: status === 'pending',
         [styles.success]: status === 'success',
         [styles.failed]: status === 'failed'
@@ -113,7 +122,15 @@ function Operation({
       )}
       <p className={styles.market}>{marketTitle}</p>
       <div className={styles.footer}>
-        {cta}
+        {showViewAll && (
+          <button
+            type="button"
+            className={classNames('pm-c-button--xs', styles.viewTransactions)}
+            onClick={open}
+          >
+            View transactions
+          </button>
+        )}
         {status === 'failed' && (
           <Button size="xs" color="danger" onClick={handleRetry}>
             Retry
