@@ -238,6 +238,8 @@ export { default as ThemeSelector } from './ThemeSelector';
 
 export { default as Trade } from './Trade';
 
+export { default as TransactionsButton } from './TransactionsButton';
+
 export { default as UserOperations } from './UserOperations';
 
 export { default as VirtualizedList } from './VirtualizedList';
