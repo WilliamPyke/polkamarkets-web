@@ -2,8 +2,6 @@ import cn from 'classnames';
 import { Container } from 'ui';
 import type { ContainerProps } from 'ui';
 
-import Drawer from '../Drawer';
-import UserOperations from '../UserOperations';
 import headerClasses from './Header.module.scss';
 import HeaderActions from './HeaderActions';
 import HeaderNav from './HeaderNav';
@@ -28,9 +26,6 @@ export default function Header({ className, $gutterBottom }: HeaderProps) {
     >
       <HeaderNav />
       <HeaderActions />
-      <Drawer isOpen title="Ongoing predictions">
-        <UserOperations />
-      </Drawer>
     </Container>
   );
 }
