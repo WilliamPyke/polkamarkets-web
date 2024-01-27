@@ -36,7 +36,7 @@ function Operation({
       })}
       style={style}
     >
-      {(dismissable || status === 'success') && (
+      {dismissable && (
         <Button
           variant="ghost"
           className={styles.dismiss}
