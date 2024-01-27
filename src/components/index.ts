@@ -164,6 +164,8 @@ export { default as CreateMarketFormOutcomes } from './CreateMarketFormOutcomes'
 
 export { default as CreateMarketFormFund } from './CreateMarketFormFund';
 
+export { default as Drawer } from './Drawer';
+
 export { default as ExternalJS } from './ExternalJS';
 
 export { default as HowToPlayButton } from './HowToPlayButton';
