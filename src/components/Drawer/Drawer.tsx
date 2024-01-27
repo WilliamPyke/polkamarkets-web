@@ -1,28 +1,25 @@
-import { PropsWithChildren, useCallback, useState } from 'react';
+import { PropsWithChildren } from 'react';
 
 import classNames from 'classnames';
 import RCDrawer from 'rc-drawer';
 import 'rc-drawer/assets/index.css';
 
+import { useDrawer } from 'hooks';
+
 import Icon from '../Icon';
 import styles from './Drawer.module.scss';
 
 type DrawerProps = PropsWithChildren<{
-  isOpen?: boolean;
   title?: string;
 }>;
 
-function Drawer({ isOpen = false, title, children }: DrawerProps) {
-  const [open, setOpen] = useState(isOpen);
-
-  const handleClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+function Drawer({ title, children }: DrawerProps) {
+  const { isOpen, close } = useDrawer(state => state);
 
   return (
     <RCDrawer
-      open={open}
-      onClose={handleClose}
+      open={isOpen}
+      onClose={close}
       classNames={{ wrapper: styles.wrapper, content: styles.content }}
       placement="right"
     >
@@ -35,7 +32,7 @@ function Drawer({ isOpen = false, title, children }: DrawerProps) {
             'pm-c-button-normal--noborder',
             styles.headerClose
           )}
-          onClick={handleClose}
+          onClick={close}
         >
           <Icon name="Arrow" dir="right" />
         </button>
