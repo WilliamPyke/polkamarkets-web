@@ -8,6 +8,7 @@ import { useDrawer } from 'hooks';
 import { Button } from '../Button';
 import Icon from '../Icon';
 import styles from './Drawer.module.scss';
+import motionProps from './motion';
 
 type DrawerProps = PropsWithChildren<{
   title?: string;
@@ -22,6 +23,7 @@ function Drawer({ title, children }: DrawerProps) {
       onClose={close}
       classNames={{ wrapper: styles.wrapper, content: styles.content }}
       placement="right"
+      {...motionProps}
     >
       <div className={styles.header}>
         {title && <h1 className={styles.title}>{title}</h1>}
