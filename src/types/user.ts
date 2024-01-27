@@ -5,6 +5,7 @@ export type UserOperation = {
   outcomeTitle: string;
   shares: number | null;
   status: 'success' | 'failed' | 'pending';
+  action: 'buy' | 'sell';
   ticker: string;
   timestamp: number;
   transactionHash: string | null;
