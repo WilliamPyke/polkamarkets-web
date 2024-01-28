@@ -1,13 +1,15 @@
+import { useCallback } from 'react';
+
 import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
 import { useGetUserOperationsByAddressQuery } from 'services/Polkamarkets';
+import type { UserOperation } from 'types/user';
 import { Spinner } from 'ui';
 
 import { useAppSelector, useTrade } from 'hooks';
 
 import { AlertMini } from '../Alert';
 import Operation from '../Operation';
-import VirtualizedList from '../VirtualizedList';
 import styles from './UserOperations.module.scss';
 
 function UserOperations() {
@@ -27,6 +29,15 @@ function UserOperations() {
   } = useGetUserOperationsByAddressQuery(
     { address: userAddress },
     { skip: !isLoggedIn || isLoadingLogin }
+  );
+
+  const operationItemContent = useCallback(
+    (operation: UserOperation) => (
+      <li key={operation.userOperationHash} className={styles.item}>
+        <Operation {...operation} trade={trade} />
+      </li>
+    ),
+    [trade]
   );
 
   const isLoading = isLoadingUserOperations || isFetchingUserOperations;
@@ -51,18 +62,7 @@ function UserOperations() {
     );
   }
 
-  return (
-    <VirtualizedList
-      height="100%"
-      data={userOperations}
-      itemContent={(_index, operation) => (
-        <div className={styles.item}>
-          <Operation {...operation} trade={trade} />
-        </div>
-      )}
-      useWindowScroll
-    />
-  );
+  return <ul>{userOperations?.map(operationItemContent)}</ul>;
 }
 
 export default UserOperations;
