@@ -2,11 +2,10 @@ import { useCallback } from 'react';
 
 import classNames from 'classnames';
 import isEmpty from 'lodash/isEmpty';
-import { useGetUserOperationsByAddressQuery } from 'services/Polkamarkets';
 import type { UserOperation } from 'types/user';
 import { Spinner } from 'ui';
 
-import { useAppSelector, useTrade } from 'hooks';
+import { useTrade, useUserOperations } from 'hooks';
 
 import { AlertMini } from '../Alert';
 import Operation from '../Operation';
@@ -14,22 +13,7 @@ import styles from './UserOperations.module.scss';
 
 function UserOperations() {
   const trade = useTrade();
-
-  const { login: isLoadingLogin } = useAppSelector(
-    state => state.polkamarkets.isLoading
-  );
-
-  const isLoggedIn = useAppSelector(state => state.polkamarkets.isLoggedIn);
-  const userAddress = useAppSelector(state => state.polkamarkets.ethAddress);
-
-  const {
-    data: userOperations,
-    isLoading: isLoadingUserOperations,
-    isFetching: isFetchingUserOperations
-  } = useGetUserOperationsByAddressQuery(
-    { address: userAddress },
-    { skip: !isLoggedIn || isLoadingLogin }
-  );
+  const { data: userOperations, isLoading } = useUserOperations();
 
   const operationItemContent = useCallback(
     (operation: UserOperation) => (
@@ -40,9 +24,7 @@ function UserOperations() {
     [trade]
   );
 
-  const isLoading = isLoadingUserOperations || isFetchingUserOperations;
-
-  if (isLoadingLogin || isLoading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   if (isEmpty(userOperations)) {
     return (
