@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 
 import { Market } from 'models/market';
-import PolkamarketsService from 'services/PolkamarketsService';
 
 import useAppDispatch from 'hooks/useAppDispatch';
 import useNetwork from 'hooks/useNetwork';
@@ -13,6 +12,9 @@ export default function useReloadMarketPrices({
   const { networkConfig } = useNetwork();
 
   return useCallback(async () => {
+    const { default: PolkamarketsService } = await import(
+      'services/PolkamarketsService'
+    );
     const { changeMarketOutcomeData, changeMarketData } = await import(
       'redux/ducks/markets'
     );
