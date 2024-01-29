@@ -5,7 +5,7 @@ import { ui } from 'config';
 import { login, fetchAditionalData } from 'redux/ducks/polkamarkets';
 import { selectOutcome } from 'redux/ducks/trade';
 import { closeTradeForm } from 'redux/ducks/ui';
-import { PolkamarketsService, PolkamarketsApiService } from 'services';
+import { PolkamarketsApiService } from 'services';
 
 import TWarningIcon from 'assets/icons/TWarningIcon';
 
@@ -16,6 +16,7 @@ import {
   useNetwork,
   usePolkamarketsService
 } from 'hooks';
+import useReloadMarketPrices from 'hooks/useReloadMarketPrices';
 import useToastNotification from 'hooks/useToastNotification';
 
 import ApproveToken from '../ApproveToken';
@@ -30,7 +31,7 @@ function TradeFormActions() {
   // Helpers
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const { network, networkConfig } = useNetwork();
+  const { network } = useNetwork();
   const polkamarketsService = usePolkamarketsService();
   const { show, close } = useToastNotification();
 
@@ -63,33 +64,11 @@ function TradeFormActions() {
     useState(undefined);
   const [needsPricesRefresh, setNeedsPricesRefresh] = useState(false);
   const { refreshBalance } = useERC20Balance(address);
+  const reloadMarketPrices = useReloadMarketPrices({ id: marketId });
 
   function handleCancel() {
     dispatch(selectOutcome('', '', ''));
     dispatch(closeTradeForm());
-  }
-
-  async function reloadMarketPrices() {
-    const { changeMarketOutcomeData, changeMarketData } = await import(
-      'redux/ducks/markets'
-    );
-    const { changeOutcomeData, changeData } = await import(
-      'redux/ducks/market'
-    );
-    const marketData = await new PolkamarketsService(
-      networkConfig
-    ).getMarketData(marketId);
-    const liquidityData = { data: { liquidity: marketData.liquidity } };
-
-    marketData.outcomes.forEach((data, id) => {
-      const payload = { marketId, id, data };
-
-      dispatch(changeMarketOutcomeData(payload));
-      dispatch(changeOutcomeData(payload));
-    });
-
-    dispatch(changeMarketData({ marketId, ...liquidityData }));
-    dispatch(changeData(liquidityData));
   }
 
   useEffect(() => {
