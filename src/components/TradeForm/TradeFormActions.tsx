@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { ui } from 'config';
-import { changeOutcomeData, changeData } from 'redux/ducks/market';
-import { changeMarketOutcomeData, changeMarketData } from 'redux/ducks/markets';
 import { login, fetchAditionalData } from 'redux/ducks/polkamarkets';
 import { selectOutcome } from 'redux/ducks/trade';
 import { closeTradeForm } from 'redux/ducks/ui';
@@ -72,24 +70,26 @@ function TradeFormActions() {
   }
 
   async function reloadMarketPrices() {
+    const { changeMarketOutcomeData, changeMarketData } = await import(
+      'redux/ducks/markets'
+    );
+    const { changeOutcomeData, changeData } = await import(
+      'redux/ducks/market'
+    );
     const marketData = await new PolkamarketsService(
       networkConfig
     ).getMarketData(marketId);
+    const liquidityData = { data: { liquidity: marketData.liquidity } };
 
-    marketData.outcomes.forEach((outcomeData, outcomeId) => {
-      const data = { price: outcomeData.price, shares: outcomeData.shares };
+    marketData.outcomes.forEach((data, id) => {
+      const payload = { marketId, id, data };
 
-      // updating both market/markets redux
-      dispatch(changeMarketOutcomeData({ marketId, outcomeId, data }));
-      dispatch(changeOutcomeData({ outcomeId, data }));
-      dispatch(
-        changeMarketData({
-          marketId,
-          data: { liquidity: marketData.liquidity }
-        })
-      );
-      dispatch(changeData({ data: { liquidity: marketData.liquidity } }));
+      dispatch(changeMarketOutcomeData(payload));
+      dispatch(changeOutcomeData(payload));
     });
+
+    dispatch(changeMarketData({ marketId, ...liquidityData }));
+    dispatch(changeData(liquidityData));
   }
 
   useEffect(() => {
