@@ -58,11 +58,15 @@ function Operation({
         ...trade.trade,
         market: `${marketId}`,
         outcome: `${outcomeId}`,
-        network: `${networkId}`
+        network: `${networkId}`,
+        location: `/markets/${marketSlug}`
       }
     });
 
-    history.push(`/markets/${marketSlug}`, { from: location.pathname });
+    if (location.pathname !== `/markets/${marketSlug}`) {
+      history.push(`/markets/${marketSlug}`, { from: location.pathname });
+    }
+
     close();
   }, [
     close,
