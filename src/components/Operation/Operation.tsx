@@ -75,6 +75,13 @@ function Operation({
     trade
   ]);
 
+  const handleViewAll = useCallback(() => {
+    if (dismissable) {
+      onDismiss?.();
+    }
+    open();
+  }, [dismissable, onDismiss, open]);
+
   return (
     <div
       className={classNames(styles.root, {
@@ -139,7 +146,7 @@ function Operation({
           <button
             type="button"
             className={classNames('pm-c-button--xs', styles.viewTransactions)}
-            onClick={open}
+            onClick={handleViewAll}
           >
             View transactions
           </button>
