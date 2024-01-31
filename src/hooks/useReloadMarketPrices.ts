@@ -15,27 +15,27 @@ export default function useReloadMarketPrices({
     const { default: PolkamarketsService } = await import(
       'services/PolkamarketsService'
     );
-    const { changeMarketOutcomeData, changeMarketData } = await import(
-      'redux/ducks/markets'
-    );
-    const { changeOutcomeData, changeData } = await import(
-      'redux/ducks/market'
-    );
+    const markets = await import('redux/ducks/markets');
+    const market = await import('redux/ducks/market');
     const marketData = await new PolkamarketsService(
       networkConfig
     ).getMarketData(marketId);
-    const liquidityData = { data: { liquidity: marketData.liquidity } };
 
-    (marketData.outcomes as Array<Record<'price' | 'shares', number>>).forEach(
-      (data, id) => {
-        const payload = { marketId, id, data };
+    marketData.outcomes.forEach((outcomeData, outcomeId) => {
+      const data = { price: outcomeData.price, shares: outcomeData.shares };
 
-        dispatch(changeMarketOutcomeData(payload));
-        dispatch(changeOutcomeData(payload));
-      }
-    );
-
-    dispatch(changeMarketData({ marketId, ...liquidityData }));
-    dispatch(changeData(liquidityData));
+      // updating both market/markets redux
+      dispatch(markets.changeMarketOutcomeData({ marketId, outcomeId, data }));
+      dispatch(market.changeOutcomeData({ marketId, outcomeId, data }));
+      dispatch(
+        markets.changeMarketData({
+          marketId,
+          data: { liquidity: marketData.liquidity }
+        })
+      );
+      dispatch(
+        market.changeData({ data: { liquidity: marketData.liquidity } })
+      );
+    });
   }, [dispatch, marketId, networkConfig]);
 }
