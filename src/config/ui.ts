@@ -62,6 +62,9 @@ const ui = {
     },
     footer: {
       text: environment.UI_FOOTER_TEXT
+    },
+    transactionsQueue: {
+      enabled: isTrue(environment.UI_TRANSACTIONS_QUEUE)
     }
   },
   hero: {

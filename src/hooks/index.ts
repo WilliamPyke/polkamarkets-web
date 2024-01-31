@@ -21,6 +21,8 @@ export { default as useClickaway } from './useClickaway';
 
 export { default as useCookie } from './useCookie';
 
+export { default as useDrawer } from './useDrawer';
+
 export { default as useExpandableOutcomes } from './useExpandableOutcomes';
 
 export { default as useFantasyTokenTicker } from './useFantasyTokenTicker';
@@ -49,3 +51,5 @@ export { default as useERC20Balance } from './useERC20Balance';
 export { default as useTrade } from './useTrade';
 
 export { default as useTruncatedText } from './useTrucatedText';
+
+export { default as useUserOperations } from './useUserOperations';
