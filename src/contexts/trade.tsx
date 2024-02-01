@@ -1,5 +1,4 @@
 import { createContext, useCallback, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { Market, Outcome } from 'models/market';
 import { TradeType } from 'redux/ducks/trade';
@@ -57,7 +56,6 @@ export const TradeContext = createContext<TradeContextState>(
 );
 
 function TradeProvider({ children }) {
-  const history = useHistory();
   const state = useTradeStore();
   const { show, close } = useToastNotification();
 
@@ -68,14 +66,6 @@ function TradeProvider({ children }) {
       show(`${type}-success`);
     }
   }, [status, type, show]);
-
-  useEffect(() => {
-    if (status === 'error') {
-      if (window.location.pathname !== trade.location) {
-        history.push(trade.location);
-      }
-    }
-  }, [history, status, trade.location]);
 
   const handleDissmiss = useCallback(() => {
     close(`${type}-success`);
