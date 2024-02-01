@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import map from 'lodash/map';
+import type { Market } from 'models/market';
 import polkamarketsApi, {
   useGetUserOperationsByAddressQuery
 } from 'services/Polkamarkets';
@@ -45,12 +46,23 @@ function useUserOperations() {
       ),
     [dispatch, userAddress]
   );
+  const getOperation = useCallback(
+    (market: Market) =>
+      data?.filter(
+        ({ networkId, marketId, outcomeId }) =>
+          networkId === +market.networkId &&
+          marketId === +market.id &&
+          market.outcomes.some(outcome => +outcome.id === outcomeId)
+      )?.[0],
+    [data]
+  );
 
   return {
     data,
     isLoading: isLoading || isFetching,
     refetch,
-    updateOperationStatus
+    updateOperationStatus,
+    getOperation
   };
 }
 
