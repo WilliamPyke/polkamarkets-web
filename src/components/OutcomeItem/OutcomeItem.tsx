@@ -3,7 +3,6 @@ import { features } from 'config';
 import { roundNumber } from 'helpers/math';
 import { kebabCase, uniqueId } from 'lodash';
 import { Line } from 'rc-progress';
-import { UserOperation } from 'types/user';
 import { Avatar, useTheme } from 'ui';
 
 import { CheckIcon, RemoveIcon, RepeatCycleIcon } from 'assets/icons';
