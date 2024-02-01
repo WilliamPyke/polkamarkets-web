@@ -222,8 +222,7 @@ export default function MarketOutcomes({
               value={outcome.id}
               data={outcome.data}
               primary={outcome.title}
-              error={operation.hasError(+outcome.id)}
-              isPredicted={operation.hasPrediction(+outcome.id)}
+              $state={operation.getStatus(+outcome.id)}
               isActive={getOutcomeActive(outcome.id)}
               onClick={handleOutcomeClick}
               secondary={{
@@ -246,12 +245,13 @@ export default function MarketOutcomes({
           <OutcomeItem
             $size="sm"
             $variant="dashed"
-            error={expandableOutcomes.off.some(outcome =>
-              operation.hasError(+outcome.id)
-            )}
-            isPredicted={expandableOutcomes.off.some(outcome =>
-              operation.hasPrediction(+outcome.id)
-            )}
+            $state={
+              expandableOutcomes.off.some(
+                outcome => operation.data?.outcomeId === outcome.id
+              )
+                ? operation.data?.status
+                : undefined
+            }
             value={expandableOutcomes.onseted[0].id}
             onClick={handleOutcomeClick}
             {...expandableOutcomes.offseted}
