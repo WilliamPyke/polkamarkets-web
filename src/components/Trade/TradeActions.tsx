@@ -192,6 +192,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         tokenWrapped && !wrapped
       );
 
+      setTrade({ status: 'completed' });
+
       // triggering market prices redux update
       reloadMarketPrices();
 
@@ -294,6 +296,8 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
         minShares,
         tokenWrapped && !wrapped
       );
+
+      setTrade({ status: 'completed' });
 
       // triggering market prices redux update
       reloadMarketPrices();

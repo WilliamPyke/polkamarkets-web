@@ -5,13 +5,14 @@ import { TradeType } from 'redux/ducks/trade';
 import type { UserOperation } from 'types/user';
 import { create } from 'zustand';
 
-import { Operation, ToastNotification } from 'components';
+import { Button, Operation, Toast, ToastNotification } from 'components';
 
+import { useDrawer } from 'hooks';
 import useToastNotification from 'hooks/useToastNotification';
 
 export type TradeContextState = {
   type: TradeType;
-  status: 'pending' | 'success' | 'error';
+  status: 'pending' | 'success' | 'error' | 'completed';
   trade: {
     market: Market['id'];
     marketTitle: Market['title'];
@@ -58,6 +59,7 @@ export const TradeContext = createContext<TradeContextState>(
 function TradeProvider({ children }) {
   const state = useTradeStore();
   const { show, close } = useToastNotification();
+  const { open } = useDrawer();
 
   const { type, status, trade } = state;
 
@@ -67,9 +69,37 @@ function TradeProvider({ children }) {
     }
   }, [status, type, show]);
 
-  const handleDissmiss = useCallback(() => {
+  useEffect(() => {
+    if (status === 'completed') {
+      show(`${type}-completed`);
+    }
+  }, [status, type, show]);
+
+  useEffect(() => {
+    if (status === 'error') {
+      show(`${type}-error`);
+    }
+  }, [status, type, show]);
+
+  const handleDismissSuccess = useCallback(() => {
     close(`${type}-success`);
   }, [close, type]);
+
+  const handleDismissCompleted = useCallback(() => {
+    close(`${type}-completed`);
+  }, [close, type]);
+
+  const handleDismissError = useCallback(() => {
+    close(`${type}-error`);
+  }, [close, type]);
+
+  const handleViewAll = useCallback(
+    (dismissCallback?: () => void) => {
+      open();
+      dismissCallback?.();
+    },
+    [open]
+  );
 
   return (
     <>
@@ -85,10 +115,58 @@ function TradeProvider({ children }) {
             ticker={trade.ticker}
             showViewAll
             dismissable
-            onDismiss={handleDissmiss}
+            onDismiss={handleDismissSuccess}
             style={{ width: 297 }}
             trade={state}
           />
+        </ToastNotification>
+      ) : null}
+      {status === 'completed' ? (
+        <ToastNotification id={`${type}-completed`} duration={7000}>
+          <Toast
+            variant="success"
+            title="Success"
+            description="Transaction completed!"
+          >
+            <Toast.Actions>
+              {/* <Button
+                size="sm"
+                color="success"
+                onClick={() => handleViewAll(handleDismissCompleted)}
+              >
+                View transactions
+              </Button> */}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={handleDismissCompleted}
+              >
+                Dismiss
+              </Button>
+            </Toast.Actions>
+          </Toast>
+        </ToastNotification>
+      ) : null}
+      {status === 'error' ? (
+        <ToastNotification id={`${type}-error`} duration={7000}>
+          <Toast
+            variant="danger"
+            title="Error"
+            description="Could not complete your transaction!"
+          >
+            <Toast.Actions>
+              <Button
+                size="sm"
+                color="danger"
+                onClick={() => handleViewAll(handleDismissError)}
+              >
+                View transactions
+              </Button>
+              <Button size="sm" variant="ghost" onClick={handleDismissError}>
+                Dismiss
+              </Button>
+            </Toast.Actions>
+          </Toast>
         </ToastNotification>
       ) : null}
       <TradeContext.Provider
