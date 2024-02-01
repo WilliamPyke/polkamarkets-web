@@ -32,7 +32,7 @@ export { default as useLanguage } from './useLanguage';
 
 export { default as useMarkets } from './useMarkets';
 
-export { default as usePredictedOutcome } from './usePredictedOutcome';
+export { default as useOperation } from './useOperation';
 
 export { default as useMarketForms } from './useMarketForms';
 
