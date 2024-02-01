@@ -3,6 +3,7 @@ import { features } from 'config';
 import { roundNumber } from 'helpers/math';
 import { kebabCase, uniqueId } from 'lodash';
 import { Line } from 'rc-progress';
+import { UserOperation } from 'types/user';
 import { Avatar, useTheme } from 'ui';
 
 import { CheckIcon, RemoveIcon, RepeatCycleIcon } from 'assets/icons';
@@ -21,6 +22,7 @@ export type OutcomeProps = Pick<
 > &
   Partial<Record<'primary' | 'image' | 'activeColor', string>> &
   Partial<Record<'invested', number>> & {
+    error?: boolean;
     isPredicted?: boolean;
     isActive?: boolean;
     data?: AreaDataPoint[];
@@ -54,6 +56,7 @@ export default function OutcomeItem({
   activeColor,
   resolved,
   className,
+  error,
   ...props
 }: OutcomeProps) {
   const theme = useTheme();
@@ -78,6 +81,7 @@ export default function OutcomeItem({
           [outcomeItemClasses.variantDashed]: $variant === 'dashed',
           [outcomeItemClasses.sizeSm]: isSm,
           [outcomeItemClasses.sizeMd]: isMd,
+          [outcomeItemClasses.error]: error,
           active: isActive
         },
         className

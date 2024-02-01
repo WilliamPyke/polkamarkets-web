@@ -88,6 +88,11 @@
   }
 }
 
+.error {
+  border-width: 2px !important;
+  border-color: #ef4444 !important;
+}
+
 .variant {
   &Dashed {
     border-style: dashed;
