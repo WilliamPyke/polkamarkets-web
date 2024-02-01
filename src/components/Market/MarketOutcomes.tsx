@@ -72,6 +72,19 @@ export default function MarketOutcomes({
     ]
   );
 
+  const hasError = useCallback(
+    (id: number) =>
+      operation?.outcomeId === id && operation?.status === 'failed',
+    [operation?.outcomeId, operation?.status]
+  );
+  const hasPrediction = useCallback(
+    (id: number) =>
+      operation
+        ? operation.outcomeId === id &&
+          (operation.status === 'success' || operation.status === 'pending')
+        : predictedOutcome?.id === id,
+    [operation, predictedOutcome?.id]
+  );
   const setOutcome = useCallback(
     async (outcomeId: string) => {
       const { marketSelected } = await import('redux/ducks/market');
@@ -224,16 +237,8 @@ export default function MarketOutcomes({
               value={outcome.id}
               data={outcome.data}
               primary={outcome.title}
-              error={
-                operation?.outcomeId === outcome.id &&
-                operation?.status === 'failed'
-              }
-              isPredicted={
-                operation
-                  ? operation.outcomeId === outcome.id &&
-                    operation.status === 'success'
-                  : predictedOutcome?.id === outcome.id
-              }
+              error={hasError(+outcome.id)}
+              isPredicted={hasPrediction(+outcome.id)}
               isActive={getOutcomeActive(outcome.id)}
               onClick={handleOutcomeClick}
               secondary={{
@@ -256,13 +261,11 @@ export default function MarketOutcomes({
           <OutcomeItem
             $size="sm"
             $variant="dashed"
-            error={expandableOutcomes.off.some(
-              outcome =>
-                operation?.outcomeId === outcome.id &&
-                operation?.status === 'failed'
+            error={expandableOutcomes.off.some(outcome =>
+              hasError(+outcome.id)
             )}
-            isPredicted={expandableOutcomes.off.some(
-              outcome => predictedOutcome?.id === outcome.id
+            isPredicted={expandableOutcomes.off.some(outcome =>
+              hasPrediction(+outcome.id)
             )}
             value={expandableOutcomes.onseted[0].id}
             onClick={handleOutcomeClick}
