@@ -7,7 +7,7 @@ import FavoriteMarket from 'components/FavoriteMarket';
 import Icon from 'components/Icon';
 import Share from 'components/Share';
 
-import { usePredictedOutcome, useUserOperations } from 'hooks';
+import { useOperation } from 'hooks';
 
 import styles from './MarketFooterActions.module.scss';
 
@@ -40,14 +40,13 @@ export default function MarketFooterActions({
 }: MarketFooterActionsProps) {
   const { origin } = window.location;
 
-  const operation = useUserOperations().getOperation(market);
-  const predictedOutcome = usePredictedOutcome(market);
+  const operation = useOperation(market);
 
   return (
     <div className="pm-c-market-footer__actions">
-      {operation
-        ? status[operation.status]
-        : predictedOutcome != null && status.success}
+      {operation.data
+        ? status[operation.data.status]
+        : operation.predictedOutcome != null && status.success}
       <Share
         id={market.slug}
         className={cn('pm-c-market-footer__actions-button', {
