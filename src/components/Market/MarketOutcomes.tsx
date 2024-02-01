@@ -9,12 +9,7 @@ import { useTheme } from 'ui';
 
 import OutcomeItem from 'components/OutcomeItem';
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useExpandableOutcomes,
-  useTrade
-} from 'hooks';
+import { useAppDispatch, useAppSelector, useExpandableOutcomes } from 'hooks';
 
 import Modal from '../Modal';
 import ModalContent from '../ModalContent';
@@ -41,7 +36,6 @@ export default function MarketOutcomes({
   const trade = useAppSelector(state => state.trade);
   const portfolio = useAppSelector(state => state.polkamarkets.portfolio);
   const theme = useTheme();
-  const { trade: tradeState, status } = useTrade();
 
   const isPredictedOutcome = useCallback(
     (outcomeId: string | number) =>
@@ -177,25 +171,6 @@ export default function MarketOutcomes({
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (
-      status === 'error' &&
-      tradeState.market === market.id &&
-      tradeState.network === market.networkId
-    ) {
-      setOutcome(tradeState.outcome.toString());
-      setTradeVisible(true);
-    }
-  }, [
-    market.id,
-    market.networkId,
-    setOutcome,
-    status,
-    tradeState.market,
-    tradeState.network,
-    tradeState.outcome
-  ]);
 
   return (
     <ul className="pm-c-market-outcomes">
