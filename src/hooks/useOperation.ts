@@ -44,23 +44,19 @@ export default function useOperation(
     );
   }, [isLoading, market.id, market.outcomes, portfolio]);
 
-  const hasError = useCallback(
-    (id: number) => data?.outcomeId === id && data?.status === 'failed',
-    [data?.outcomeId, data?.status]
-  );
-  const hasPrediction = useCallback(
-    (id: number) =>
-      data
-        ? data.outcomeId === id &&
-          (data.status === 'success' || data.status === 'pending')
-        : predictedOutcome?.id === id,
+  const getStatus = useCallback(
+    (id: number) => {
+      if (data) {
+        if (data.outcomeId === id) return data.status;
+      } else if (predictedOutcome?.id === id) return 'success';
+      return undefined;
+    },
     [data, predictedOutcome?.id]
   );
 
   return {
     data,
     predictedOutcome,
-    hasError,
-    hasPrediction
+    getStatus
   };
 }
