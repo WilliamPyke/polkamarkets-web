@@ -84,12 +84,12 @@ function Virtuoso({ data }: VirtuosoProps) {
         useWindowScroll
         itemContent={handleItemContent}
         rangeChanged={handleRangeChange}
-        data={data ? [...data, ...data, ...data] : []}
+        data={data}
       />
       <div
         className={cn(marketListClasses.back, {
           [marketListClasses.backShow]: renderBack,
-          [marketListClasses.backShowHeader]:
+          [marketListClasses.backShowAlongHeader]:
             (renderBack && !features.fantasy.enabled) || isLoggedIn,
           [marketListClasses.backHide]: !renderBack
         })}
