@@ -90,7 +90,7 @@ function Virtuoso({ data }: VirtuosoProps) {
         className={cn(marketListClasses.back, {
           [marketListClasses.backShow]: renderBack,
           [marketListClasses.backShowAlongHeader]:
-            (renderBack && !features.fantasy.enabled) || isLoggedIn,
+            renderBack && (!features.fantasy.enabled || isLoggedIn),
           [marketListClasses.backHide]: !renderBack
         })}
         aria-hidden={renderBack ? undefined : 'true'}
