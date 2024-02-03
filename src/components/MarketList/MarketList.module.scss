@@ -1,6 +1,4 @@
 .back {
-  --back-y: -56px;
-
   text-align: center;
 
   padding-right: var(--grid-margin);
@@ -24,13 +22,13 @@
 
     &AlongHeader {
       bottom: var(--header-y);
-    }
 
-    @media (min-width: 1024px) {
-      bottom: 0;
+      @media (min-width: 1024px) {
+        bottom: 0;
+      }
     }
   }
   &Hide {
-    bottom: var(--back-y);
+    bottom: -56px;
   }
 }
