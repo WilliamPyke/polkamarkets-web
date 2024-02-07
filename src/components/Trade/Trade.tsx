@@ -2,7 +2,6 @@ import { CSSProperties, useCallback, useMemo } from 'react';
 
 import cn from 'classnames';
 import { features } from 'config';
-import getMarketColors from 'helpers/getMarketColors';
 import type { Outcome } from 'models/market';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
 import { useTheme } from 'ui';
@@ -42,11 +41,6 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
   const portfolio = useAppSelector(state => state.polkamarkets.portfolio);
   const { login: isLoadingLogin, portfolio: isLoadingPortfolio } =
     useAppSelector(state => state.polkamarkets.isLoading);
-
-  const marketColors = getMarketColors({
-    network: market.network.id,
-    market: market.id
-  });
 
   const config = views[view];
 
@@ -125,9 +119,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
       })}
       style={
         {
-          maxWidth: theme.device.isDesktop ? '540px' : 'unset',
-          '--image': `url('${market.imageUrl}')`,
-          '--backdrop-color': marketColors.market
+          maxWidth: theme.device.isDesktop ? '540px' : 'unset'
         } as CSSProperties
       }
     >

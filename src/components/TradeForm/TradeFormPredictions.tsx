@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
 import cn from 'classnames';
-import getMarketColors from 'helpers/getMarketColors';
 import { roundNumber } from 'helpers/math';
 import sortOutcomes from 'helpers/sortOutcomes';
 import { selectOutcome } from 'redux/ducks/trade';
@@ -51,10 +50,6 @@ export default function TradeFormPredictions() {
     ),
     [expandableOutcomes.expand, expandableOutcomes.offseted]
   );
-  const marketColors = getMarketColors({
-    network: market.network.id,
-    market: market.id
-  });
   const needExpandOutcomes = sortedOutcomes.length > 3;
   const outcomes =
     theme.device.isDesktop && needExpandOutcomes
@@ -80,7 +75,6 @@ export default function TradeFormPredictions() {
               value={outcome.id}
               data={outcome.data}
               primary={outcome.title}
-              activeColor={marketColors.outcome(outcome.id)}
               onClick={handleOutcomeClick}
               secondary={{
                 price: outcome.price,
@@ -112,7 +106,6 @@ export default function TradeFormPredictions() {
                 image={outcome.imageUrl}
                 value={outcome.id}
                 onClick={handleOutcomeClick}
-                activeColor={marketColors.outcome(+outcome.id)}
                 primary={outcome.title}
                 secondary={{
                   price: outcome.price,
