@@ -53,7 +53,7 @@ function Operation({
 
   const handleRetry = useCallback(() => {
     trade?.set({
-      status: 'error',
+      status: 'retry',
       trade: {
         ...trade.trade,
         market: `${marketId}`,
