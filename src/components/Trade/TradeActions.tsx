@@ -42,7 +42,7 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
   const { network } = useNetwork();
   const polkamarketsService = usePolkamarketsService();
   const fantasyTokenTicker = useFantasyTokenTicker();
-  const { status, trade, set: setTrade, reset: resetTrade } = useTrade();
+  const { status, trade, set: setTrade } = useTrade();
 
   // Market selectors
   const type = useAppSelector(state => state.trade.type);
@@ -204,7 +204,6 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       // updating wallet
       await updateWallet();
       await refreshBalance();
-      resetTrade();
     } catch (error) {
       setTrade({ status: 'error' });
       Sentry.captureException(error);
@@ -309,7 +308,6 @@ function TradeActions({ onTradeFinished }: TradeActionsProps) {
       // updating wallet
       await updateWallet();
       await refreshBalance();
-      resetTrade();
     } catch (error) {
       setTrade({ status: 'error' });
       Sentry.captureException(error);
