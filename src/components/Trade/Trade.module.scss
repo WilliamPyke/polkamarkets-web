@@ -21,7 +21,8 @@
       min-width: 435px;
     }
 
-    padding: 40px;
+    padding: var(--size-16) var(--size-32) var(--size-24) var(--size-32);
+
     background: linear-gradient(
         0deg,
         rgb(var(--backdrop-color) / var(--alpha-septenary)) 60%,
