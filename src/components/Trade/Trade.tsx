@@ -10,7 +10,6 @@ import { useTheme } from 'ui';
 import { useAppDispatch, useAppSelector, useLanguage } from 'hooks';
 
 import { AlertMini } from '../Alert';
-import Breadcrumb from '../Breadcrumb';
 import { Button } from '../Button';
 import TradeFormClosed from '../TradeForm/TradeFormClosed';
 import TradeFormInput from '../TradeForm/TradeFormInput';
@@ -138,10 +137,6 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
       <div className={styles.rootView}>
         {config.market.details ? (
           <div className={styles.market}>
-            <Breadcrumb>
-              <Breadcrumb.Item>{market.category}</Breadcrumb.Item>
-              <Breadcrumb.Item>{market.subcategory}</Breadcrumb.Item>
-            </Breadcrumb>
             <p className={styles.marketTitle}>{market.title}</p>
           </div>
         ) : null}
