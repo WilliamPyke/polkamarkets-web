@@ -253,6 +253,9 @@ app.get('/embed/markets/:slug', async (request, response) => {
       const land = tournament?.land;
 
       const data = {
+        url: `${request.headers['x-forwarded-proto'] || 'http'}://${
+          request.headers.host
+        }/markets/${market.data.slug}`,
         market: {
           ...market.data,
           outcomes: {
