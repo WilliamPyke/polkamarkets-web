@@ -32,7 +32,7 @@ function MarketPredictions() {
 
   useEffect(() => {
     if (
-      status === 'error' &&
+      status === 'retry' &&
       trade.market.toString() === marketId.toString() &&
       trade.network.toString() === marketNetworkId.toString()
     ) {
