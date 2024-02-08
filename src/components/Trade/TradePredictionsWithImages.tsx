@@ -64,9 +64,7 @@ function TradePredictionsWithImages({
 
   const { id, networkId } = useAppSelector(state => state.market.market);
 
-  const { selectedOutcomeId, selectedMarketId } = useAppSelector(
-    state => state.trade
-  );
+  const { selectedOutcomeId } = useAppSelector(state => state.trade);
 
   const apiRef = useRef({} as scrollVisibilityApiType);
 
@@ -137,41 +135,39 @@ function TradePredictionsWithImages({
           itemID={prediction.id.toString()}
           title={prediction.title}
           className={cn(styles.predictionWithImage, {
-            [styles.predictionWithImageSelected]:
-              prediction.id.toString() === selectedOutcomeId.toString() &&
-              prediction.marketId.toString() === selectedMarketId.toString(),
+            [styles.predictionWithImageMultiple]: multiple,
             [styles.predictionWithImageDisabled]: predictions.length === 1
           })}
           value={prediction.id.toString()}
           onClick={handleSelectPrediction}
         >
-          <div className={styles.predictionWithImageProgressWrapper}>
+          <div className={styles.predictionWithImageContent}>
             <Image
               className={styles.predictionWithImageImage}
               alt={prediction.title}
               src={prediction.imageUrl}
             />
-            <Line
-              trailWidth={6}
-              strokeWidth={6}
-              percent={prediction.price * 100}
-              className={cn(styles.predictionWithImageProgress, {
-                [styles.predictionWithImageProgressDefault]: multiple,
-                [styles.predictionWithImageProgressWinning]:
-                  !multiple && index === 0,
-                [styles.predictionWithImageProgressLosing]:
-                  !multiple && index === 1
-              })}
-            />
+            <div className={styles.predictionWithImageDetails}>
+              <p className={styles.predictionWithImageDetailsTitle}>
+                {prediction.title}
+              </p>
+              <p
+                className={styles.predictionWithImageDetailsPrice}
+              >{`${roundNumber(+prediction.price * 100, 3)}%`}</p>
+            </div>
           </div>
-          <div className={styles.predictionWithImageDetails}>
-            <p className={styles.predictionWithImageDetailsTitle}>
-              {prediction.title}
-            </p>
-            <p
-              className={styles.predictionWithImageDetailsPrice}
-            >{`${roundNumber(+prediction.price * 100, 3)}%`}</p>
-          </div>
+          <Line
+            trailWidth={2}
+            strokeWidth={2}
+            percent={prediction.price * 100}
+            className={cn(styles.predictionWithImageProgress, {
+              [styles.predictionWithImageProgressDefault]: multiple,
+              [styles.predictionWithImageProgressWinning]:
+                !multiple && index === 0,
+              [styles.predictionWithImageProgressLosing]:
+                !multiple && index === 1
+            })}
+          />
         </button>
       ))}
     </ScrollMenu>

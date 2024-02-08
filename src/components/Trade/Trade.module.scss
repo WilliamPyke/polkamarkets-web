@@ -273,7 +273,7 @@
   }
 
   &Item {
-    margin: 0 var(--size-8);
+    margin: 0 5.5px;
 
     &:first-child {
       margin-left: 0;
@@ -319,49 +319,40 @@
 
   display: flex;
   flex-direction: column;
+  gap: var(--size-12);
 
-  background-color: transparent;
-  border: 2px solid var(--color-border);
-  border-radius: var(--size-4);
+  width: 100%;
+  padding: var(--size-24) var(--size-16);
 
-  width: min-content;
+  background-color: #000000;
+  border: 1px solid var(--color-border);
+  border-radius: var(--size-6);
+
+  &Multiple {
+    width: 260px;
+  }
 
   &:hover,
-  &:focus,
-  &Selected {
-    border: 2px solid #5d55fa;
-
-    transition: border 0.2s ease-in-out;
+  &:focus {
+    border: 1px solid var(--color-border);
   }
 
   &Disabled {
     pointer-events: none;
   }
 
-  &Selected {
-    .predictionWithImageDetails {
-      background-color: var(--color-trade-prediction-progress--selected);
-    }
-  }
-
   &Image {
-    height: 132px;
-    width: 132px;
+    height: 48px;
+    width: 48px;
 
-    border-radius: var(--size-4) var(--size-4) 0 0;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+
+    border-radius: var(--size-6);
   }
 
   &Progress {
-    position: absolute;
     width: 100%;
-    left: 0;
-    bottom: 0;
-
-    &Wrapper {
-      position: relative;
-    }
-
-    padding: var(--size-4);
 
     :global(.rc-progress-line-trail) {
       stroke: rgba(255, 255, 255, 0.3);
@@ -386,26 +377,30 @@
     }
   }
 
+  &Content {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--size-12);
+
+    width: 100%;
+  }
+
   &Details {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-
+    align-items: flex-start;
     gap: var(--size-8);
 
-    padding: var(--size-12) var(--size-8);
-    background-color: var(--color-trade-prediction);
-    border-radius: 0 0 var(--size-4) var(--size-4);
-
-    transition: background-color 0.2s ease-in-out;
+    width: 100%;
 
     &Title {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 600;
-      line-height: 100%;
-      letter-spacing: -0.01em;
+      line-height: 1.32;
+      letter-spacing: -0.014em;
 
       color: var(--color-text-primary);
 
@@ -419,12 +414,12 @@
     }
 
     &Price {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 600;
-      line-height: 100%;
-      letter-spacing: -0.04em;
+      line-height: 1.13;
+      letter-spacing: -0.014em;
 
-      color: var(--color-text-secondary);
+      color: #a5bee4;
     }
   }
 }
