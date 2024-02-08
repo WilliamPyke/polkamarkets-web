@@ -56,7 +56,7 @@
   &Actions {
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: var(--size-24);
   }
 
   &View {
