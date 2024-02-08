@@ -19,6 +19,7 @@ import { Image } from 'ui';
 import { useAppDispatch, useAppSelector } from 'hooks';
 
 import Icon from '../Icon';
+import Text from '../Text';
 import styles from './Trade.module.scss';
 
 function LeftArrow() {
@@ -151,9 +152,20 @@ function TradePredictionsWithImages({
               <p className={styles.predictionWithImageDetailsTitle}>
                 {prediction.title}
               </p>
-              <p
-                className={styles.predictionWithImageDetailsPrice}
-              >{`${roundNumber(+prediction.price * 100, 3)}%`}</p>
+              <p className={styles.predictionWithImageDetailsPrice}>
+                {`${roundNumber(+prediction.price * 100, 3)}%`}
+                <Text
+                  as="span"
+                  scale="tiny"
+                  color={prediction.isPriceUp ? 'success' : 'danger'}
+                >
+                  <Icon
+                    name="Arrow"
+                    size="sm"
+                    dir={prediction.isPriceUp ? 'up' : 'down'}
+                  />
+                </Text>
+              </p>
             </div>
           </div>
           <Line
