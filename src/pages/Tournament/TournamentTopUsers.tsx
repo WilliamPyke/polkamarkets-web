@@ -19,7 +19,6 @@ import {
   topUserColumnRender,
   prepareTournamentTopUsersRow
 } from './TournamentTopUsers.utils';
-import TournamentTopUsersRewards from './TournamentTopUsersRewards';
 
 const columns: TournamentTopUsersColumn[] = [
   {
@@ -50,12 +49,14 @@ type TournamentTopUsersProps = {
   isLoading: boolean;
   rankingRows: ReturnType<typeof prepareTournamentTopUsersRow>;
   rewardsRows: Array<Record<'title' | 'description', string>>;
+  rewardsButton: React.ReactNode;
 };
 
 function TournamentTopUsers({
   rankingRows,
   rewardsRows,
-  isLoading
+  isLoading,
+  rewardsButton
 }: TournamentTopUsersProps) {
   const location = useLocation();
 
@@ -156,7 +157,7 @@ function TournamentTopUsers({
               />
             </Link>
           ),
-          [tabs.rewards]: <TournamentTopUsersRewards />
+          [tabs.rewards]: rewardsButton
         }[currentTab]
       }
     </div>
