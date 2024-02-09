@@ -14,7 +14,7 @@ export type TournamentReward = {
   from: number;
   to: number;
   reward: string;
-}
+};
 
 export type Tournament = {
   id: number;
