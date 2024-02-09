@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import classNames from 'classnames';
-import capitalize from 'lodash/capitalize';
+import keys from 'helpers/objectKeys';
 import every from 'lodash/every';
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
@@ -19,6 +19,7 @@ import {
   topUserColumnRender,
   prepareTournamentTopUsersRow
 } from './TournamentTopUsers.utils';
+import TournamentTopUsersRewards from './TournamentTopUsersRewards';
 
 const columns: TournamentTopUsersColumn[] = [
   {
@@ -38,6 +39,11 @@ const columns: TournamentTopUsersColumn[] = [
   }
 ];
 
+const tabs = {
+  ranking: 'Ranking',
+  rewards: 'Rewards'
+} as const;
+
 type TournamentTopUsersProps = {
   isLoading: boolean;
 } & Pick<PrepareLeaderboardTableRowsArgs, 'rows'>;
@@ -45,7 +51,9 @@ type TournamentTopUsersProps = {
 function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
   const location = useLocation();
 
-  const [tab, setTab] = useState('ranking');
+  const [currentTab, setCurrentTab] = useState<'Ranking' | 'Rewards'>(
+    tabs.ranking
+  );
 
   const row = useMemo(() => prepareTournamentTopUsersRow({ rows }), [rows]);
   const state = useMemo(() => {
@@ -61,9 +69,9 @@ function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
     return 'success';
   }, [isLoading, row]);
 
-  const handleTab = useCallback(
+  const handleCurrentTab = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      setTab(event.currentTarget.value);
+      setCurrentTab(event.currentTarget.value as 'Ranking' | 'Rewards');
     },
     []
   );
@@ -77,17 +85,17 @@ function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
     >
       <div className={classNames('pm-c-leaderboard-stats bg-3')}>
         <div className={styles.tabs}>
-          {['ranking', 'rewards'].map(_tab => (
+          {keys(tabs).map(tab => (
             <button
               role="tab"
               type="button"
-              value={_tab}
-              key={_tab}
-              aria-selected={tab === _tab}
+              key={tab}
+              value={tabs[tab]}
+              aria-selected={currentTab === tabs[tab]}
               className={styles.tabsItem}
-              onClick={handleTab}
+              onClick={handleCurrentTab}
             >
-              {capitalize(_tab)}
+              {tabs[tab]}
             </button>
           ))}
         </div>
@@ -106,20 +114,17 @@ function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
                 description="No data to show."
               />
             ),
-            success: (
-              // @ts-ignore
-              <TableMini
-                columns={tab === 'ranking' ? columns : columns}
-                row={tab === 'ranking' ? row : row}
-              />
-            )
+            success: {
+              [tabs.ranking]: <TableMini columns={columns} row={row} />,
+              [tabs.rewards]: 'text'
+            }[currentTab]
           }[state]
         }
       </div>
       <Divider />
       {
         {
-          ranking: (
+          [tabs.ranking]: (
             <Link
               to={`${location.pathname}/leaderboard`}
               className={styles.action}
@@ -133,8 +138,8 @@ function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
               />
             </Link>
           ),
-          rewards: 'ranking'
-        }[tab]
+          [tabs.rewards]: <TournamentTopUsersRewards />
+        }[currentTab]
       }
     </div>
   );
