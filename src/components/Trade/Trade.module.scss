@@ -337,6 +337,10 @@
     border: 1px solid var(--color-border);
   }
 
+  &Predicted {
+    border: 1px solid rgba(87, 81, 252, 0.5);
+  }
+
   &Disabled {
     pointer-events: none;
   }
@@ -425,6 +429,29 @@
 
       color: var(--color-text-secondary);
     }
+  }
+}
+
+.typeSelector {
+  gap: 4px;
+
+  background-color: #414853;
+  border-radius: 6px !important;
+
+  :global(.pm-c-button-group__item.active) {
+    background-color: #191b1f !important;
+  }
+
+  &Button {
+    width: 100%;
+
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    color: #ffffff !important;
+
+    padding: var(--size-8) var(--size-16) !important;
+    border-radius: 4px !important;
   }
 }
 

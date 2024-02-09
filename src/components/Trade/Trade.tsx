@@ -18,6 +18,7 @@ import type { View } from './Trade.types';
 import TradeActions from './TradeActions';
 import TradeDetails from './TradeDetails';
 import TradePredictions from './TradePredictions';
+import TradeTypeSelector from './TradeTypeSelector';
 
 type TradeProps = {
   view?: View;
@@ -166,6 +167,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
             </div>
           ) : (
             <>
+              <TradeTypeSelector />
               <TradeFormInput />
               <TradeDetails />
               <div className={styles.actionsGroup}>

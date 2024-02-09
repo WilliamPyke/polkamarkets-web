@@ -137,7 +137,9 @@ function TradePredictionsWithImages({
           title={prediction.title}
           className={cn(styles.predictionWithImage, {
             [styles.predictionWithImageMultiple]: multiple,
-            [styles.predictionWithImageDisabled]: predictions.length === 1
+            [styles.predictionWithImageDisabled]: predictions.length === 1,
+            [styles.predictionWithImagePredicted]:
+              prediction.id === selectedOutcomeId
           })}
           value={prediction.id.toString()}
           onClick={handleSelectPrediction}
