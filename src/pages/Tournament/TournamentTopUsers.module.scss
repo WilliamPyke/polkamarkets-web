@@ -69,6 +69,8 @@
   padding-right: 8px;
 
   &Item {
+    line-height: normal;
+
     &:not(:last-child) {
       margin-bottom: 12px;
     }
