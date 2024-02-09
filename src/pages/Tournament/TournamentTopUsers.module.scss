@@ -59,7 +59,18 @@
   width: 100%;
 
   &Icon {
-    opacity: 0.3;
+    opacity: 0.6;
     margin-left: 16px;
+  }
+}
+
+.list {
+  padding-left: 8px;
+  padding-right: 8px;
+
+  &Item {
+    &:not(:last-child) {
+      margin-bottom: 12px;
+    }
   }
 }

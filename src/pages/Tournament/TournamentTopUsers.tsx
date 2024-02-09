@@ -11,8 +11,8 @@ import Divider from 'ui/Divider';
 import AlertMini from 'components/Alert/AlertMini';
 import Icon from 'components/Icon';
 import TableMini from 'components/new/TableMini/TableMini';
+import Text from 'components/Text';
 
-import type { PrepareLeaderboardTableRowsArgs } from '../Leaderboard/prepare';
 import styles from './TournamentTopUsers.module.scss';
 import { TournamentTopUsersColumn } from './TournamentTopUsers.types';
 import {
@@ -44,34 +44,39 @@ const tabs = {
   rewards: 'Rewards'
 } as const;
 
+type Tabs = typeof tabs[keyof typeof tabs];
+
 type TournamentTopUsersProps = {
   isLoading: boolean;
-} & Pick<PrepareLeaderboardTableRowsArgs, 'rows'>;
+  rankingRows: ReturnType<typeof prepareTournamentTopUsersRow>;
+  rewardsRows: Array<Record<'title' | 'description', string>>;
+};
 
-function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
+function TournamentTopUsers({
+  rankingRows,
+  rewardsRows,
+  isLoading
+}: TournamentTopUsersProps) {
   const location = useLocation();
 
-  const [currentTab, setCurrentTab] = useState<'Ranking' | 'Rewards'>(
-    tabs.ranking
-  );
+  const [currentTab, setCurrentTab] = useState<Tabs>(tabs.ranking);
 
-  const row = useMemo(() => prepareTournamentTopUsersRow({ rows }), [rows]);
   const state = useMemo(() => {
     if (isLoading) return 'loading';
     if (
-      isEmpty(row) ||
+      isEmpty(rankingRows) ||
       every(
-        Object.values(row).map(v => v.value),
+        Object.values(rankingRows).map(v => v.value),
         isNull
       )
     )
       return 'error';
     return 'success';
-  }, [isLoading, row]);
+  }, [isLoading, rankingRows]);
 
   const handleCurrentTab = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
-      setCurrentTab(event.currentTarget.value as 'Ranking' | 'Rewards');
+      setCurrentTab(event.currentTarget.value as Tabs);
     },
     []
   );
@@ -115,8 +120,21 @@ function TournamentTopUsers({ rows, isLoading }: TournamentTopUsersProps) {
               />
             ),
             success: {
-              [tabs.ranking]: <TableMini columns={columns} row={row} />,
-              [tabs.rewards]: 'text'
+              [tabs.ranking]: <TableMini columns={columns} row={rankingRows} />,
+              [tabs.rewards]: (
+                <ul className={styles.list}>
+                  {rewardsRows.map(reward => (
+                    <li key={reward.title} className={styles.listItem}>
+                      <Text as="span" scale="caption" fontWeight="medium">
+                        {reward.title} -{' '}
+                      </Text>
+                      <Text as="span" scale="caption" color="lighter-gray">
+                        {reward.description}
+                      </Text>
+                    </li>
+                  ))}
+                </ul>
+              )
             }[currentTab]
           }[state]
         }
