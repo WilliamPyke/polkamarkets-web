@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import Divider from 'ui/Divider';
 
@@ -20,14 +20,19 @@ export default function TournamentTopUsersRewards({
 }: React.PropsWithChildren<{}>) {
   const [show, setShow] = useState(false);
 
+  const handleShow = useCallback(() => {
+    setShow(true);
+  }, []);
+  const handleHide = useCallback(() => {
+    setShow(false);
+  }, []);
+
   return (
     <>
       <button
         type="button"
         className={tournamentTopUsersClasses.action}
-        onClick={() => {
-          setShow(true);
-        }}
+        onClick={handleShow}
       >
         View Ranking
         <Icon
@@ -37,11 +42,11 @@ export default function TournamentTopUsersRewards({
           className={tournamentTopUsersClasses.actionIcon}
         />
       </button>
-      <Modal size="sm" centered show={show} onHide={() => setShow(false)}>
+      <Modal size="sm" centered show={show} onHide={handleHide}>
         <ModalContent className={tournamentTopUsersRewardsClasses.content}>
           <ModalHeader className={tournamentTopUsersRewardsClasses.header}>
             <ModalHeaderTitle>Rewards</ModalHeaderTitle>
-            <ModalHeaderHide $disableInset />
+            <ModalHeaderHide $disableInset onClick={handleHide} />
           </ModalHeader>
           <Divider />
           <ModalSection className={tournamentTopUsersRewardsClasses.section}>
