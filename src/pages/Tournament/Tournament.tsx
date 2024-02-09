@@ -10,6 +10,8 @@ import {
 } from 'services/Polkamarkets';
 import { Container, useRect, useTheme } from 'ui';
 
+import LeaderboardRewardsList from 'pages/Leaderboard/LeaderboardRewardsList';
+
 import { MarketList, SEO } from 'components';
 
 import { useNetwork } from 'hooks';
@@ -20,6 +22,7 @@ import TournamentNav from './TournamentNav';
 import styles from './TournamentNav.module.scss';
 import TournamentTopUsers from './TournamentTopUsers';
 import { prepareTournamentTopUsersRow } from './TournamentTopUsers.utils';
+import TournamentTopUsersRewards from './TournamentTopUsersRewards';
 
 export default function Tournament() {
   const theme = useTheme();
@@ -106,9 +109,30 @@ export default function Tournament() {
           tournamentImageUrl={data?.imageUrl}
           topUsers={
             <TournamentTopUsers
+              isLoading={isLoadingLeaderboardByTimeframeQuery}
               rankingRows={prepareTournamentTopUsersRow({
                 rows: leaderboardByTimeframe?.filter(row => row.username)
               })}
+              rewardsButton={
+                <TournamentTopUsersRewards>
+                  <LeaderboardRewardsList
+                    rewards={[
+                      {
+                        title: '1o lugar',
+                        description: '500€ + Estadia (2 noites)'
+                      },
+                      {
+                        title: '2o lugar',
+                        description: '200€ + Estadia (2 noites)'
+                      },
+                      {
+                        title: '3o lugar',
+                        description: '100€ + Estadia (2 noites)'
+                      }
+                    ]}
+                  />
+                </TournamentTopUsersRewards>
+              }
               rewardsRows={[
                 {
                   title: '1o lugar',
@@ -123,7 +147,6 @@ export default function Tournament() {
                   description: '100€ + Estadia (2 noites)'
                 }
               ]}
-              isLoading={isLoadingLeaderboardByTimeframeQuery}
             />
           }
           questions={marketsIds.length}
