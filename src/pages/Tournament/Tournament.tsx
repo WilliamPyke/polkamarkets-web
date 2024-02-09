@@ -19,6 +19,7 @@ import TournamentHero from './TournamentHero';
 import TournamentNav from './TournamentNav';
 import styles from './TournamentNav.module.scss';
 import TournamentTopUsers from './TournamentTopUsers';
+import { prepareTournamentTopUsersRow } from './TournamentTopUsers.utils';
 
 export default function Tournament() {
   const theme = useTheme();
@@ -105,7 +106,23 @@ export default function Tournament() {
           tournamentImageUrl={data?.imageUrl}
           topUsers={
             <TournamentTopUsers
-              rows={leaderboardByTimeframe?.filter(row => row.username)}
+              rankingRows={prepareTournamentTopUsersRow({
+                rows: leaderboardByTimeframe?.filter(row => row.username)
+              })}
+              rewardsRows={[
+                {
+                  title: '1o lugar',
+                  description: '500€ + Estadia (2 noites)'
+                },
+                {
+                  title: '2o lugar',
+                  description: '200€ + Estadia (2 noites)'
+                },
+                {
+                  title: '3o lugar',
+                  description: '100€ + Estadia (2 noites)'
+                }
+              ]}
               isLoading={isLoadingLeaderboardByTimeframeQuery}
             />
           }
