@@ -11,7 +11,7 @@ import {
   setTradeDetails
 } from 'redux/ducks/trade';
 
-import { TokenIcon, WalletIcon } from 'assets/icons';
+import { WalletIcon } from 'assets/icons';
 
 import InfoTooltip from 'components/InfoTooltip';
 
@@ -282,13 +282,6 @@ function TradeFormInput() {
           ) : null}
           {type === 'buy' ? (
             <div className="pm-c-amount-input__logo">
-              <figure aria-label={name}>
-                {iconName === 'Token' ? (
-                  <TokenIcon ticker={ticker} />
-                ) : (
-                  <Icon name={iconName} />
-                )}
-              </figure>
               <Text as="span" scale="caption" fontWeight="bold">
                 {ticker}
               </Text>
