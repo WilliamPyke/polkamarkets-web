@@ -26,6 +26,7 @@ import {
 import LeaderboardHeader from './LeaderboardHeader';
 import LeaderboardMyLeaderboards from './LeaderboardMyLeaderboards';
 import LeaderboardRewards from './LeaderboardRewards';
+import LeaderboardRewardsList from './LeaderboardRewardsList';
 import LeaderboardTable from './LeaderboardTable';
 import LeaderboardTopWallets from './LeaderboardTopWallets';
 import LeaderboardYourStats from './LeaderboardYourStats';
@@ -530,8 +531,10 @@ function Leaderboard() {
                 isLoading={isLoadingQuery}
               />
             )}
-            {features.fantasy.enabled && rewards && rewards.length > 0 && (
-              <LeaderboardRewards rewards={rewards} />
+            {features.fantasy.enabled && !!rewards?.length && (
+              <LeaderboardRewards>
+                <LeaderboardRewardsList rewards={rewards} />
+              </LeaderboardRewards>
             )}
           </div>
         </div>
