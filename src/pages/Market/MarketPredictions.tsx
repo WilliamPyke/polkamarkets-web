@@ -4,6 +4,7 @@ import { reset, selectOutcome } from 'redux/ducks/trade';
 import { useTheme } from 'ui';
 
 import {
+  InfoTooltip,
   Modal,
   ModalContent,
   ModalHeader,
@@ -65,7 +66,13 @@ function MarketPredictions() {
       <MarketTransactions />
       <MarketShares onSellSelected={handlePredictionSelected} />
       <div className={styles.predictions}>
-        <p className={styles.predictionsTitle}>Select your prediction</p>
+        <p className={styles.predictionsTitle}>
+          Select your prediction{' '}
+          <span className={styles.predictionsTitleCaption}>
+            <InfoTooltip text="Probability of an answer occur based on already made predictions." />
+            Probability (%)
+          </span>
+        </p>
         <TradePredictions
           view="default"
           size="lg"
