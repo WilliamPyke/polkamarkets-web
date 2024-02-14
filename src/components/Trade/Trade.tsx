@@ -17,6 +17,7 @@ import styles from './Trade.module.scss';
 import type { View } from './Trade.types';
 import TradeActions from './TradeActions';
 import TradeDetails from './TradeDetails';
+import TradeMarketShares from './TradeMarketShares';
 import TradePredictions from './TradePredictions';
 import TradeTypeSelector from './TradeTypeSelector';
 
@@ -144,6 +145,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
         </div>
       ) : (
         <div className={styles.rootActions}>
+          <TradeMarketShares />
           {features.fantasy.enabled &&
           hasSharesOfOtherOutcomes &&
           prediction ? (
