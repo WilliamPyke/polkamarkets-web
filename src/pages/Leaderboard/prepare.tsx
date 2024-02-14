@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
-import { ui } from 'config';
+import { environment, ui } from 'config';
 import shortenAddress from 'helpers/shortenAddress';
 import isEmpty from 'lodash/isEmpty';
 import isUndefined from 'lodash/isUndefined';
@@ -115,6 +115,7 @@ function walletColumnRender({
         to={`/user/${slug || username || address}`}
         className="pm-c-leaderboard-table__wallet"
       >
+        {`#${place}`}
         {walletPlace.icon}
         {(() => {
           if (userImageUrl)
@@ -236,16 +237,43 @@ function liquidityColumnRender({
 }
 
 type EarningsColumnRenderArgs = {
-  earnings: number;
+  earnings: {
+    open: number;
+    closed: number;
+    total: number;
+  };
   ticker: string;
 };
 
 function earningsColumnRender({ earnings, ticker }: EarningsColumnRenderArgs) {
+  const language = environment.DEFAULT_LANGUAGE || 'en';
+
   return (
-    <span className="pm-c-leaderboard-table__liquidity caption semibold text-1 notranslate">
-      {`${earnings?.toFixed(1)} `}
-      <strong className="caption semibold text-3">{ticker}</strong>
-    </span>
+    <Tooltip
+      text={
+        <div className="notranslate">
+          <p className="pm-c-tooltip__text">
+            {`${earnings.open.toFixed(1)} ${ticker} ${
+              language === 'pt' ? 'Ativos' : 'Open'
+            }`}
+          </p>
+          <p className="pm-c-tooltip__text">
+            {`${earnings.closed.toFixed(1)} ${ticker} ${
+              language === 'pt' ? 'Realizados' : 'Traded'
+            }`}
+          </p>
+        </div>
+      }
+    >
+      <span className="pm-c-leaderboard-table__liquidity caption semibold text-1 notranslate">
+        {`${
+          earnings && earnings.open && earnings.closed
+            ? (earnings.open + earnings.closed).toFixed(1)
+            : 0
+        } `}
+        <strong className="caption semibold text-3">{ticker}</strong>
+      </span>
+    </Tooltip>
   );
 }
 
@@ -342,7 +370,11 @@ function prepareLeaderboardTableRows({
           ticker: fantasyTokenTicker || '€'
         },
         earnings: {
-          earnings: row.earningsEur,
+          earnings: {
+            open: row.earningsOpenEur || row.earningsEur,
+            closed: row.earningsClosedEur || 0,
+            total: row.earningsEur
+          },
           ticker: fantasyTokenTicker || '€'
         },
         transactions: row.transactions,
