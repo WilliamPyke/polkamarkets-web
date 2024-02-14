@@ -24,7 +24,6 @@ import {
 } from 'hooks';
 
 import { Button } from '../Button';
-import Icon from '../Icon';
 import StepSlider from '../StepSlider';
 import Text from '../Text';
 import ToggleSwitch from '../ToggleSwitch';
@@ -40,7 +39,7 @@ function TradeFormInput() {
   const { currency } = network;
 
   const token = useAppSelector(state => state.market.market.token);
-  const { name, ticker, iconName, address, wrapped: tokenWrapped } = token;
+  const { ticker, address, wrapped: tokenWrapped } = token;
 
   const marketNetworkId = useAppSelector(
     state => state.market.market.networkId
