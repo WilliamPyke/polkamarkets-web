@@ -42,6 +42,7 @@ import type {
   LeaderboardTableColumn,
   CreateLeaderboardGroupState
 } from './types';
+import { tournamentRewards } from './utils';
 
 const tabs = [
   {
@@ -245,14 +246,7 @@ function Leaderboard() {
   }
 
   if (tournamentBySlug?.rewards && tournamentBySlug?.rewards.length > 0) {
-    rewards = tournamentBySlug?.rewards.map(reward => ({
-      // cardinal numbering
-      title:
-        reward.from === reward.to
-          ? `#${reward.from} Place`
-          : `#${reward.from} to #${reward.to} Place`,
-      description: reward.reward
-    }));
+    rewards = tournamentRewards(tournamentBySlug);
   }
 
   // Default

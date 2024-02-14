@@ -11,6 +11,7 @@ import {
 import { Container, useRect, useTheme } from 'ui';
 
 import LeaderboardRewardsList from 'pages/Leaderboard/LeaderboardRewardsList';
+import { tournamentRewards } from 'pages/Leaderboard/utils';
 
 import { MarketList, SEO } from 'components';
 
@@ -115,38 +116,10 @@ export default function Tournament() {
               })}
               rewardsButton={
                 <TournamentTopUsersRewards>
-                  <LeaderboardRewardsList
-                    rewards={[
-                      {
-                        title: '1o lugar',
-                        description: '500€ + Estadia (2 noites)'
-                      },
-                      {
-                        title: '2o lugar',
-                        description: '200€ + Estadia (2 noites)'
-                      },
-                      {
-                        title: '3o lugar',
-                        description: '100€ + Estadia (2 noites)'
-                      }
-                    ]}
-                  />
+                  <LeaderboardRewardsList rewards={tournamentRewards(data)} />
                 </TournamentTopUsersRewards>
               }
-              rewardsRows={[
-                {
-                  title: '1o lugar',
-                  description: '500€ + Estadia (2 noites)'
-                },
-                {
-                  title: '2o lugar',
-                  description: '200€ + Estadia (2 noites)'
-                },
-                {
-                  title: '3o lugar',
-                  description: '100€ + Estadia (2 noites)'
-                }
-              ]}
+              rewardsRows={tournamentRewards(data, true)}
             />
           }
           questions={marketsIds.length}
