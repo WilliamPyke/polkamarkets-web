@@ -145,7 +145,6 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
         </div>
       ) : (
         <div className={styles.rootActions}>
-          <TradeMarketShares />
           {features.fantasy.enabled &&
           hasSharesOfOtherOutcomes &&
           prediction ? (
@@ -170,6 +169,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
           ) : (
             <>
               <TradeTypeSelector />
+              <TradeMarketShares />
               <TradeFormInput />
               <TradeDetails />
               <div className={styles.actionsGroup}>
