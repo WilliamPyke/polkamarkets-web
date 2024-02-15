@@ -16,6 +16,8 @@ import { Line } from 'rc-progress';
 import { selectOutcome } from 'redux/ducks/trade';
 import { Image } from 'ui';
 
+import { CheckIcon } from 'assets/icons';
+
 import { useAppDispatch, useAppSelector } from 'hooks';
 
 import Icon from '../Icon';
@@ -139,46 +141,58 @@ function TradePredictionsWithImages({
             [styles.predictionWithImageMultiple]: multiple,
             [styles.predictionWithImageDisabled]: predictions.length === 1,
             [styles.predictionWithImagePredicted]:
-              prediction.id === selectedOutcomeId
+              prediction.id.toString() === selectedOutcomeId.toString()
           })}
           value={prediction.id.toString()}
           onClick={handleSelectPrediction}
         >
-          <div className={styles.predictionWithImageContent}>
-            <Image
-              className={styles.predictionWithImageImage}
-              alt={prediction.title}
-              src={prediction.imageUrl}
-            />
-            <div className={styles.predictionWithImageDetails}>
-              <p className={styles.predictionWithImageDetailsTitle}>
-                {prediction.title}
-              </p>
-              <p className={styles.predictionWithImageDetailsPrice}>
-                {`${roundNumber(+prediction.price * 100, 3)}%`}
-                <Text
-                  as="span"
-                  scale="tiny"
-                  color={prediction.isPriceUp ? 'success' : 'danger'}
-                >
-                  <Icon
-                    name="Arrow"
-                    size="sm"
-                    dir={prediction.isPriceUp ? 'up' : 'down'}
-                  />
-                </Text>
-              </p>
+          {prediction.id.toString() === selectedOutcomeId.toString() && (
+            <span className={styles.predictionWithImagePredictedLabel}>
+              <CheckIcon
+                className={styles.predictionWithImagePredictedLabelIcon}
+              />{' '}
+              Predicted
+            </span>
+          )}
+          <div className={styles.predictionWithImageBody}>
+            <div className={styles.predictionWithImageContent}>
+              <Image
+                className={styles.predictionWithImageImage}
+                alt={prediction.title}
+                src={prediction.imageUrl}
+              />
+              <div className={styles.predictionWithImageDetails}>
+                <p className={styles.predictionWithImageDetailsTitle}>
+                  {prediction.title}
+                </p>
+                <p className={styles.predictionWithImageDetailsPrice}>
+                  {`${roundNumber(+prediction.price * 100, 3)}%`}
+                  <Text
+                    as="span"
+                    scale="tiny"
+                    color={prediction.isPriceUp ? 'success' : 'danger'}
+                  >
+                    <Icon
+                      name="Arrow"
+                      size="sm"
+                      dir={prediction.isPriceUp ? 'up' : 'down'}
+                    />
+                  </Text>
+                </p>
+              </div>
             </div>
+            <Line
+              trailWidth={2}
+              strokeWidth={2}
+              percent={prediction.price * 100}
+              className={cn(styles.predictionWithImageProgress, {
+                [styles.predictionWithImageProgressWinning]:
+                  prediction.isPriceUp,
+                [styles.predictionWithImageProgressLosing]:
+                  !prediction.isPriceUp
+              })}
+            />
           </div>
-          <Line
-            trailWidth={2}
-            strokeWidth={2}
-            percent={prediction.price * 100}
-            className={cn(styles.predictionWithImageProgress, {
-              [styles.predictionWithImageProgressWinning]: prediction.isPriceUp,
-              [styles.predictionWithImageProgressLosing]: !prediction.isPriceUp
-            })}
-          />
         </button>
       ))}
     </ScrollMenu>
