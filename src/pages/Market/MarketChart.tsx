@@ -61,7 +61,9 @@ function MarketOverview() {
                 </Text>
               </>
             ) : (
-              `${highestPriceOutcome.price} ${ticker}`
+              <span className="notranslate">
+                {highestPriceOutcome.price} {ticker}
+              </span>
             )}
           </Text>
           <Text
