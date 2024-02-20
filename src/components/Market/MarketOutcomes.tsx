@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import classNames from 'classnames';
 import { features } from 'config';
 import sortOutcomes from 'helpers/sortOutcomes';
 import type { Market } from 'models/market';
@@ -166,7 +167,7 @@ export default function MarketOutcomes({
   }, []);
 
   return (
-    <ul className="pm-c-market-outcomes">
+    <ul className={classNames('pm-c-market-outcomes', styles.root)}>
       <Modal
         show={tradeVisible}
         onHide={handleCloseTrade}
