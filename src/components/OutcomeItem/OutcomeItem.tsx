@@ -93,6 +93,12 @@ export default function OutcomeItem({
       }}
       {...props}
     >
+      {$state === 'success' && (
+        <div className={outcomeItemClasses.rootStatus}>
+          <CheckIcon className={outcomeItemClasses.rootStatusIcon} />
+          <span className={outcomeItemClasses.rootStatusTitle}>Predicted</span>
+        </div>
+      )}
       <div className={outcomeItemClasses.content}>
         {image && isMd && (
           <div className={outcomeItemClasses.itemStart}>
