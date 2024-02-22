@@ -1,7 +1,10 @@
+import { useMemo } from 'react';
+
 import cn from 'classnames';
 import { features } from 'config';
 import { roundNumber } from 'helpers/math';
 import { kebabCase, uniqueId } from 'lodash';
+import { Market } from 'models/market';
 import { Line } from 'rc-progress';
 import type { UserOperation } from 'types/user';
 import { Avatar, useTheme } from 'ui';
@@ -13,6 +16,9 @@ import MiniTable from 'components/MiniTable';
 import { Area } from 'components/plots';
 import type { AreaDataPoint } from 'components/plots/Area/Area.type';
 import Text from 'components/Text';
+import { calculateEthAmountSold } from 'components/TradeForm/utils';
+
+import { useAppSelector } from 'hooks';
 
 import outcomeItemClasses from './OutcomeItem.module.scss';
 
@@ -22,6 +28,7 @@ export type OutcomeProps = Pick<
 > &
   Partial<Record<'primary' | 'image' | 'activeColor', string>> &
   Partial<Record<'invested', number>> & {
+    market: Market;
     $state?: UserOperation['status'];
     isActive?: boolean;
     data?: AreaDataPoint[];
@@ -55,11 +62,50 @@ export default function OutcomeItem({
   resolved,
   className,
   $state,
+  market,
   ...props
 }: OutcomeProps) {
   const theme = useTheme();
   const isSm = $size === 'sm';
   const isMd = $size === 'md';
+
+  const portfolio = useAppSelector(state => state.polkamarkets.portfolio);
+  const { portfolio: isLoadingPortfolio } = useAppSelector(
+    state => state.polkamarkets.isLoading
+  );
+
+  const outcomesWithShares = useMemo(() => {
+    if (isLoadingPortfolio) return [];
+
+    const marketShares = portfolio[market.id];
+
+    if (!marketShares) return [];
+
+    const sharesByOutcome = market.outcomes.map(outcome => {
+      const outcomeShares = marketShares.outcomes[outcome.id];
+
+      return {
+        id: outcome.id.toString(),
+        title: outcome.title,
+        imageUrl: outcome.imageUrl,
+        shares: outcomeShares ? outcomeShares.shares : 0,
+        buyValue: outcomeShares
+          ? outcomeShares.shares * outcomeShares.price
+          : 0,
+        value:
+          outcomeShares && outcomeShares.shares > 0
+            ? calculateEthAmountSold(market, outcome, outcomeShares.shares)
+                .totalStake
+            : 0
+      };
+    });
+
+    return sharesByOutcome.filter(outcome => outcome.shares > 1e-5);
+  }, [isLoadingPortfolio, portfolio, market]);
+
+  const outcomeWithShares = outcomesWithShares.find(
+    outcome => outcome.id.toString() === props.value?.toString()
+  );
 
   return (
     <button
@@ -97,6 +143,18 @@ export default function OutcomeItem({
         <div className={outcomeItemClasses.rootStatus}>
           <CheckIcon className={outcomeItemClasses.rootStatusIcon} />
           <span className={outcomeItemClasses.rootStatusTitle}>Predicted</span>
+          {outcomeWithShares ? (
+            <span className={outcomeItemClasses.rootStatusPerformance}>
+              (
+              {`${
+                outcomeWithShares.value > outcomeWithShares.buyValue ? '+' : ''
+              }
+              ${(outcomeWithShares.value - outcomeWithShares.buyValue).toFixed(
+                1
+              )} ${market.token.symbol}`.trimStart()}
+              )
+            </span>
+          ) : null}
         </div>
       )}
       <div className={outcomeItemClasses.content}>

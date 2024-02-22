@@ -28,7 +28,8 @@
 
     border-radius: 4px 4px 0px 0px;
 
-    &Title {
+    &Title,
+    &Performance {
       font-size: 1rem;
       font-weight: 600;
       line-height: normal;
@@ -36,6 +37,15 @@
       text-transform: uppercase;
 
       color: white;
+    }
+
+    &Performance {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      word-break: break-all;
+
+      overflow: hidden;
     }
 
     &Icon {
