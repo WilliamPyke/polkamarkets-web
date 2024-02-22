@@ -2,13 +2,15 @@ import { CSSProperties, useCallback, useMemo } from 'react';
 
 import cn from 'classnames';
 import { features } from 'config';
+import isUndefined from 'lodash/isUndefined';
 import type { Outcome } from 'models/market';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
 import { useTheme } from 'ui';
 
+import { InfoIcon } from 'assets/icons';
+
 import { useAppDispatch, useAppSelector, useLanguage } from 'hooks';
 
-import { AlertMini } from '../Alert';
 import { Button } from '../Button';
 import TradeFormClosed from '../TradeForm/TradeFormClosed';
 import TradeFormInput from '../TradeForm/TradeFormInput';
@@ -113,6 +115,9 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
       </div>
     );
 
+  const needsSellSharesOfOtherOutcomes =
+    type === 'buy' && !isUndefined(prediction) && hasSharesOfOtherOutcomes;
+
   return (
     <div
       className={cn(styles.root, {
@@ -145,48 +150,62 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
         </div>
       ) : (
         <div className={styles.rootActions}>
-          {features.fantasy.enabled &&
-          hasSharesOfOtherOutcomes &&
-          prediction ? (
-            <div className="flex-column gap-5 width-full">
-              <AlertMini
-                variant="warning"
-                description={
-                  language === 'pt'
-                    ? `Só podes escolher um resultado de cada vez. Para mudar a tua previsão para "${prediction.title}", tens que vender a tua previsão "${outcomesWithShares[0].title}".`
-                    : `You can only buy shares of one outcome at a time. In order to buy shares of "${prediction.title}" you need to sell your position of "${outcomesWithShares[0].title}".`
-                }
-                descriptionClasses="notranslate"
-              />
+          {needsSellSharesOfOtherOutcomes ? (
+            <div role="alert" className={styles.toast}>
+              <div className={styles.toastHeader}>
+                <InfoIcon />
+                <p className={styles.toastHeaderTitle}>
+                  {language === 'pt'
+                    ? 'Só podes escolher um resultado de cada vez.'
+                    : 'You can only buy shares of one outcome at a time.'}
+                </p>
+              </div>
+              <p className={cn(styles.toastDescription, 'notranslate')}>
+                {language === 'pt' ? (
+                  <>
+                    Para mudar a tua previsão para{' '}
+                    <strong>{`"${prediction.title}"`}</strong>, tens que vender
+                    a tua previsão{' '}
+                    <strong>{`"${outcomesWithShares[0].title}"`}</strong>.
+                  </>
+                ) : (
+                  <>
+                    In order to buy shares of{' '}
+                    <strong>{`"${prediction.title}"`}</strong> you need to sell
+                    your position of{' '}
+                    <strong>{`"${outcomesWithShares[0].title}"`}</strong>.
+                  </>
+                )}
+              </p>
+            </div>
+          ) : null}
+          {!needsSellSharesOfOtherOutcomes ? <TradeTypeSelector /> : null}
+          <TradeMarketShares />
+          {!needsSellSharesOfOtherOutcomes ? <TradeFormInput /> : null}
+          <TradeDetails />
+          <div className={styles.actionsGroup}>
+            {needsSellSharesOfOtherOutcomes ? (
               <Button
                 color="danger"
                 fullwidth
                 onClick={() => handleSellShares(outcomesWithShares[0].id)}
               >
-                Sell
+                Sell and Continue
               </Button>
-            </div>
-          ) : (
-            <>
-              <TradeTypeSelector />
-              <TradeMarketShares />
-              <TradeFormInput />
-              <TradeDetails />
-              <div className={styles.actionsGroup}>
-                <TradeActions onTradeFinished={onTradeFinished} />
-                <p className={styles.terms}>
-                  By clicking you’re agreeing to our{' '}
-                  <a
-                    href="https://www.polkamarkets.com/legal/terms-conditions"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Terms and Conditions
-                  </a>
-                </p>
-              </div>
-            </>
-          )}
+            ) : (
+              <TradeActions onTradeFinished={onTradeFinished} />
+            )}
+            <p className={styles.terms}>
+              By clicking you’re agreeing to our{' '}
+              <a
+                href="https://www.polkamarkets.com/legal/terms-conditions"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Terms and Conditions
+              </a>
+            </p>
+          </div>
         </div>
       )}
     </div>
