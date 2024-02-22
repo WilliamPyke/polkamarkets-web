@@ -3,13 +3,16 @@ import { useCallback } from 'react';
 import isUndefined from 'lodash/isUndefined';
 import { changeTradeType } from 'redux/ducks/trade';
 
-import { useAppDispatch } from 'hooks';
+import { useAppDispatch, useAppSelector } from 'hooks';
 
 import ButtonGroup from '../ButtonGroup';
 import styles from './Trade.module.scss';
 
+const TRADE_TYPE_FALLBACK = 'buy';
+
 function TradeTypeSelector() {
   const dispatch = useAppDispatch();
+  const type = useAppSelector(state => state.trade.type);
 
   const handleChangeTradeType = useCallback(
     (tradeType: string) => {
@@ -23,7 +26,7 @@ function TradeTypeSelector() {
   return (
     <ButtonGroup
       fullwidth
-      defaultActiveId="buy"
+      defaultActiveId={type || TRADE_TYPE_FALLBACK}
       buttons={[
         { id: 'buy', name: 'Strenghten', color: 'default' },
         { id: 'sell', name: 'Sell', color: 'default' }
