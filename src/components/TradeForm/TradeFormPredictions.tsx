@@ -47,9 +47,15 @@ export default function TradeFormPredictions() {
         onClick={expandableOutcomes.expand}
         primary={expandableOutcomes.offseted.primary}
         secondary={expandableOutcomes.offseted.secondary}
+        market={market}
       />
     ),
-    [expandableOutcomes.expand, expandableOutcomes.offseted]
+    [
+      expandableOutcomes.expand,
+      expandableOutcomes.offseted.primary,
+      expandableOutcomes.offseted.secondary,
+      market
+    ]
   );
   const marketColors = getMarketColors({
     network: market.network.id,
@@ -79,6 +85,7 @@ export default function TradeFormPredictions() {
               image={outcome.imageUrl}
               value={outcome.id}
               data={outcome.data}
+              market={market}
               primary={outcome.title}
               activeColor={marketColors.outcome(outcome.id)}
               onClick={handleOutcomeClick}
@@ -111,6 +118,7 @@ export default function TradeFormPredictions() {
                 $size="md"
                 image={outcome.imageUrl}
                 value={outcome.id}
+                market={market}
                 onClick={handleOutcomeClick}
                 activeColor={marketColors.outcome(+outcome.id)}
                 primary={outcome.title}

@@ -203,6 +203,7 @@ export default function MarketOutcomes({
               data={outcome.data}
               primary={outcome.title}
               $state={operation.getOutcomeStatus(+outcome.id)}
+              market={market}
               isActive={getOutcomeActive(outcome.id)}
               onClick={handleOutcomeClick}
               secondary={{
@@ -229,6 +230,7 @@ export default function MarketOutcomes({
               expandableOutcomes.off.map(outcome => +outcome.id)
             )}
             value={expandableOutcomes.onseted[0].id}
+            market={market}
             onClick={handleOutcomeClick}
             {...expandableOutcomes.offseted}
           />
