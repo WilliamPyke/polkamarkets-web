@@ -9,10 +9,9 @@ export default function Error404() {
 
   return (
     <section className={classes.root}>
-      <h2>Are you lost?</h2>
+      <h2 className={classes.header}>Ooops!</h2>
       <p className={classes.description}>
-        <strong> Error 404:</strong> Page <code>{location.pathname}</code> not
-        found.
+        Page <code>{location.pathname}</code> not found.
       </p>
       <Link className="pm-c-button-outline--default pm-c-button--sm" to="/">
         <Icon name="Arrow" size="md" />
