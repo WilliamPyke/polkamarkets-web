@@ -18,7 +18,7 @@ import { Image } from 'ui';
 
 import { CheckIcon } from 'assets/icons';
 
-import { useAppDispatch, useAppSelector } from 'hooks';
+import { useAppDispatch, useAppSelector, useOperation } from 'hooks';
 
 import Icon from '../Icon';
 import Text from '../Text';
@@ -65,9 +65,11 @@ function TradePredictionsWithImages({
 }: TradePredictionsWithImagesProps) {
   const dispatch = useAppDispatch();
 
-  const { id, networkId } = useAppSelector(state => state.market.market);
-
+  const market = useAppSelector(state => state.market.market);
+  const { id, networkId } = market;
   const { selectedOutcomeId } = useAppSelector(state => state.trade);
+
+  const { predictedOutcome } = useOperation(market);
 
   const apiRef = useRef({} as scrollVisibilityApiType);
 
@@ -141,12 +143,12 @@ function TradePredictionsWithImages({
             [styles.predictionWithImageMultiple]: multiple,
             [styles.predictionWithImageDisabled]: predictions.length === 1,
             [styles.predictionWithImagePredicted]:
-              prediction.id.toString() === selectedOutcomeId.toString()
+              prediction.id.toString() === predictedOutcome?.id.toString()
           })}
           value={prediction.id.toString()}
           onClick={handleSelectPrediction}
         >
-          {prediction.id.toString() === selectedOutcomeId.toString() && (
+          {prediction.id.toString() === predictedOutcome?.id.toString() && (
             <span className={styles.predictionWithImagePredictedLabel}>
               <CheckIcon
                 className={styles.predictionWithImagePredictedLabelIcon}
