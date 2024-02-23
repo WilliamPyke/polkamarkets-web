@@ -69,7 +69,6 @@ function MarketPredictions() {
         <p className={styles.predictionsTitle}>
           Select your prediction{' '}
           <span className={styles.predictionsTitleCaption}>
-            <InfoTooltip text="Probability of an answer occur based on already made predictions." />
             Probability (%)
           </span>
         </p>

@@ -57,7 +57,6 @@ function MarketOverview() {
                   className="market-chart__view-caption"
                 >
                   <InfoTooltip text="Probability of an answer occur based on already made predictions." />
-                  Probability
                 </Text>
               </>
             ) : (
