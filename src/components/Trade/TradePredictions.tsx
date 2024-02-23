@@ -4,7 +4,6 @@ import { Virtuoso } from 'react-virtuoso';
 import cn from 'classnames';
 import { roundNumber } from 'helpers/math';
 import sortOutcomes from 'helpers/sortOutcomes';
-import { Outcome } from 'models/market';
 import { selectOutcome } from 'redux/ducks/trade';
 import { Image } from 'ui';
 
@@ -18,34 +17,22 @@ type TradePredictionsProps = {
   view: View;
   size?: 'md' | 'lg';
   onPredictionSelected?: () => void;
-  filterBy?: (outcome: Outcome) => boolean;
 };
 
 function TradePredictions({
   view,
   size = 'md',
-  onPredictionSelected,
-  filterBy
+  onPredictionSelected
 }: TradePredictionsProps) {
   const dispatch = useAppDispatch();
 
-  const {
-    id,
-    outcomes: marketOutcomes,
-    networkId
-  } = useAppSelector(state => state.market.market);
+  const { id, outcomes, networkId } = useAppSelector(
+    state => state.market.market
+  );
 
   const { selectedOutcomeId, selectedMarketId } = useAppSelector(
     state => state.trade
   );
-
-  const outcomes = useMemo(() => {
-    if (filterBy) {
-      return marketOutcomes.filter(filterBy);
-    }
-
-    return marketOutcomes;
-  }, [marketOutcomes, filterBy]);
 
   const handleSelectOutcome = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
