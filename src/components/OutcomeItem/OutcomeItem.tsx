@@ -148,10 +148,9 @@ export default function OutcomeItem({
               (
               {`${
                 outcomeWithShares.value > outcomeWithShares.buyValue ? '+' : ''
-              }
-              ${(outcomeWithShares.value - outcomeWithShares.buyValue).toFixed(
+              }${(outcomeWithShares.value - outcomeWithShares.buyValue).toFixed(
                 1
-              )} ${market.token.symbol}`.trimStart()}
+              )} ${market.token.symbol}`}
               )
             </span>
           ) : null}
