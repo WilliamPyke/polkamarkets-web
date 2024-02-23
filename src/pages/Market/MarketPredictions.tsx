@@ -4,7 +4,6 @@ import { reset, selectOutcome } from 'redux/ducks/trade';
 import { useTheme } from 'ui';
 
 import {
-  InfoTooltip,
   Modal,
   ModalContent,
   ModalHeader,

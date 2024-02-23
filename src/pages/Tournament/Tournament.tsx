@@ -11,9 +11,9 @@ import {
 } from 'services/Polkamarkets';
 import { Container, useRect, useTheme } from 'ui';
 
+import Error404 from 'pages/Error404';
 import LeaderboardRewardsList from 'pages/Leaderboard/LeaderboardRewardsList';
 import { tournamentRewards } from 'pages/Leaderboard/utils';
-import Error404 from 'pages/Error404';
 
 import { MarketList, SEO } from 'components';
 
