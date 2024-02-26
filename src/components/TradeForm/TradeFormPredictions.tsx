@@ -47,7 +47,7 @@ export default function TradeFormPredictions() {
         onClick={expandableOutcomes.expand}
         primary={expandableOutcomes.offseted.primary}
         secondary={expandableOutcomes.offseted.secondary}
-        market={market}
+        token={market.token}
       />
     ),
     [
@@ -85,7 +85,7 @@ export default function TradeFormPredictions() {
               image={outcome.imageUrl}
               value={outcome.id}
               data={outcome.data}
-              market={market}
+              token={market.token}
               primary={outcome.title}
               activeColor={marketColors.outcome(outcome.id)}
               onClick={handleOutcomeClick}
@@ -118,7 +118,7 @@ export default function TradeFormPredictions() {
                 $size="md"
                 image={outcome.imageUrl}
                 value={outcome.id}
-                market={market}
+                token={market.token}
                 onClick={handleOutcomeClick}
                 activeColor={marketColors.outcome(+outcome.id)}
                 primary={outcome.title}
