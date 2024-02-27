@@ -140,6 +140,8 @@ function TradePredictionsWithImages({
           itemID={prediction.id.toString()}
           title={prediction.title}
           className={cn(styles.predictionWithImage, {
+            [styles.predictionWithImageSelected]:
+              prediction.id.toString() === selectedOutcomeId.toString(),
             [styles.predictionWithImageMultiple]: multiple,
             [styles.predictionWithImageDisabled]: predictions.length === 1,
             [styles.predictionWithImagePredicted]:
