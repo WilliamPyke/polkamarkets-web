@@ -160,11 +160,13 @@ function TradePredictionsWithImages({
           )}
           <div className={styles.predictionWithImageBody}>
             <div className={styles.predictionWithImageContent}>
-              <Image
-                className={styles.predictionWithImageImage}
-                alt={prediction.title}
-                src={prediction.imageUrl}
-              />
+              {prediction.imageUrl ? (
+                <Image
+                  className={styles.predictionWithImageImage}
+                  alt={prediction.title}
+                  src={prediction.imageUrl}
+                />
+              ) : null}
               <div className={styles.predictionWithImageDetails}>
                 <p className={styles.predictionWithImageDetailsTitle}>
                   {prediction.title}

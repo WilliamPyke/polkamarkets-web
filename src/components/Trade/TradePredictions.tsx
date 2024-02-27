@@ -61,65 +61,62 @@ function TradePredictions({
     predictions.length * (size === 'md' ? 60 : 82)
   );
 
-  if (view === 'default' || (view === 'modal' && !withImages)) {
-    return (
-      <div>
-        <Virtuoso
-          style={{
-            height: listHeight
-          }}
-          data={predictions}
-          itemContent={(index, outcome) => (
-            <button
-              type="button"
-              className={cn(styles.prediction, {
-                [styles.predictionLg]: size === 'lg',
-                [styles.predictionGutterBottom]:
-                  index !== predictions.length - 1,
-                [styles.predictionGutterBottomLg]: size === 'lg',
-                [styles.predictionSelected]:
-                  view === 'modal' &&
-                  outcome.id.toString() === selectedOutcomeId.toString() &&
-                  outcome.marketId.toString() === selectedMarketId.toString(),
-                [styles.predictionDisabled]: predictions.length === 1
-              })}
-              value={outcome.id.toString()}
-              onClick={handleSelectOutcome}
-            >
-              <div
-                className={cn(styles.predictionProgress, {
-                  [styles.predictionProgressWinning]: outcome.isPriceUp,
-                  [styles.predictionProgressLosing]: !outcome.isPriceUp
-                })}
-                style={{
-                  width: `${outcome.price * 100}%`
-                }}
-              />
-              <div className={styles.predictionContent}>
-                <div className={styles.predictionTitleGroup}>
-                  {withImages ? (
-                    <Image
-                      $radius="xs"
-                      alt={outcome.title}
-                      $size="xs"
-                      src={outcome.imageUrl}
-                    />
-                  ) : null}
-                  <p className={styles.predictionTitle}>{outcome.title}</p>
-                </div>
-                <p className={styles.predictionPrice}>{`${roundNumber(
-                  +outcome.price * 100,
-                  3
-                )}%`}</p>
-              </div>
-            </button>
-          )}
-        />
-      </div>
-    );
-  }
+  if (view === 'modal')
+    return <TradePredictionsWithImages predictions={predictions} />;
 
-  return <TradePredictionsWithImages predictions={predictions} />;
+  return (
+    <div>
+      <Virtuoso
+        style={{
+          height: listHeight
+        }}
+        data={predictions}
+        itemContent={(index, outcome) => (
+          <button
+            type="button"
+            className={cn(styles.prediction, {
+              [styles.predictionLg]: size === 'lg',
+              [styles.predictionGutterBottom]: index !== predictions.length - 1,
+              [styles.predictionGutterBottomLg]: size === 'lg',
+              [styles.predictionSelected]:
+                outcome.id.toString() === selectedOutcomeId.toString() &&
+                outcome.marketId.toString() === selectedMarketId.toString(),
+              [styles.predictionDisabled]: predictions.length === 1
+            })}
+            value={outcome.id.toString()}
+            onClick={handleSelectOutcome}
+          >
+            <div
+              className={cn(styles.predictionProgress, {
+                [styles.predictionProgressWinning]: outcome.isPriceUp,
+                [styles.predictionProgressLosing]: !outcome.isPriceUp
+              })}
+              style={{
+                width: `${outcome.price * 100}%`
+              }}
+            />
+            <div className={styles.predictionContent}>
+              <div className={styles.predictionTitleGroup}>
+                {withImages ? (
+                  <Image
+                    $radius="xs"
+                    alt={outcome.title}
+                    $size="xs"
+                    src={outcome.imageUrl}
+                  />
+                ) : null}
+                <p className={styles.predictionTitle}>{outcome.title}</p>
+              </div>
+              <p className={styles.predictionPrice}>{`${roundNumber(
+                +outcome.price * 100,
+                3
+              )}%`}</p>
+            </div>
+          </button>
+        )}
+      />
+    </div>
+  );
 }
 
 export default TradePredictions;
