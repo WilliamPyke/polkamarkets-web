@@ -330,10 +330,10 @@
   border-radius: var(--size-6);
 
   opacity: 0.4;
-  transition: opacity 0.2s ease-in-out;
 
   &Selected {
     opacity: 1;
+    transition: opacity 0.5s linear;
   }
 
   &Multiple {

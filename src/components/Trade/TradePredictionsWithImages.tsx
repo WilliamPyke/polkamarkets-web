@@ -85,7 +85,7 @@ function TradePredictionsWithImages({
         );
 
         if (item) {
-          apiRef.current.scrollToItem(item, 'auto', 'center');
+          apiRef.current.scrollToItem(item, 'smooth', 'center');
         }
       }
     }
