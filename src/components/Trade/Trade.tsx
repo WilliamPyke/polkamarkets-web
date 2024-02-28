@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useMemo } from 'react';
+import { CSSProperties, useCallback, useEffect, useMemo } from 'react';
 
 import cn from 'classnames';
 import { features } from 'config';
@@ -93,6 +93,12 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
     },
     [dispatch, marketId, marketNetworkId, type]
   );
+
+  useEffect(() => {
+    if (hasSharesOfOtherOutcomes && type === 'sell') {
+      dispatch(changeTradeType('buy'));
+    }
+  }, [dispatch, hasSharesOfOtherOutcomes, type]);
 
   if (isLoadingMarket) return null;
 
