@@ -32,7 +32,11 @@ import { calculateEthAmountSold, calculateTradeDetails } from './utils';
 
 const SELL_STEPS = [10, 25, 50, 100];
 
-function TradeFormInput() {
+type TradeFormInputProps = {
+  startAtMax?: boolean;
+};
+
+function TradeFormInput({ startAtMax = false }: TradeFormInputProps) {
   const dispatch = useAppDispatch();
   const { network } = useNetwork();
   const fantasyTokenTicker = useFantasyTokenTicker();
@@ -128,10 +132,16 @@ function TradeFormInput() {
   }, [dispatch, max, type]);
 
   useEffect(() => {
-    dispatch(setTradeAmount(0));
-    setAmount(0);
-    setStepAmount(0);
-  }, [dispatch, type, wrapped]);
+    if (startAtMax) {
+      dispatch(setTradeAmount(max()));
+      setAmount(max());
+      setStepAmount(100);
+    } else {
+      dispatch(setTradeAmount(0));
+      setAmount(0);
+      setStepAmount(0);
+    }
+  }, [dispatch, max, startAtMax, type, wrapped]);
 
   useEffect(() => {
     if (

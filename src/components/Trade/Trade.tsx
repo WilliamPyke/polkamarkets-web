@@ -83,6 +83,18 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
     [market.outcomes, predictionId]
   );
 
+  const selectedPredictionHaveShares = useMemo(() => {
+    if (isLoadingPortfolio) return false;
+
+    const marketShares = portfolio[marketId];
+
+    if (!marketShares) return false;
+
+    const outcomeShares = marketShares.outcomes[predictionId];
+
+    return outcomeShares ? outcomeShares.shares > 1e0 : false;
+  }, [isLoadingPortfolio, marketId, portfolio, predictionId]);
+
   const handleSellShares = useCallback(
     (outcomeId: string) => {
       if (type !== 'sell') {
@@ -172,7 +184,11 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
           ) : null}
           {!needsSellSharesOfOtherOutcomes ? <TradeTypeSelector /> : null}
           <TradeMarketShares />
-          {!needsSellSharesOfOtherOutcomes ? <TradeFormInput /> : null}
+          {!needsSellSharesOfOtherOutcomes ? (
+            <TradeFormInput
+              startAtMax={type === 'sell' && selectedPredictionHaveShares}
+            />
+          ) : null}
           <TradeDetails />
           <div className={styles.actionsGroup}>
             {needsSellSharesOfOtherOutcomes ? (
