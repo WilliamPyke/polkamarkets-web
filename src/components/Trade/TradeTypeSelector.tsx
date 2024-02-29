@@ -28,7 +28,7 @@ function TradeTypeSelector() {
       fullwidth
       defaultActiveId={type || TRADE_TYPE_FALLBACK}
       buttons={[
-        { id: 'buy', name: 'Strenghten', color: 'default' },
+        { id: 'buy', name: 'Strengthen', color: 'default' },
         { id: 'sell', name: 'Sell', color: 'default' }
       ]}
       className={{
