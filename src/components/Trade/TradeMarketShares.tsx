@@ -1,32 +1,19 @@
 /* eslint-disable no-nested-ternary */
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { roundNumber } from 'helpers/math';
 import isEmpty from 'lodash/isEmpty';
-import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
-import { Image, useTheme } from 'ui';
+import { Image } from 'ui';
 
-import { Button } from 'components';
+import { useAppSelector, useLanguage, useNetwork } from 'hooks';
 
-import {
-  useAppDispatch,
-  useAppSelector,
-  useLanguage,
-  useNetwork,
-  useOperation
-} from 'hooks';
+import { calculateEthAmountSold } from '../TradeForm/utils';
+import styles from './TradeMarketShares.module.scss';
 
-import { calculateEthAmountSold } from '../../components/TradeForm/utils';
-import styles from './MarketShares.module.scss';
-
-type MarketSharesProps = {
-  onSellSelected?: () => void;
-};
-
-function MarketShares({ onSellSelected }: MarketSharesProps) {
-  const dispatch = useAppDispatch();
+function TradeMarketShares() {
+  const language = useLanguage();
   const { network } = useNetwork();
-  const { type } = useAppSelector(state => state.trade);
+
   const { market } = useAppSelector(state => state.market);
   const { id, outcomes, networkId, token } = useAppSelector(
     state => state.market.market
@@ -34,27 +21,6 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
   const portfolio = useAppSelector(state => state.polkamarkets.portfolio);
   const { portfolio: isLoadingPortfolio } = useAppSelector(
     state => state.polkamarkets.isLoading
-  );
-  const theme = useTheme();
-
-  const language = useLanguage();
-
-  const operation = useOperation(market);
-  const operationStatus = operation.getMarketStatus();
-
-  const handleSell = useCallback(
-    (outcomeId: string) => {
-      if (onSellSelected) {
-        onSellSelected();
-      }
-
-      if (type !== 'sell') {
-        dispatch(changeTradeType('sell'));
-      }
-
-      dispatch(selectOutcome(id, networkId, outcomeId));
-    },
-    [dispatch, id, networkId, onSellSelected, type]
   );
 
   const outcomesWithShares = useMemo(() => {
@@ -89,8 +55,6 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
   const isWrongNetwork = network.id !== networkId.toString();
 
   if (isWrongNetwork || isEmpty(outcomesWithShares)) return null;
-
-  if (operationStatus === 'pending') return null;
 
   return (
     <ul className={styles.root}>
@@ -183,17 +147,10 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
               </>
             )}
           </p>
-          <Button
-            size="sm"
-            fullwidth={!theme.device.isTablet}
-            onClick={() => handleSell(outcome.id)}
-          >
-            Sell Position
-          </Button>
         </li>
       ))}
     </ul>
   );
 }
 
-export default MarketShares;
+export default TradeMarketShares;
