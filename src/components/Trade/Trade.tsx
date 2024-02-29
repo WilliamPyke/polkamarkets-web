@@ -2,6 +2,8 @@ import { CSSProperties, useCallback, useEffect, useMemo } from 'react';
 
 import cn from 'classnames';
 import { features } from 'config';
+
+import isEmpty from 'lodash/isEmpty';
 import isUndefined from 'lodash/isUndefined';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
 import { useTheme } from 'ui';
@@ -21,6 +23,7 @@ import TradeDetails from './TradeDetails';
 import TradeMarketShares from './TradeMarketShares';
 import TradePredictions from './TradePredictions';
 import TradeTypeSelector from './TradeTypeSelector';
+
 
 type TradeProps = {
   view?: View;
@@ -182,7 +185,7 @@ function Trade({ view = 'default', onTradeFinished }: TradeProps) {
               </p>
             </div>
           ) : null}
-          {!needsSellSharesOfOtherOutcomes ? <TradeTypeSelector /> : null}
+          {!isEmpty(outcomesWithShares) && !needsSellSharesOfOtherOutcomes ? <TradeTypeSelector /> : null}
           <TradeMarketShares />
           {!needsSellSharesOfOtherOutcomes ? (
             <TradeFormInput
