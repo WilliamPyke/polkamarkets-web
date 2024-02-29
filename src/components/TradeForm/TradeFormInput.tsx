@@ -343,10 +343,13 @@ function TradeFormInput({ startAtMax = false }: TradeFormInputProps) {
                   key={step}
                   type="button"
                   className={cn('pm-c-amount-input__action', {
-                    'pm-c-amount-input__action--active': step === amount
+                    'pm-c-amount-input__action--active':
+                      max() * (step / 100) === amount
                   })}
                   onClick={() =>
-                    handleSetAmount(roundDown(max() * (step / 100)))
+                    handleSetAmount(
+                      step === 100 ? max() : roundDown(max() * (step / 100))
+                    )
                   }
                   disabled={isWrongNetwork}
                 >
