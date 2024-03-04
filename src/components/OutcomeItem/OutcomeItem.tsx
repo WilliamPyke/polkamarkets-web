@@ -3,13 +3,20 @@ import { useMemo } from 'react';
 import cn from 'classnames';
 import { features } from 'config';
 import { roundNumber } from 'helpers/math';
-import { kebabCase, uniqueId } from 'lodash';
+import isUndefined from 'lodash/isUndefined';
+import kebabCase from 'lodash/kebabCase';
+import uniqueId from 'lodash/uniqueId';
 import { Market } from 'models/market';
 import { Line } from 'rc-progress';
 import type { UserOperation } from 'types/user';
 import { Avatar, useTheme } from 'ui';
 
-import { CheckIcon, RemoveIcon, RepeatCycleIcon } from 'assets/icons';
+import {
+  CheckIcon,
+  RemoveIcon,
+  RepeatCycleIcon,
+  TrophyIcon
+} from 'assets/icons';
 
 import Icon from 'components/Icon';
 import MiniTable from 'components/MiniTable';
@@ -83,6 +90,13 @@ export default function OutcomeItem({
     [outcomesWithShares, props.value]
   );
 
+  const isPredicted =
+    !isUndefined(outcomeWithShares) &&
+    isUndefined(resolved) &&
+    $state === 'success';
+  const isWon = !isUndefined(outcomeWithShares) && resolved === 'won';
+  const isLost = !isUndefined(outcomeWithShares) && resolved === 'lost';
+
   return (
     <button
       type="button"
@@ -104,6 +118,9 @@ export default function OutcomeItem({
           [outcomeItemClasses.stateSuccess]: $state === 'success',
           [outcomeItemClasses.statePending]: $state === 'pending',
           [outcomeItemClasses.stateFailed]: $state === 'failed',
+          [outcomeItemClasses.rootStatusPredicted]: isPredicted,
+          [outcomeItemClasses.rootStatusWon]: isWon,
+          [outcomeItemClasses.rootStatusLost]: isLost,
           active: isActive
         },
         className
@@ -115,7 +132,7 @@ export default function OutcomeItem({
       }}
       {...props}
     >
-      {$state === 'success' && (
+      {isPredicted && (
         <div className={outcomeItemClasses.rootStatus}>
           <CheckIcon className={outcomeItemClasses.rootStatusIcon} />
           <span className={outcomeItemClasses.rootStatusTitle}>Predicted</span>
@@ -133,6 +150,17 @@ export default function OutcomeItem({
               )
             </span>
           ) : null}
+        </div>
+      )}
+      {isWon && (
+        <div className={outcomeItemClasses.rootStatus}>
+          <TrophyIcon className={outcomeItemClasses.rootStatusIcon} />
+          <span className={outcomeItemClasses.rootStatusTitle}>You won</span>
+        </div>
+      )}
+      {isLost && (
+        <div className={outcomeItemClasses.rootStatus}>
+          <span className={outcomeItemClasses.rootStatusTitle}>You lost</span>
         </div>
       )}
       <div className={outcomeItemClasses.content}>
