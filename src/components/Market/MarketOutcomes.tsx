@@ -66,9 +66,13 @@ export default function MarketOutcomes({
     () =>
       sortOutcomes({
         outcomes: market.outcomes,
-        timeframe: '7d'
+        timeframe: '7d',
+        predictedOutcome:
+          market.outcomes.length > 3 && operation.predictedOutcome
+            ? { id: operation.predictedOutcome.id, newIndex: 1 }
+            : undefined
       }),
-    [market.outcomes]
+    [market.outcomes, operation.predictedOutcome]
   );
 
   const expandableOutcomes = useExpandableOutcomes({
