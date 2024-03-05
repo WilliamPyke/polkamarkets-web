@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import { useCallback, useMemo } from 'react';
 
 import { roundNumber } from 'helpers/math';
@@ -18,6 +17,64 @@ import {
 
 import { calculateEthAmountSold } from '../../components/TradeForm/utils';
 import styles from './MarketShares.module.scss';
+
+const translations = {
+  en: {
+    text: {
+      hold: 'You hold',
+      of: 'of',
+      performing: 'performing',
+      sellPosition: 'Sell Position'
+    },
+    format: {
+      shares: shares => `${shares.toFixed(1)}`,
+      performance: (value, buyValue, tokenSymbol) =>
+        `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
+          1
+        )} ${tokenSymbol} (${value > buyValue ? '+' : ''}${(
+          ((value - buyValue) / buyValue) *
+          100
+        ).toFixed(1)}%)`
+    }
+  },
+  tr: {
+    text: {
+      hold: 'Şu anda',
+      of: 'adet',
+      performing: 'hissesine sahipsiniz ve bunun değeri',
+      sellPosition: 'Pozisyonu Sat',
+      equivalentValue: 'denk geliyor'
+    },
+    format: {
+      shares: shares => `${roundNumber(shares, 3)}`,
+      performance: (value, _, tokenSymbol) =>
+        `${value.toFixed(3)} ${tokenSymbol}`
+    }
+  },
+  pt: {
+    text: {
+      hold: 'Tens',
+      of: 'de',
+      performing: 'com um desempenho de',
+      sellPosition: 'Vender Posição'
+    },
+    format: {
+      shares: shares => `${shares.toFixed(1)}`,
+      performance: (value, buyValue, tokenSymbol) =>
+        `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
+          1
+        )} ${tokenSymbol} (${value > buyValue ? '+' : ''}${(
+          ((value - buyValue) / buyValue) *
+          100
+        ).toFixed(1)}%)`
+    }
+  }
+};
+
+function translate(key, lang = 'en', type = 'text', ...args) {
+  const translation = translations[lang][type][key];
+  return typeof translation === 'function' ? translation(...args) : translation;
+}
 
 type MarketSharesProps = {
   onSellSelected?: () => void;
@@ -83,7 +140,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
       };
     });
 
-    return sharesByOutcome.filter(outcome => outcome.shares > 1e0);
+    return sharesByOutcome.filter(outcome => outcome.shares > 1);
   }, [id, isLoadingPortfolio, outcomes, portfolio, market]);
 
   const isWrongNetwork = network.id !== networkId.toString();
@@ -97,91 +154,36 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
       {outcomesWithShares.map(outcome => (
         <li key={outcome.id} className={styles.rootItem}>
           <p className={`${styles.rootItemDescription} notranslate`}>
-            {language === 'tr' ? (
-              <>
-                Şu anda <strong>{`${roundNumber(outcome.shares, 3)}`}</strong>{' '}
-                adet{' '}
-                <div className={styles.rootItemTitleGroup}>
-                  {outcome.imageUrl ? (
-                    <Image
-                      className={styles.rootItemTitleGroupImage}
-                      $radius="lg"
-                      alt={outcome.title}
-                      $size="x2s"
-                      src={outcome.imageUrl}
-                    />
-                  ) : null}
-                  <strong>{outcome.title}</strong>
-                </div>{' '}
-                hissesine sahipsiniz ve bunun değeri{' '}
-                <strong>
-                  {outcome.value.toFixed(3)} {token.symbol}
-                </strong>{' '}
-                denk geliyor
-              </>
-            ) : language === 'pt' ? (
-              <>
-                Tens{' '}
-                <strong>
-                  {outcome.value.toFixed(1)} {token.symbol}{' '}
-                </strong>
-                de{' '}
-                <div className={styles.rootItemTitleGroup}>
-                  {outcome.imageUrl ? (
-                    <Image
-                      className={styles.rootItemTitleGroupImage}
-                      $radius="xs"
-                      alt={outcome.title}
-                      $size="x2s"
-                      src={outcome.imageUrl}
-                    />
-                  ) : null}
-                  <strong>{outcome.title}</strong>
-                </div>{' '}
-                com um desempenho de{' '}
-                <strong>
-                  {outcome.value > outcome.buyValue ? '+' : ''}
-                  {(outcome.value - outcome.buyValue).toFixed(1)} {token.symbol}{' '}
-                </strong>
-                ({outcome.value > outcome.buyValue ? '+' : ''}
-                {(
-                  ((outcome.value - outcome.buyValue) / outcome.buyValue) *
-                  100
-                ).toFixed(1)}
-                %)
-              </>
-            ) : (
-              <>
-                You hold{' '}
-                <strong>
-                  {outcome.value.toFixed(1)} {token.symbol}{' '}
-                </strong>
-                of{' '}
-                <div className={styles.rootItemTitleGroup}>
-                  {outcome.imageUrl ? (
-                    <Image
-                      className={styles.rootItemTitleGroupImage}
-                      $radius="xs"
-                      alt={outcome.title}
-                      $size="x2s"
-                      src={outcome.imageUrl}
-                    />
-                  ) : null}
-                  <strong>{outcome.title}</strong>
-                </div>{' '}
-                performing{' '}
-                <strong>
-                  {outcome.value > outcome.buyValue ? '+' : ''}
-                  {(outcome.value - outcome.buyValue).toFixed(1)} {token.symbol}{' '}
-                </strong>
-                ({outcome.value > outcome.buyValue ? '+' : ''}
-                {(
-                  ((outcome.value - outcome.buyValue) / outcome.buyValue) *
-                  100
-                ).toFixed(1)}
-                %)
-              </>
-            )}
+            {translate('hold', language)}{' '}
+            <strong>
+              {translate('shares', language, 'format', outcome.shares)}
+            </strong>{' '}
+            {translate('of', language)}{' '}
+            <div className={styles.rootItemTitleGroup}>
+              {outcome.imageUrl && (
+                <Image
+                  className={styles.rootItemTitleGroupImage}
+                  $radius="xs"
+                  alt={outcome.title}
+                  $size="x2s"
+                  src={outcome.imageUrl}
+                />
+              )}
+              <strong>{outcome.title}</strong>
+            </div>{' '}
+            {translate('performing', language)}{' '}
+            <strong>
+              {translate(
+                'performance',
+                language,
+                'format',
+                outcome.value,
+                outcome.buyValue,
+                token.symbol
+              )}
+            </strong>
+            {language === 'tr' &&
+              ` ${translate('equivalentValue', language, 'text')}`}
           </p>
           <Button
             size="sm"
