@@ -11,6 +11,15 @@
 
   border-radius: var(--size-8);
 
+  &Resolved {
+    border: 1px solid rgba(242, 240, 255, 0.3);
+    background: rgba(242, 240, 255, 0.05);
+
+    .rootItemDescription {
+      color: #d2d5da;
+    }
+  }
+
   &Item {
     @media (min-width: 768px) {
       display: flex;
@@ -45,6 +54,16 @@
 
       strong {
         color: var(--color-market-shares-description--bold);
+      }
+
+      &Performance {
+        &Positive {
+          color: #3ebd93 !important;
+        }
+
+        &Negative {
+          color: #e12d39 !important;
+        }
       }
     }
   }

@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import classNames from 'classnames';
 import { roundNumber } from 'helpers/math';
 import isEmpty from 'lodash/isEmpty';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
@@ -24,14 +25,18 @@ const translations = {
       hold: 'You hold',
       of: 'of',
       performing: 'performing',
-      sellPosition: 'Sell Position'
+      sellPosition: 'Sell Position',
+      predicted: 'You Predicted',
+      performed: 'performed'
     },
     format: {
-      shares: shares => `${shares.toFixed(1)}`,
+      shares: (shares, tokenSymbol) => `${shares.toFixed(1)} ${tokenSymbol}`,
       performance: (value, buyValue, tokenSymbol) =>
         `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
           1
-        )} ${tokenSymbol} (${value > buyValue ? '+' : ''}${(
+        )} ${tokenSymbol}`,
+      performanceInPercent: (value, buyValue) =>
+        `(${value > buyValue ? '+' : ''}${(
           ((value - buyValue) / buyValue) *
           100
         ).toFixed(1)}%)`
@@ -43,12 +48,22 @@ const translations = {
       of: 'adet',
       performing: 'hissesine sahipsiniz ve bunun değeri',
       sellPosition: 'Pozisyonu Sat',
-      equivalentValue: 'denk geliyor'
+      equivalentValue: 'denk geliyor',
+      predicted: 'Tahmin ettiniz',
+      performed: 'performans gösterdi'
     },
     format: {
-      shares: shares => `${roundNumber(shares, 3)}`,
-      performance: (value, _, tokenSymbol) =>
-        `${value.toFixed(3)} ${tokenSymbol}`
+      shares: (shares, tokenSymbol) =>
+        `${roundNumber(shares, 3)} ${tokenSymbol}`,
+      performance: (value, buyValue, tokenSymbol) =>
+        `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
+          1
+        )} ${tokenSymbol}`,
+      performanceInPercent: (value, buyValue) =>
+        `(${value > buyValue ? '+' : ''}${(
+          ((value - buyValue) / buyValue) *
+          100
+        ).toFixed(1)}%)`
     }
   },
   pt: {
@@ -56,14 +71,18 @@ const translations = {
       hold: 'Tens',
       of: 'de',
       performing: 'com um desempenho de',
-      sellPosition: 'Vender Posição'
+      sellPosition: 'Vender Posição',
+      predicted: 'Você previu',
+      performed: 'e teve um desempenho de'
     },
     format: {
-      shares: shares => `${shares.toFixed(1)}`,
+      shares: (shares, tokenSymbol) => `${shares.toFixed(1)} ${tokenSymbol}`,
       performance: (value, buyValue, tokenSymbol) =>
         `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
           1
-        )} ${tokenSymbol} (${value > buyValue ? '+' : ''}${(
+        )} ${tokenSymbol}`,
+      performanceInPercent: (value, buyValue) =>
+        `(${value > buyValue ? '+' : ''}${(
           ((value - buyValue) / buyValue) *
           100
         ).toFixed(1)}%)`
@@ -140,7 +159,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
       };
     });
 
-    return sharesByOutcome.filter(outcome => outcome.shares > 1);
+    return sharesByOutcome.filter(outcome => outcome.shares > 1e0);
   }, [id, isLoadingPortfolio, outcomes, portfolio, market]);
 
   const isWrongNetwork = network.id !== networkId.toString();
@@ -149,6 +168,73 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
 
   if (operationStatus === 'pending') return null;
 
+  if (market.state === 'resolved') {
+    return (
+      <ul
+        className={classNames(styles.root, {
+          [styles.rootResolved]: market.state === 'resolved'
+        })}
+      >
+        {outcomesWithShares.map(outcome => (
+          <li key={outcome.id} className={styles.rootItem}>
+            <p className={`${styles.rootItemDescription} notranslate`}>
+              {translate('predicted', language)}{' '}
+              <strong>
+                {translate(
+                  'shares',
+                  language,
+                  'format',
+                  outcome.shares,
+                  token.symbol
+                )}
+              </strong>{' '}
+              {translate('of', language)}{' '}
+              <div className={styles.rootItemTitleGroup}>
+                {outcome.imageUrl && (
+                  <Image
+                    className={styles.rootItemTitleGroupImage}
+                    $radius="xs"
+                    alt={outcome.title}
+                    $size="x2s"
+                    src={outcome.imageUrl}
+                  />
+                )}
+                <strong>{outcome.title}</strong>
+              </div>{' '}
+              {translate('performed', language)}{' '}
+              <strong
+                className={classNames({
+                  [styles.rootItemDescriptionPerformancePositive]:
+                    outcome.value > outcome.buyValue,
+                  [styles.rootItemDescriptionPerformanceNegative]:
+                    outcome.value < outcome.buyValue
+                })}
+              >
+                {translate(
+                  'performance',
+                  language,
+                  'format',
+                  outcome.value,
+                  outcome.buyValue,
+                  token.symbol
+                )}
+              </strong>{' '}
+              {translate(
+                'performanceInPercent',
+                language,
+                'format',
+                outcome.value,
+                outcome.buyValue
+              )}
+              {language === 'tr' &&
+                ` ${translate('equivalentValue', language, 'text')}`}
+            </p>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <ul className={styles.root}>
       {outcomesWithShares.map(outcome => (
@@ -156,7 +242,13 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
           <p className={`${styles.rootItemDescription} notranslate`}>
             {translate('hold', language)}{' '}
             <strong>
-              {translate('shares', language, 'format', outcome.shares)}
+              {translate(
+                'shares',
+                language,
+                'format',
+                outcome.shares,
+                token.symbol
+              )}
             </strong>{' '}
             {translate('of', language)}{' '}
             <div className={styles.rootItemTitleGroup}>
@@ -181,7 +273,14 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
                 outcome.buyValue,
                 token.symbol
               )}
-            </strong>
+            </strong>{' '}
+            {translate(
+              'performanceInPercent',
+              language,
+              'format',
+              outcome.value,
+              outcome.buyValue
+            )}
             {language === 'tr' &&
               ` ${translate('equivalentValue', language, 'text')}`}
           </p>
