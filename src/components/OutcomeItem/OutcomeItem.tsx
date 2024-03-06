@@ -90,10 +90,9 @@ export default function OutcomeItem({
     [outcomesWithShares, props.value]
   );
 
+  const isResolved = !isUndefined(resolved);
   const isPredicted =
-    !isUndefined(outcomeWithShares) &&
-    isUndefined(resolved) &&
-    $state === 'success';
+    !isUndefined(outcomeWithShares) && !isResolved && $state === 'success';
   const isWon = !isUndefined(outcomeWithShares) && resolved === 'won';
   const isLost = !isUndefined(outcomeWithShares) && resolved === 'lost';
 
@@ -115,9 +114,11 @@ export default function OutcomeItem({
           [outcomeItemClasses.sizeSm]: isSm,
           [outcomeItemClasses.sizeMd]: isMd,
           [outcomeItemClasses.state]: $state,
-          [outcomeItemClasses.stateSuccess]: $state === 'success',
-          [outcomeItemClasses.statePending]: $state === 'pending',
-          [outcomeItemClasses.stateFailed]: $state === 'failed',
+          [outcomeItemClasses.stateSuccess]:
+            !isResolved && $state === 'success',
+          [outcomeItemClasses.statePending]:
+            !isResolved && $state === 'pending',
+          [outcomeItemClasses.stateFailed]: !isResolved && $state === 'failed',
           [outcomeItemClasses.rootStatusPredicted]: isPredicted,
           [outcomeItemClasses.rootStatusWon]: isWon,
           [outcomeItemClasses.rootStatusLost]: isLost,
