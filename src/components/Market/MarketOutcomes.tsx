@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { features } from 'config';
 import sortOutcomes from 'helpers/sortOutcomes';
 import isEmpty from 'lodash/isEmpty';
+import isUndefined from 'lodash/isUndefined';
 import type { Market } from 'models/market';
 import { reset } from 'redux/ducks/trade';
 import { useTheme } from 'ui';
@@ -251,7 +252,11 @@ export default function MarketOutcomes({
               isActive={getOutcomeActive(outcome.id)}
               onClick={handleOutcomeClick}
               secondary={{
-                price: outcome.price,
+                price:
+                  market.state === 'resolved' &&
+                  !isUndefined(outcome.closingPrice)
+                    ? +outcome.closingPrice.toFixed(3)
+                    : outcome.price,
                 ticker: market.token.ticker,
                 isPriceUp: outcome.isPriceUp
               }}
