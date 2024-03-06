@@ -255,7 +255,7 @@ export default function MarketOutcomes({
                 price:
                   market.state === 'resolved' &&
                   !isUndefined(outcome.closingPrice)
-                    ? outcome.closingPrice
+                    ? +outcome.closingPrice.toFixed(3)
                     : outcome.price,
                 ticker: market.token.ticker,
                 isPriceUp: outcome.isPriceUp
