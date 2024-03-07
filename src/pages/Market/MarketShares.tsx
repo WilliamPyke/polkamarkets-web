@@ -2,7 +2,6 @@
 import { useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
-import { roundNumber } from 'helpers/math';
 import isEmpty from 'lodash/isEmpty';
 import { changeTradeType, selectOutcome } from 'redux/ducks/trade';
 import { Image, useTheme } from 'ui';
@@ -141,7 +140,7 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
       };
     });
 
-    return sharesByOutcome.filter(outcome => outcome.shares > 1);
+    return sharesByOutcome.filter(outcome => outcome.shares > 1e0);
   }, [id, isLoadingPortfolio, outcomes, portfolio, market]);
 
   const isWrongNetwork = network.id !== networkId.toString();
