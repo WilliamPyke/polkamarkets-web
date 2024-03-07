@@ -473,11 +473,12 @@
 .typeSelector {
   gap: 4px;
 
-  background-color: #414853;
+  background-color: transparent;
   border-radius: 6px !important;
 
   :global(.pm-c-button-group__item.active) {
-    background-color: #191b1f !important;
+    color: #000000 !important;
+    background-color: #ffffff !important;
   }
 
   &Button {
@@ -490,6 +491,10 @@
 
     padding: var(--size-8) var(--size-16) !important;
     border-radius: 4px !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
   }
 }
 
