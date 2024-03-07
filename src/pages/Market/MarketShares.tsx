@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { useCallback, useMemo } from 'react';
 
 import classNames from 'classnames';
@@ -19,6 +20,19 @@ import {
 import { calculateEthAmountSold } from '../../components/TradeForm/utils';
 import styles from './MarketShares.module.scss';
 
+const format = {
+  value: (value, tokenSymbol) => `${value.toFixed(1)} ${tokenSymbol}`,
+  performance: (value, buyValue, tokenSymbol) =>
+    `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
+      1
+    )} ${tokenSymbol}`,
+  performanceInPercent: (value, buyValue) =>
+    `(${value > buyValue ? '+' : ''}${(
+      ((value - buyValue) / buyValue) *
+      100
+    ).toFixed(1)}%)`
+};
+
 const translations = {
   en: {
     text: {
@@ -29,18 +43,7 @@ const translations = {
       predicted: 'You Predicted',
       performed: 'performed'
     },
-    format: {
-      shares: (shares, tokenSymbol) => `${shares.toFixed(1)} ${tokenSymbol}`,
-      performance: (value, buyValue, tokenSymbol) =>
-        `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
-          1
-        )} ${tokenSymbol}`,
-      performanceInPercent: (value, buyValue) =>
-        `(${value > buyValue ? '+' : ''}${(
-          ((value - buyValue) / buyValue) *
-          100
-        ).toFixed(1)}%)`
-    }
+    format
   },
   tr: {
     text: {
@@ -52,19 +55,7 @@ const translations = {
       predicted: 'Tahmin ettiniz',
       performed: 'performans gösterdi'
     },
-    format: {
-      shares: (shares, tokenSymbol) =>
-        `${roundNumber(shares, 3)} ${tokenSymbol}`,
-      performance: (value, buyValue, tokenSymbol) =>
-        `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
-          1
-        )} ${tokenSymbol}`,
-      performanceInPercent: (value, buyValue) =>
-        `(${value > buyValue ? '+' : ''}${(
-          ((value - buyValue) / buyValue) *
-          100
-        ).toFixed(1)}%)`
-    }
+    format
   },
   pt: {
     text: {
@@ -75,18 +66,7 @@ const translations = {
       predicted: 'Você previu',
       performed: 'e teve um desempenho de'
     },
-    format: {
-      shares: (shares, tokenSymbol) => `${shares.toFixed(1)} ${tokenSymbol}`,
-      performance: (value, buyValue, tokenSymbol) =>
-        `${value > buyValue ? '+' : ''}${(value - buyValue).toFixed(
-          1
-        )} ${tokenSymbol}`,
-      performanceInPercent: (value, buyValue) =>
-        `(${value > buyValue ? '+' : ''}${(
-          ((value - buyValue) / buyValue) *
-          100
-        ).toFixed(1)}%)`
-    }
+    format
   }
 };
 
@@ -152,14 +132,16 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
           ? outcomeShares.shares * outcomeShares.price
           : 0,
         value:
-          outcomeShares && outcomeShares.shares > 0
+          market.state === 'resolved'
+            ? outcomeShares.shares * outcome.price
+            : outcomeShares && outcomeShares.shares > 0
             ? calculateEthAmountSold(market, outcome, outcomeShares.shares)
                 .totalStake
             : 0
       };
     });
 
-    return sharesByOutcome.filter(outcome => outcome.shares > 1e0);
+    return sharesByOutcome.filter(outcome => outcome.shares > 1);
   }, [id, isLoadingPortfolio, outcomes, portfolio, market]);
 
   const isWrongNetwork = network.id !== networkId.toString();
@@ -181,10 +163,10 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
               {translate('predicted', language)}{' '}
               <strong>
                 {translate(
-                  'shares',
+                  'value',
                   language,
                   'format',
-                  outcome.shares,
+                  outcome.buyValue,
                   token.symbol
                 )}
               </strong>{' '}
@@ -243,10 +225,10 @@ function MarketShares({ onSellSelected }: MarketSharesProps) {
             {translate('hold', language)}{' '}
             <strong>
               {translate(
-                'shares',
+                'value',
                 language,
                 'format',
-                outcome.shares,
+                outcome.value,
                 token.symbol
               )}
             </strong>{' '}
